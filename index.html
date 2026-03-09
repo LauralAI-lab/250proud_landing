@@ -4,18 +4,18 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>250PROUD | Official America 250 Apparel | Coming Soon</title>
+    <title>250PROUD™ | Official America 250 Apparel | Coming Soon</title>
 
     <!-- SEO Optimization -->
     <meta name="description"
-        content="Secure your limited edition 250PROUD merch before July 4th. Sign up now for exclusive early access to the official United States 250th anniversary clothing and gear.">
-    <meta name="keywords" content="250PROUD, America 250, 1776, 2026, patriotic apparel, USA clothing, July 4th merch">
+        content="Secure your limited edition 250PROUD™ merch before July 4th. Sign up now for exclusive early access to the official United States 250th anniversary clothing and gear.">
+    <meta name="keywords" content="250PROUD™, America 250, 1776, 2026, patriotic apparel, USA clothing, July 4th merch">
     <link rel="canonical" href="https://250proud.net/">
 
     <!-- Open Graph for Social Media -->
-    <meta property="og:title" content="250PROUD | Official America 250 Apparel">
+    <meta property="og:title" content="250PROUD™ | Official America 250 Apparel">
     <meta property="og:description"
-        content="Secure your limited edition 250PROUD merch before July 4th. Sign up now for early access.">
+        content="Secure your limited edition 250PROUD™ merch before July 4th. Sign up now for early access.">
     <meta property="og:image" content="nc_assets/img/logo.png">
     <meta property="og:url" content="https://250proud.net">
     <meta property="og:type" content="website">
@@ -336,7 +336,7 @@
 
     <header>
         <div class="logo-container">
-            <img src="nc_assets/img/logo.svg" alt="250PROUD Official Logo">
+            <img src="nc_assets/img/logo.svg" alt="250PROUD™ Official Logo">
         </div>
         <div class="header-badge">
             <span class="badge">OFFICIAL AMERICANA GEAR</span>
@@ -401,8 +401,8 @@
     </section>
 
     <footer>
-        <img src="nc_assets/img/logo.svg" alt="250PROUD White Logo" class="footer-logo">
-        <p>&copy; 2026 250PROUD.net. All rights reserved. Celebrating USA 1776 - 2026.</p>
+        <img src="nc_assets/img/logo.svg" alt="250PROUD™ White Logo" class="footer-logo">
+        <p>&copy; 2026 250PROUD™. All rights reserved. Celebrating USA 1776 - 2026.</p>
     </footer>
 
     <!-- Supabase Integration Script -->
@@ -462,9 +462,9 @@
                         throw error;
                     }
                 } else {
-                    messageDiv.className = 'form-message success';
-                    messageDiv.textContent = 'Success! You are on the VIP list. Check your email soon!';
                     emailInput.value = ''; // clear form
+                    // Redirect to the newly created Thank You page
+                    window.location.href = 'thank-you.html';
                 }
             } catch (err) {
                 console.error('Supabase error:', err);

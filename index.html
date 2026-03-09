@@ -414,11 +414,11 @@
         const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlvaGRpZ3lpdnlwZ3lwaGNsaXVvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzI5MDM2NDgsImV4cCI6MjA4ODQ3OTY0OH0.20zL5ZSvfb143I5sk1lGhPtXzTdn8M0mGWS20O1PJWc';
         // --------------------------
 
-        let supabase = null;
+        let supabaseClient = null;
         try {
             // Initialize Supabase only if keys seem somewhat valid (not the placeholder)
             if (!supabaseUrl.includes('YOUR_SUPABASE')) {
-                supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
+                supabaseClient = window.supabase.createClient(supabaseUrl, supabaseKey);
             }
         } catch (e) {
             console.error("Supabase failed to initialize:", e);
@@ -440,7 +440,7 @@
             messageDiv.textContent = '';
 
             // Check if Supabase is actually configured
-            if (!supabase) {
+            if (!supabaseClient) {
                 messageDiv.className = 'form-message error';
                 messageDiv.textContent = 'Configuration required! Please add your Supabase keys to index.html.';
                 submitBtn.textContent = 'Get Early Access';
@@ -450,7 +450,7 @@
 
             try {
                 // Insert data into early_access_signups table
-                const { data, error } = await supabase
+                const { data, error } = await supabaseClient
                     .from('Early Access Signups')
                     .insert([{ email: email }]);
 

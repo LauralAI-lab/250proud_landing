@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 800" width="1000" height="800">
+  <defs>
+    <!-- Sharp Star Path -->
+    <path id="star" d="M 500.0 90.0 L 529.4 179.5 L 623.6 179.8 L 547.6 235.5 L 576.4 325.2 L 500.0 270.0 L 423.6 325.2 L 452.4 235.5 L 376.4 179.8 L 470.6 179.5 Z"/>
+    
+    <mask id="star-mask">
+      <rect x="0" y="0" width="1000" height="800" fill="white" />
+      <use href="#star" fill="black" transform="scale(1.1) translate(-45, -22)" />
+    </mask>
+  </defs>
+
+  <g mask="url(#star-mask)">
+     <text x="500" y="380" fill="#0A3161" font-family="'Impact', 'Arial Black', sans-serif" font-weight="bold" font-size="340" text-anchor="middle" letter-spacing="-14">250</text>
+  </g>
+
+  <use href="#star" fill="#B31942" transform="scale(0.85) translate(88, 30)" />
+
+  <!-- 250PROUD - tightened up spacing -->
+  <text x="500" y="520" fill="#0A3161" font-family="'Helvetica Neue', 'Arial Black', sans-serif" font-weight="900" font-size="110" text-anchor="middle" letter-spacing="-2">250<tspan fill="#B31942" letter-spacing="1">PROUD</tspan></text>
+  <text x="815" y="445" fill="#000000" font-family="'Helvetica Neue', 'Arial Black', sans-serif" font-weight="900" font-size="35">™</text>
+
+  <!-- USA - 1776 - 2026 -->
+  <text x="500" y="600" fill="#0A3161" font-family="'Helvetica Neue', 'Arial', sans-serif" font-weight="bold" font-size="36" text-anchor="middle" letter-spacing="12">USA • 1776 - 2026</text>
+</svg>

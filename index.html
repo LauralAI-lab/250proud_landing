@@ -1,0 +1,488 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>250PROUD™ | Official America 250 Apparel | Coming Soon</title>
+
+    <!-- SEO Optimization -->
+    <meta name="description"
+        content="Secure your limited edition 250PROUD™ merch before July 4th. Sign up now for exclusive early access to the official United States 250th anniversary clothing and gear.">
+    <meta name="keywords" content="250PROUD™, America 250, 1776, 2026, patriotic apparel, USA clothing, July 4th merch">
+    <link rel="canonical" href="https://250proud.net/">
+
+    <!-- Open Graph for Social Media -->
+    <meta property="og:title" content="250PROUD™ | Official America 250 Apparel">
+    <meta property="og:description"
+        content="Secure your limited edition 250PROUD™ merch before July 4th. Sign up now for early access.">
+    <meta property="og:image" content="nc_assets/img/logo.png">
+    <meta property="og:url" content="https://250proud.net">
+    <meta property="og:type" content="website">
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Oswald:wght@500;700&display=swap"
+        rel="stylesheet">
+
+    <!-- Supabase JS Client -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+    <style>
+        :root {
+            /* Patriotic Color Palette */
+            --navy: #0A3161;
+            --navy-dark: #071E3D;
+            --red: #B31942;
+            --red-bright: #D31A47;
+            --white: #FFFFFF;
+            --off-white: #F5F0E8;
+            --gold: #B8922A;
+            --gray: #E0E0E0;
+            --gray-dark: #333333;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--off-white);
+            color: var(--navy-dark);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        h1,
+        h2,
+        h3,
+        .heading-font {
+            font-family: 'Oswald', sans-serif;
+            text-transform: uppercase;
+        }
+
+        /* Nav & Header */
+        header {
+            background-color: var(--white);
+            padding: 1.5rem 5%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 2px solid var(--navy);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .logo-container img {
+            height: 140px;
+            width: auto;
+        }
+
+        .badge {
+            background-color: var(--navy);
+            color: var(--white);
+            padding: 0.5rem 1rem;
+            font-weight: 700;
+            font-size: 0.85rem;
+            letter-spacing: 2px;
+            border-radius: 4px;
+            display: inline-block;
+        }
+
+        /* Hero Section */
+        .hero {
+            background: linear-gradient(135deg, var(--navy-dark) 0%, var(--navy) 100%);
+            color: var(--white);
+            padding: 6rem 5%;
+            text-align: center;
+            position: relative;
+        }
+
+        .hero::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml;utf8,<svg width="100" height="100" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"><path d="M50 0 L52 48 L100 50 L52 52 L50 100 L48 52 L0 50 L48 48 Z" fill="rgba(255,255,255,0.03)"/></svg>') repeat;
+            opacity: 0.5;
+            pointer-events: none;
+        }
+
+        .coming-soon-ribbon {
+            color: var(--gold);
+            font-weight: 700;
+            letter-spacing: 4px;
+            margin-bottom: 1rem;
+            display: block;
+            text-transform: uppercase;
+        }
+
+        .hero h1 {
+            font-size: clamp(3rem, 6vw, 5rem);
+            margin-bottom: 1.5rem;
+            line-height: 1.1;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        .hero h1 span {
+            color: var(--red);
+        }
+
+        .urgency-text {
+            font-size: 1.25rem;
+            max-width: 800px;
+            margin: 0 auto 3rem;
+            font-weight: 400;
+        }
+
+        .urgency-highlight {
+            font-weight: 700;
+            color: var(--gold);
+            border-bottom: 2px solid var(--gold);
+        }
+
+        /* Form Section */
+        .signup-container {
+            background-color: var(--white);
+            border: 4px solid var(--navy);
+            border-radius: 8px;
+            padding: 3rem;
+            max-width: 700px;
+            margin: -4rem auto 4rem;
+            position: relative;
+            z-index: 10;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+        }
+
+        .signup-container h2 {
+            font-size: 2rem;
+            color: var(--navy);
+            margin-bottom: 1rem;
+            text-align: center;
+        }
+
+        .signup-offer {
+            text-align: center;
+            margin-bottom: 2rem;
+            color: var(--gray-dark);
+            font-size: 1.1rem;
+        }
+
+        .signup-offer strong {
+            color: var(--red);
+        }
+
+        .form-group {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .form-group input {
+            flex: 1;
+            padding: 1rem;
+            font-size: 1rem;
+            border: 2px solid var(--gray);
+            border-radius: 4px;
+            font-family: inherit;
+            min-width: 250px;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: var(--navy);
+        }
+
+        .submit-btn {
+            background-color: var(--red);
+            color: var(--white);
+            border: none;
+            padding: 1rem 2rem;
+            font-size: 1.1rem;
+            font-weight: 700;
+            font-family: 'Oswald', sans-serif;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            cursor: pointer;
+            border-radius: 4px;
+            transition: background-color 0.3s ease;
+        }
+
+        .submit-btn:hover {
+            background-color: var(--red-bright);
+        }
+
+        .form-message {
+            text-align: center;
+            margin-top: 1rem;
+            font-weight: 600;
+            display: none;
+        }
+
+        .success {
+            color: #2e7d32;
+            display: block;
+        }
+
+        .error {
+            color: var(--red);
+            display: block;
+        }
+
+        /* Mockup Grid */
+        .mockups-section {
+            padding: 4rem 5%;
+            text-align: center;
+        }
+
+        .mockups-section h2 {
+            font-size: 2.5rem;
+            color: var(--navy);
+            margin-bottom: 3rem;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .mockup-card {
+            background: var(--white);
+            border: 1px solid var(--gray);
+            border-radius: 8px;
+            padding: 2rem;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .mockup-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.05);
+        }
+
+        .placeholder-image {
+            width: 100%;
+            aspect-ratio: 1;
+            background-color: var(--off-white);
+            border: 2px dashed var(--gray);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 1.5rem;
+            color: var(--gray-dark);
+            font-weight: 600;
+            font-size: 1.2rem;
+        }
+
+        .mockup-card h3 {
+            font-size: 1.5rem;
+            color: var(--navy);
+            margin-bottom: 0.5rem;
+        }
+
+        /* Footer */
+        footer {
+            background-color: var(--navy-dark);
+            color: var(--white);
+            text-align: center;
+            padding: 3rem 5%;
+            margin-top: 4rem;
+        }
+
+        .footer-logo {
+            filter: brightness(0) invert(1);
+            height: 95px;
+            margin-bottom: 1rem;
+        }
+
+        @media (max-width: 768px) {
+            .hero {
+                padding: 4rem 5% 6rem;
+            }
+
+            .signup-container {
+                margin: -3rem 5% 3rem;
+                padding: 2rem;
+            }
+
+            .form-group {
+                flex-direction: column;
+            }
+
+            .submit-btn {
+                width: 100%;
+            }
+
+            header {
+                flex-direction: column;
+                gap: 1rem;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <header>
+        <div class="logo-container">
+            <img src="nc_assets/img/logo.svg" alt="250PROUD™ Official Logo">
+        </div>
+        <div class="header-badge">
+            <span class="badge">OFFICIAL AMERICANA GEAR</span>
+        </div>
+    </header>
+
+    <section class="hero">
+        <span class="coming-soon-ribbon">Site Launching Soon</span>
+        <h1>THE OFFICIAL <span>250TH</span> ANNIVERSARY COLLECTION</h1>
+        <p class="urgency-text">Be the first to secure unique, premium America 250 clothing and merchandise. <br><span
+                class="urgency-highlight">Guaranteed delivery before July 4th</span> for early subscribers.</p>
+    </section>
+
+    <div class="signup-container">
+        <h2>JOIN THE WAITLIST</h2>
+        <p class="signup-offer">Sign up to be notified the moment the site launches and receive an <strong>exclusive
+                discount + special gift</strong> with your first order.</p>
+
+        <form id="notify-form">
+            <div class="form-group">
+                <input type="email" id="emailInput" placeholder="Enter your email address" required
+                    aria-label="Email address">
+                <button type="submit" class="submit-btn" id="submitBtn">Get Early Access</button>
+            </div>
+            <div id="formMessage" class="form-message"></div>
+        </form>
+    </div>
+
+    <section class="mockups-section">
+        <h2>SNEAK PEEK: PREMIUM QUALITY MERCH</h2>
+        <div class="grid">
+            <!-- Mockup 1 -->
+            <div class="mockup-card">
+                <div class="placeholder-image">
+                    [ Add T-Shirt Mockup Here ]
+                    <!-- <img src="nc_assets/img/mockup1.jpg" alt="250Proud T-Shirt" style="width: 100%; height: 100%; object-fit: cover;"> -->
+                </div>
+                <h3>Classic Heritage Tee</h3>
+                <p>Heavyweight cotton with our premium crest.</p>
+            </div>
+
+            <!-- Mockup 2 -->
+            <div class="mockup-card">
+                <div class="placeholder-image">
+                    [ Add Hoodie Mockup Here ]
+                    <!-- <img src="nc_assets/img/mockup2.jpg" alt="250Proud Hoodie" style="width: 100%; height: 100%; object-fit: cover;"> -->
+                </div>
+                <h3>1776 Premium Hoodie</h3>
+                <p>Ultra-soft fleece, embroidered logo details.</p>
+            </div>
+
+            <!-- Mockup 3 -->
+            <div class="mockup-card">
+                <div class="placeholder-image">
+                    [ Add Hat/Accessories Mockup Here ]
+                    <!-- <img src="nc_assets/img/mockup3.jpg" alt="250Proud Hat" style="width: 100%; height: 100%; object-fit: cover;"> -->
+                </div>
+                <h3>Official Snapback</h3>
+                <p>Structured crown, contemporary patch design.</p>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <img src="nc_assets/img/logo.svg" alt="250PROUD™ White Logo" class="footer-logo">
+        <p>&copy; 2026 250PROUD™. All rights reserved. Celebrating USA 1776 - 2026.</p>
+        <div style="margin-top: 1rem; font-size: 0.9rem;">
+            <a href="terms.html" style="color: var(--white); text-decoration: none; margin: 0 10px;">Terms of
+                Service</a> |
+            <a href="privacy.html" style="color: var(--white); text-decoration: none; margin: 0 10px;">Privacy
+                Policy</a>
+        </div>
+    </footer>
+
+    <!-- Supabase Integration Script -->
+    <script>
+        // --- ⚙️ INSTRUCTIONS ⚙️ ---
+        // Replace these two vaues with your actual Supabase URL and Anon Key.
+        // See the instructions artifact provided earlier for how to find these.
+        const supabaseUrl = 'https://iohdigyivypgyphcliuo.supabase.co';
+        const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlvaGRpZ3lpdnlwZ3lwaGNsaXVvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzI5MDM2NDgsImV4cCI6MjA4ODQ3OTY0OH0.20zL5ZSvfb143I5sk1lGhPtXzTdn8M0mGWS20O1PJWc';
+        // --------------------------
+
+        let supabaseClient = null;
+        try {
+            // Initialize Supabase only if keys seem somewhat valid (not the placeholder)
+            if (!supabaseUrl.includes('YOUR_SUPABASE')) {
+                supabaseClient = window.supabase.createClient(supabaseUrl, supabaseKey);
+            }
+        } catch (e) {
+            console.error("Supabase failed to initialize:", e);
+        }
+
+        document.getElementById('notify-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const emailInput = document.getElementById('emailInput');
+            const submitBtn = document.getElementById('submitBtn');
+            const messageDiv = document.getElementById('formMessage');
+
+            const email = emailInput.value.trim();
+
+            // UI Loading state
+            submitBtn.textContent = 'Submitting...';
+            submitBtn.disabled = true;
+            messageDiv.className = 'form-message';
+            messageDiv.textContent = '';
+
+            // Check if Supabase is actually configured
+            if (!supabaseClient) {
+                messageDiv.className = 'form-message error';
+                messageDiv.textContent = 'Configuration required! Please add your Supabase keys to index.html.';
+                submitBtn.textContent = 'Get Early Access';
+                submitBtn.disabled = false;
+                return;
+            }
+
+            try {
+                // Insert data into early_access_signups table
+                const { data, error } = await supabaseClient
+                    .from('early_access_signups')
+                    .insert([{ email: email }]);
+
+                if (error) {
+                    if (error.code === '23505') { // Unique violation
+                        messageDiv.className = 'form-message success';
+                        messageDiv.textContent = 'You are already on the waitlist!';
+                    } else {
+                        throw error;
+                    }
+                } else {
+                    emailInput.value = ''; // clear form
+                    // Redirect to the newly created Thank You page
+                    window.location.href = 'thank-you.html';
+                }
+            } catch (err) {
+                console.error('Supabase error:', err);
+                messageDiv.className = 'form-message error';
+                messageDiv.textContent = 'Oops! Something went wrong. Please try again later.';
+            } finally {
+                // Restore button state
+                submitBtn.textContent = 'Get Early Access';
+                submitBtn.disabled = false;
+            }
+        });
+    </script>
+</body>
+
+</html>

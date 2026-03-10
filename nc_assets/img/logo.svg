@@ -17,6 +17,7 @@
 
   <!-- 250PROUD - tightened up spacing -->
   <text x="500" y="520" fill="#0A3161" font-family="'Helvetica Neue', 'Arial Black', sans-serif" font-weight="900" font-size="110" text-anchor="middle" letter-spacing="-2">250<tspan fill="#B31942" letter-spacing="1">PROUD</tspan></text>
+  <text x="815" y="445" fill="#000000" font-family="'Helvetica Neue', 'Arial Black', sans-serif" font-weight="900" font-size="35">™</text>
 
   <!-- USA - 1776 - 2026 -->
   <text x="500" y="600" fill="#0A3161" font-family="'Helvetica Neue', 'Arial', sans-serif" font-weight="bold" font-size="36" text-anchor="middle" letter-spacing="12">USA • 1776 - 2026</text>

@@ -456,7 +456,7 @@
             try {
                 // Insert data into early_access_signups table
                 const { data, error } = await supabaseClient
-                    .from('early_access_signups')
+                    .from('Early Access Signups')
                     .insert([{ email: email }]);
 
                 if (error) {

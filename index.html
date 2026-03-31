@@ -360,6 +360,17 @@
                 gap: 1rem;
             }
         }
+
+        /* Anti-Bot Honeypot Styling */
+        .oh-no-bots {
+            opacity: 0;
+            position: absolute;
+            top: 0;
+            left: 0;
+            height: 0;
+            width: 0;
+            z-index: -1;
+        }
     </style>
 </head>
 
@@ -390,6 +401,12 @@
         </div>
 
         <form id="notify-form" style="display: flex; flex-direction: column; gap: 1rem;">
+            <!-- Honeypot Bot Trap -->
+            <label class="oh-no-bots" aria-hidden="true" tabindex="-1">
+                Leave this empty:
+                <input type="text" name="website_url" id="website_url_honeypot" tabindex="-1" autocomplete="off">
+            </label>
+
             <div style="display: flex; gap: 1rem;">
                 <input type="text" id="firstNameInput" placeholder="First Name" required aria-label="First Name" style="flex:1; padding: 1rem; border: 2px solid var(--gray); border-radius: 4px; font-family: inherit;">
                 <input type="text" id="lastNameInput" placeholder="Last Name" required aria-label="Last Name" style="flex:1; padding: 1rem; border: 2px solid var(--gray); border-radius: 4px; font-family: inherit;">
@@ -480,6 +497,17 @@
 
         document.getElementById('notify-form').addEventListener('submit', async (e) => {
             e.preventDefault();
+
+            // Honeypot check: If the hidden internet-bot trap is filled, ignore the submission entirely.
+            const honeypot = document.getElementById('website_url_honeypot').value;
+            if (honeypot) {
+                console.warn('Bot detected by honeypot.');
+                const messageDiv = document.getElementById('formMessage');
+                messageDiv.className = 'form-message success';
+                messageDiv.textContent = 'You are firmly on the registry! Your sticker is actively processing.';
+                document.getElementById('notify-form').reset();
+                return;
+            }
 
             const fName = document.getElementById('firstNameInput').value.trim();
             const lName = document.getElementById('lastNameInput').value.trim();

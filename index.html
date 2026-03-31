@@ -523,16 +523,19 @@
                     if (error.code === '23505') { 
                         messageDiv.className = 'form-message success';
                         messageDiv.textContent = 'You are already on the registry! Your sticker is actively processing.';
+                    } else if (error.message && error.message.includes('fetch')) {
+                        throw new Error('Network error or database is waking up. Please try again in a minute.');
                     } else {
-                        throw error;
+                        console.error('Supabase insert error details:', error);
+                        throw new Error(`Database error: ${error.message || 'Please ensure your database table columns match the form fields.'}`);
                     }
                 } else {
                     window.location.href = 'thank-you.html';
                 }
             } catch (err) {
-                console.error('Supabase error:', err);
+                console.error('Supabase catch block:', err);
                 messageDiv.className = 'form-message error';
-                messageDiv.textContent = 'Oops! We hit a snag. Please ensure your database table columns match the form fields.';
+                messageDiv.textContent = err.message || 'Oops! We hit a snag. Please ensure your database table columns match the form fields.';
             } finally {
                 submitBtn.textContent = 'Send My Free Sticker';
                 submitBtn.disabled = false;

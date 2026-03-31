@@ -57,13 +57,14 @@
         .logo {
             height: 120px;
             margin-bottom: 2rem;
+            margin-top: 2rem;
         }
 
         .btn {
             background-color: #B31942;
             color: #FFFFFF;
             text-decoration: none;
-            padding: 1rem 2rem;
+            padding: 1.2rem 2.5rem;
             font-family: 'Oswald', sans-serif;
             font-size: 1.1rem;
             font-weight: 700;
@@ -71,10 +72,60 @@
             text-transform: uppercase;
             border-radius: 4px;
             transition: background-color 0.3s;
+            display: inline-block;
+            margin-bottom: 4rem;
         }
 
         .btn:hover {
             background-color: #D31A47;
+        }
+
+        /* Letter Container */
+        .story-card {
+            background-color: var(--white);
+            border: 3px solid var(--navy);
+            border-radius: 8px;
+            padding: 3rem 4rem;
+            max-width: 800px;
+            width: 90%;
+            margin: 2rem auto 3rem;
+            text-align: left;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.05);
+        }
+
+        .story-card h2 {
+            font-family: 'Oswald', sans-serif;
+            color: var(--navy);
+            font-size: 2.2rem;
+            margin-bottom: 1.5rem;
+            text-transform: uppercase;
+            line-height: 1.2;
+        }
+
+        .story-card p {
+            font-size: 1.15rem;
+            line-height: 1.8;
+            margin-bottom: 1.8rem;
+            color: var(--gray-dark);
+            max-width: none;
+        }
+
+        .story-card p:last-child {
+            margin-bottom: 0;
+        }
+
+        .story-card p strong {
+            color: var(--navy-dark);
+            font-weight: 700;
+        }
+
+        @media (max-width: 768px) {
+            .story-card {
+                padding: 2rem;
+            }
+            .story-card h2 {
+                font-size: 1.8rem;
+            }
         }
     </style>
 </head>
@@ -84,8 +135,17 @@
     <img src="nc_assets/img/logo.svg" alt="250PROUD™ Logo" class="logo">
 
     <h1>Welcome to the VIP List</h1>
-    <p>Your email has been securely recorded. You are now in line for early access and the exclusive launch discount
-        when the 250PROUD™ collection goes live.</p>
+    <p style="text-align: center; margin: 0 auto;">Your email has been securely recorded. You are now in line for early access and the exclusive launch discount when the 250PROUD™ collection goes live.</p>
+
+    <div class="story-card">
+        <h2>250Proud isn't a merch site. It's a statement.</h2>
+        
+        <p>We're Mike and Laurie Price — married 43 years, we're proud Americans, and convinced that the 250th anniversary of this country deserves better than a novelty tee from a big-box store. We built 250PROUD to celebrate what makes America worth celebrating: grit, freedom, and pride that doesn't need anyone's approval. Our designs are all original and most of them carry the mark <strong>250PROUD · 1776–2026</strong> because this moment in history only comes once, and we're not letting it pass without honoring it.</p>
+        
+        <p>You'll also get a real response when you reach out. Not a bot, not a ticket system. A member of our team will get back to you directly. That's a promise.</p>
+        
+        <p><strong>A quick note on where our products are made:</strong> We'll be straight with you, not everything in our collection is manufactured in the U.S. We wish that were different and we're working toward it. What we can tell you is that every order supports American-owned businesses across our design, print, and fulfillment chain, and it keeps our prices in reach for the people this brand is actually built for. We're proud of what we're building and we'll keep earning your trust one product at a time.</p>
+    </div>
 
     <a href="index.html" class="btn">Return to Homepage</a>
 

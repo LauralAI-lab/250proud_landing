@@ -1,0 +1,13 @@
+{
+  "name": "250proud-landing",
+  "version": "1.0.0",
+  "description": "Serverless backend for the 250PROUD Landing Page Vercel API routes.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "dependencies": {
+    "@mailchimp/mailchimp_marketing": "^3.0.80",
+    "@supabase/supabase-js": "^2.39.0"
+  }
+}

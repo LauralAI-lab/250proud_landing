@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html>
+<head>
+<style>
+  body { margin: 0; padding: 0; }
+  img { cursor: crosshair; }
+</style>
+</head>
+<body>
+  <p id="output">Click the top left and bottom right of the text RED TAIL on the plane.</p>
+  <img src="illustrations/page_14.png" id="image">
+  <script>
+    let clicks = [];
+    document.getElementById('image').addEventListener('click', function(e) {
+      clicks.push([e.offsetX, e.offsetY]);
+      if (clicks.length === 2) {
+        document.getElementById('output').innerText = "BOUNDING BOX: TopLeft(" + clicks[0][0] + ", " + clicks[0][1] + ") BottomRight(" + clicks[1][0] + ", " + clicks[1][1] + ")";
+      } else {
+        document.getElementById('output').innerText = "Click 2: Bottom right";
+      }
+    });
+  </script>
+</body>
+</html>

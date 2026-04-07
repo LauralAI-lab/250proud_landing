@@ -361,6 +361,7 @@
         }
 
         /* Anti-Bot Honeypot Styling */
+        /* Anti-Bot Honeypot Styling */
         .oh-no-bots {
             opacity: 0;
             position: absolute;
@@ -369,6 +370,187 @@
             height: 0;
             width: 0;
             z-index: -1;
+        }
+
+        /* NEW CTA STYLES */
+        .video-hero {
+            width: 100%;
+            max-width: 900px;
+            margin: 0 auto 2rem auto;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .video-hero video {
+            width: 100%;
+            display: block;
+        }
+
+        .cta-main {
+            text-align: center;
+            padding: 2rem 1.5rem;
+            max-width: 700px;
+            margin: 0 auto;
+        }
+
+        .eyebrow {
+            font-size: 0.75rem;
+            letter-spacing: 0.15em;
+            color: var(--gold);
+            text-transform: uppercase;
+            margin-bottom: 0.5rem;
+        }
+
+        .cta-main h2 {
+            font-size: 2.2rem;
+            color: var(--navy-dark);
+            margin-bottom: 1rem;
+            line-height: 1.2;
+        }
+
+        .cta-main h2 em {
+            color: var(--gold);
+            font-style: normal;
+        }
+
+        .subhead {
+            font-size: 1.1rem;
+            color: var(--navy);
+            opacity: 0.85;
+            margin-bottom: 2rem;
+            line-height: 1.6;
+        }
+
+        .offer-stack {
+            text-align: left;
+            background: rgba(10,49,97,0.05);
+            border: 1px solid rgba(201,168,76,0.3);
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .offer-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 0.75rem;
+            margin-bottom: 1rem;
+            color: var(--navy-dark);
+            font-size: 0.95rem;
+            line-height: 1.5;
+        }
+
+        .offer-item:last-child {
+            margin-bottom: 0;
+        }
+
+        .checkmark {
+            color: var(--gold);
+            font-size: 1rem;
+            flex-shrink: 0;
+            margin-top: 2px;
+        }
+
+        .sticker-preview {
+            width: 180px;
+            margin: 1.5rem auto;
+            display: block;
+        }
+
+        .signup-form {
+            max-width: 560px;
+            margin: 0 auto;
+            padding: 2rem 1.5rem;
+            text-align: center;
+        }
+
+        .signup-form h3 {
+            color: var(--gold);
+            font-size: 1.6rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .signup-form p {
+            color: var(--navy);
+            opacity: 0.85;
+            margin-bottom: 1.5rem;
+            font-size: 0.95rem;
+        }
+
+        .signup-form input[type="text"],
+        .signup-form input[type="email"],
+        .signup-form input[type="tel"] {
+            width: 100%;
+            padding: 0.85rem 1rem;
+            margin-bottom: 0.75rem;
+            background: rgba(255,255,255,0.8);
+            border: 1px solid rgba(201,168,76,0.4);
+            border-radius: 4px;
+            color: var(--navy-dark);
+            font-size: 1rem;
+            box-sizing: border-box;
+        }
+
+        .signup-form input::placeholder {
+            color: rgba(10,49,97,0.4);
+        }
+
+        .address-block,
+        .comm-prefs {
+            text-align: left;
+            margin-bottom: 1rem;
+        }
+
+        .field-label {
+            font-size: 0.8rem;
+            color: var(--gold);
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            margin-bottom: 0.5rem;
+        }
+
+        .comm-prefs label {
+            display: block;
+            color: var(--navy-dark);
+            font-size: 0.9rem;
+            margin-bottom: 0.4rem;
+            cursor: pointer;
+        }
+
+        .cta-button {
+            width: 100%;
+            padding: 1.1rem;
+            background: var(--red);
+            color: var(--white);
+            font-size: 1.1rem;
+            font-weight: 700;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+            margin-top: 1rem;
+            transition: background 0.2s ease;
+        }
+
+        .cta-button:hover {
+            background: var(--red-bright);
+        }
+
+        .compliance-copy {
+            font-size: 0.72rem;
+            color: rgba(10,49,97,0.45);
+            margin-top: 1.5rem;
+            line-height: 1.5;
+            text-align: left;
+        }
+
+        .compliance-copy a {
+            color: var(--gold);
+        }
+
+        #phone-field {
+            transition: all 0.2s ease;
         }
     </style>
 </head>
@@ -390,51 +572,112 @@
         <p class="urgency-text">Limited edition 250PROUD™ merchandise drops soon. VIP list members get a free gift, first access, access to free merch promotions and exclusive pricing.</p>
     </section>
 
-    <div class="signup-container">
-        <h2>JOIN THE REGIMENT & CLAIM YOUR FREE STICKER</h2>
-        <p class="signup-offer"><strong>Free 250Proud Sticker</strong> and access to <strong>special promotions</strong> when you join for early access.</p>
+    <!-- NEW CTA SECTION — Replace existing sticker CTA block -->
 
-        <!-- New Visual Injection point for the Sticker Marketing Asset -->
-        <div style="text-align: center; margin-bottom: 2rem;">
-            <img src="nc_assets/img/free_eagle_sticker_asset.png" alt="Free 250PROUD Sticker Mockup" style="max-width: 100%; height: auto; border-radius: 8px; box-shadow: 0 10px 20px rgba(0,0,0,0.1);">
+    <!-- VIDEO EMBED BLOCK -->
+    <section class="video-hero">
+      <!-- Embed the 30-second horizontal video here as autoplay, muted, loop for desktop -->
+      <!-- On mobile, display the 9:16 vertical version -->
+      <!-- Video should autoplay muted with sound-on toggle -->
+      <!-- Poster frame: book cover illustration on warm oak table -->
+    </section>
+
+    <!-- HEADLINE BLOCK -->
+    <section class="cta-main">
+      
+      <p class="eyebrow">FREE DOWNLOAD — LIMITED TIME</p>
+      
+      <h2>Get Your Free Copy of<br><em>250 Strong, Built By Hand</em></h2>
+      
+      <p class="subhead">
+        A 24-page illustrated coloring book packed with the real stories behind 
+        America's 250 years. Fun for all ages. Yours free — just join the Regiment.
+      </p>
+
+      <!-- OFFER BLOCK -->
+      <div class="offer-stack">
+        
+        <div class="offer-item">
+          <span class="checkmark">★</span>
+          <span><strong>FREE Digital Download</strong> — The full 24-page coloring book, 
+          delivered instantly to your inbox</span>
+        </div>
+        
+        <div class="offer-item">
+          <span class="checkmark">★</span>
+          <span><strong>FREE 250Proud Sticker</strong> — Mailed directly to you, 
+          just for signing up</span>
+        </div>
+        
+        <div class="offer-item">
+          <span class="checkmark">★</span>
+          <span><strong>VIP Early Access</strong> — First look at limited drops, 
+          exclusive pricing, and founding member perks</span>
         </div>
 
-        <form id="notify-form" style="display: flex; flex-direction: column; gap: 1rem;">
-            <!-- Honeypot Bot Trap -->
-            <label class="oh-no-bots" aria-hidden="true" tabindex="-1">
-                Leave this empty:
-                <input type="text" name="website_url" id="website_url_honeypot" tabindex="-1" autocomplete="off">
-            </label>
+      </div>
 
-            <div style="display: flex; gap: 1rem;">
-                <input type="text" id="firstNameInput" placeholder="First Name" required aria-label="First Name" style="flex:1; padding: 1rem; border: 2px solid var(--gray); border-radius: 4px; font-family: inherit;">
-                <input type="text" id="lastNameInput" placeholder="Last Name" required aria-label="Last Name" style="flex:1; padding: 1rem; border: 2px solid var(--gray); border-radius: 4px; font-family: inherit;">
-            </div>
-            
-            <input type="text" id="addressInput" placeholder="Full Mailing Address (Street, City, Zip)" required aria-label="Mailing Address" style="padding: 1rem; border: 2px solid var(--gray); border-radius: 4px; font-family: inherit;">
-            
-            <div style="display: flex; gap: 1rem;">
-                <input type="email" id="emailInput" placeholder="Email Address" required aria-label="Email address" style="flex:1; padding: 1rem; border: 2px solid var(--gray); border-radius: 4px; font-family: inherit;">
-                <input type="tel" id="phoneInput" placeholder="Mobile Phone Number" aria-label="Phone Number" style="flex:1; padding: 1rem; border: 2px solid var(--gray); border-radius: 4px; font-family: inherit;">
-            </div>
-            
-            <div style="margin-top: 1rem; text-align: left;">
-                <label style="font-weight: 600; font-size: 0.95rem; color: var(--navy-dark); margin-bottom: 0.5rem; display: block;">Select Communication Preferences:</label>
-                <div style="display: flex; gap: 1.5rem; margin-bottom: 1rem; font-size: 0.9rem;">
-                    <label><input type="radio" name="comm_pref" value="Email & SMS" checked> Email & SMS Alerts</label>
-                    <label><input type="radio" name="comm_pref" value="Email Only"> Email Only</label>
-                    <label><input type="radio" name="comm_pref" value="SMS Only"> SMS Only</label>
-                </div>
-            </div>
+      <!-- STICKER MOCKUP IMAGE -->
+      <img src="nc_assets/img/free_eagle_sticker_asset.png" 
+           alt="Free 250Proud Eagle Sticker" 
+           class="sticker-preview" />
 
-            <button type="submit" class="submit-btn" id="submitBtn">Send My Free Sticker</button>
-            <div id="formMessage" class="form-message"></div>
+    </section>
 
-            <p style="font-size: 0.70rem; color: #666; margin-top: 1rem; text-align: justify; line-height: 1.4;">
-                <strong>Compliance Action & Consent:</strong> By providing your phone number and/or email address, you agree to receive recurring automated promotional and personalized marketing text messages and emails (e.g. cart reminders, early drops) from Lauralai LLC at the cell number and email used when signing up. Consent is not a condition of any purchase. Reply HELP for help and STOP to cancel. Msg frequency varies. Msg & data rates may apply. View <a href="terms.html">Terms</a> & <a href="privacy.html">Privacy</a> for more details.
-            </p>
-        </form>
-    </div>
+    <!-- SIGNUP FORM BLOCK -->
+    <section class="signup-form">
+
+      <h3>Join the Regiment</h3>
+      <p>Enter your info below. We'll email your coloring book instantly 
+      and drop your sticker in the mail.</p>
+
+      <form id="regiment-signup">
+        
+        <input type="text" name="FNAME" placeholder="First Name" required />
+        <input type="email" name="EMAIL" placeholder="Email Address" required />
+        
+        <div class="address-block">
+          <p class="field-label">Mailing Address (for your free sticker)</p>
+          <input type="text" name="ADDRESS" placeholder="Street Address" required />
+          <input type="text" name="CITY" placeholder="City" required />
+          <input type="text" name="STATE" placeholder="State" required />
+          <input type="text" name="ZIP" placeholder="ZIP Code" required />
+        </div>
+
+        <div class="comm-prefs">
+          <p class="field-label">How would you like to hear from us?</p>
+          <label><input type="radio" name="COMM_PREF" value="email_sms" /> Email & SMS Alerts</label>
+          <label><input type="radio" name="COMM_PREF" value="email" checked /> Email Only</label>
+          <label><input type="radio" name="COMM_PREF" value="sms" /> SMS Only</label>
+        </div>
+
+        <div class="phone-field" id="phone-field" style="display:none;">
+          <input type="tel" name="PHONE" placeholder="Mobile Number (SMS)" />
+        </div>
+
+        <!-- Honeypot spam field — keep hidden -->
+        <div style="position:absolute;left:-5000px;" aria-hidden="true">
+          <input type="text" name="b_honeypot" tabindex="-1" value="" />
+        </div>
+
+        <button type="submit" class="cta-button">
+          Send My Free Book & Sticker →
+        </button>
+
+      </form>
+
+      <!-- COMPLIANCE COPY -->
+      <p class="compliance-copy">
+        <strong>Compliance Action & Consent:</strong> By providing your phone number 
+        and/or email address, you agree to receive recurring automated promotional and 
+        personalized marketing text messages and emails (e.g. cart reminders, early drops) 
+        from LauralAI LLC at the cell number and email used when signing up. Consent is 
+        not a condition of any purchase. Reply HELP for help and STOP to cancel. 
+        Msg frequency varies. Msg & data rates may apply. 
+        View <a href="/terms.html">Terms</a> & <a href="/privacy.html">Privacy</a> for more details.
+      </p>
+
+    </section>
 
     <section class="mockups-section">
         <h2>SNEAK PEEK: PREMIUM QUALITY MERCH</h2>
@@ -480,91 +723,79 @@
         </div>
     </footer>
 
-    <!-- Supabase Integration Script -->
     <script>
-        const supabaseUrl = 'https://iohdigyivypgyphcliuo.supabase.co';
-        const supabaseKey = 'sb_publishable_2yWwwM9phBDd2Ab3rP5qAA_RgTE0NFK';
+        // Show/hide phone field based on SMS selection
+        document.querySelectorAll('input[name="COMM_PREF"]').forEach(radio => {
+            radio.addEventListener('change', function() {
+                const phoneField = document.getElementById('phone-field');
+                if (this.value === 'sms' || this.value === 'email_sms') {
+                    phoneField.style.display = 'block';
+                    document.querySelector('input[name="PHONE"]').required = true;
+                } else {
+                    phoneField.style.display = 'none';
+                    document.querySelector('input[name="PHONE"]').required = false;
+                }
+            });
+        });
 
-        let supabaseClient = null;
-        try {
-            if (!supabaseUrl.includes('YOUR_SUPABASE')) {
-                supabaseClient = window.supabase.createClient(supabaseUrl, supabaseKey);
-            }
-        } catch (e) {
-            console.error("Supabase failed to initialize:", e);
-        }
-
-        document.getElementById('notify-form').addEventListener('submit', async (e) => {
+        // Form submission — connect to Vercel API endpoint
+        document.getElementById('regiment-signup').addEventListener('submit', async function(e) {
             e.preventDefault();
 
-            // Honeypot check: If the hidden internet-bot trap is filled, ignore the submission entirely.
-            const honeypot = document.getElementById('website_url_honeypot').value;
+            // Honeypot check
+            const honeypot = document.querySelector('input[name="b_honeypot"]').value;
             if (honeypot) {
                 console.warn('Bot detected by honeypot.');
-                const messageDiv = document.getElementById('formMessage');
-                messageDiv.className = 'form-message success';
-                messageDiv.textContent = 'You are firmly on the registry! Your sticker is actively processing.';
-                document.getElementById('notify-form').reset();
+                document.getElementById('regiment-signup').innerHTML = `
+                    <div class="success-state">
+                        <h3>You're in the Regiment! 🇺🇸</h3>
+                        <p>Check your inbox — your free coloring book is on its way.<br>
+                        Your sticker will be mailed within 5–7 business days.</p>
+                    </div>
+                `;
                 return;
             }
-
-            const fName = document.getElementById('firstNameInput').value.trim();
-            const lName = document.getElementById('lastNameInput').value.trim();
-            const address = document.getElementById('addressInput').value.trim();
-            const email = document.getElementById('emailInput').value.trim();
-            const phone = document.getElementById('phoneInput').value.trim();
             
-            const commPref = document.querySelector('input[name="comm_pref"]:checked').value;
-
-            const submitBtn = document.getElementById('submitBtn');
-            const messageDiv = document.getElementById('formMessage');
+            const formData = new FormData(this);
+            const data = Object.fromEntries(formData);
+            const submitBtn = document.querySelector('.cta-button');
 
             submitBtn.textContent = 'Processing...';
             submitBtn.disabled = true;
-            messageDiv.className = 'form-message';
-            messageDiv.textContent = '';
-
-            if (!supabaseClient) {
-                messageDiv.className = 'form-message error';
-                messageDiv.textContent = 'Configuration required! Please add your Supabase keys.';
-                submitBtn.textContent = 'Send My Free Sticker';
-                submitBtn.disabled = false;
-                return;
-            }
-
+            
             try {
-                const payload = {
-                    email: email,
-                    first_name: fName,
-                    last_name: lName,
-                    address: address,
-                    phone: phone,
-                    communication_preference: commPref
-                };
+                const response = await fetch('/api/subscribe', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        first_name: data.FNAME,
+                        email: data.EMAIL,
+                        address: data.ADDRESS,
+                        city: data.CITY,
+                        state: data.STATE,
+                        zip: data.ZIP,
+                        phone: data.PHONE || null,
+                        comm_pref: data.COMM_PREF,
+                        source: '250proud_coloring_book_lead_magnet'
+                    })
+                });
 
-                const { data, error } = await supabaseClient
-                    .from('Early Access Signups')
-                    .insert([payload]);
-
-                if (error) {
-                    if (error.code === '23505') { 
-                        messageDiv.className = 'form-message success';
-                        messageDiv.textContent = 'You are already on the registry! Your sticker is actively processing.';
-                    } else if (error.message && error.message.includes('fetch')) {
-                        throw new Error('Network error or database is waking up. Please try again in a minute.');
-                    } else {
-                        console.error('Supabase insert error details:', error);
-                        throw new Error(`Database error: ${error.message || 'Please ensure your database table columns match the form fields.'}`);
-                    }
+                if (response.ok) {
+                    // SUCCESS STATE
+                    document.getElementById('regiment-signup').innerHTML = `
+                        <div class="success-state" style="padding: 2rem;">
+                            <h3 style="color: var(--gold); font-size: 1.6rem;">You're in the Regiment! 🇺🇸</h3>
+                            <p style="color: var(--navy); font-size: 1rem; margin-top: 1rem;">Check your inbox — your free coloring book is on its way.<br>
+                            Your sticker will be mailed within 5–7 business days.</p>
+                        </div>
+                    `;
                 } else {
-                    window.location.href = 'thank-you.html';
+                    throw new Error('Submission failed');
                 }
-            } catch (err) {
-                console.error('Supabase catch block:', err);
-                messageDiv.className = 'form-message error';
-                messageDiv.textContent = err.message || 'Oops! We hit a snag. Please ensure your database table columns match the form fields.';
-            } finally {
-                submitBtn.textContent = 'Send My Free Sticker';
+            } catch (error) {
+                console.error(error);
+                submitBtn.textContent = 'Something went wrong — please try again';
+                submitBtn.style.background = '#8B1A27';
                 submitBtn.disabled = false;
             }
         });

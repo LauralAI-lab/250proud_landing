@@ -1,0 +1,4 @@
+moviepy==1.0.3
+elevenlabs==0.2.27
+python-dotenv==1.0.1
+Pillow==10.2.0

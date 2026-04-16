@@ -950,11 +950,13 @@
                     if (response.ok) {
                         window.location.href = 'thank-you.html';
                     } else {
-                        throw new Error('Submission failed');
+                        const errPayload = await response.text();
+                        throw new Error(errPayload);
                     }
                 } catch (error) {
                     console.error(error);
-                    btn.innerHTML = 'Something went wrong. Click to try again.';
+                    const errorMsg = error.message.includes('html') ? '500 Server Error (Check logs)' : error.message;
+                    btn.innerHTML = 'ERROR: ' + errorMsg.substring(0, 45) + '...';
                     btn.style.background = 'var(--red)';
                     btn.style.opacity = '1';
                     btn.disabled = false;

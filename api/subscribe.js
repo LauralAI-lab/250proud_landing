@@ -1,10 +1,10 @@
 // /api/subscribe.js — Vercel serverless function
 // Handles Mailchimp subscription + Supabase logging
 
-import { createClient } from '@supabase/supabase-js';
+const { createClient } = require('@supabase/supabase-js');
 const mailchimp = require('@mailchimp/mailchimp_marketing');
 
-export default async function handler(req, res) {
+module.exports = async function handler(req, res) {
   try {
     if (req.method !== 'POST') {
       return res.status(405).json({ error: 'Method not allowed' });

@@ -832,7 +832,7 @@
                 <form id="preview-signup">
                     <div class="row">
                         <div class="input-group">
-                            <input type="text" name="FNAME" placeholder="First Name" required>
+                            <input type="text" name="FNAME" placeholder="First & Last Name" required>
                         </div>
                     </div>
                     <div class="input-group">
@@ -941,6 +941,7 @@
                             city: data.CITY,
                             state: data.STATE,
                             zip: data.ZIP,
+                            comm_pref: 'email',
                             source: '250proud_coloring_book_index_giveaway'
                         })
                     });
@@ -952,7 +953,7 @@
                     }
                 } catch (error) {
                     console.error(error);
-                    btn.innerHTML = 'Something went wrong. Try again.';
+                    btn.innerHTML = 'Something went wrong. Click to try again.';
                     btn.style.background = 'var(--red)';
                     btn.style.opacity = '1';
                     btn.disabled = false;

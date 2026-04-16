@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>250PROUD™ | Free Pre-Launch Gift</title>
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&family=Playfair+Display:ital,wght@0,700;1,600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --navy: #061A3A;
+            --navy-light: #122B53;
+            --gold: #C9A84C;
+            --gold-glow: rgba(201, 168, 76, 0.5);
+            --red: #C52233;
+            --white: #FFFFFF;
+            --text-muted: #A0B2C9;
+        }
+
+        body {
+            font-family: 'Outfit', sans-serif;
+            background-color: var(--navy);
+            color: var(--white);
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: radial-gradient(circle at 20% 30%, var(--navy-light) 0%, var(--navy) 100%);
+            overflow-x: hidden;
+        }
+
+        /* Glassmorphic Container */
+        .preview-wrapper {
+            max-width: 1200px;
+            width: 90%;
+            margin: 40px auto;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-radius: 24px;
+            box-shadow: 0 30px 60px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+            display: flex;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .left-col {
+            flex: 1.2;
+            padding: 60px;
+            position: relative;
+            background: linear-gradient(135deg, rgba(201,168,76,0.1) 0%, transparent 100%);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .right-col {
+            flex: 1;
+            padding: 60px;
+            background: rgba(0, 0, 0, 0.2);
+            border-left: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: 3.5rem;
+            line-height: 1.1;
+            margin-bottom: 20px;
+            background: linear-gradient(to right, var(--white), #E0E0E0);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        h1 span {
+            color: var(--gold);
+            -webkit-text-fill-color: var(--gold);
+        }
+
+        p.lead {
+            font-size: 1.25rem;
+            color: var(--text-muted);
+            margin-bottom: 40px;
+            line-height: 1.6;
+        }
+
+        .visual-stack {
+            position: relative;
+            height: 350px;
+            width: 100%;
+            margin-top: 20px;
+        }
+
+        .book-img {
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 250px;
+            border-radius: 12px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6);
+            transform: rotate(-5deg);
+            z-index: 2;
+            transition: transform 0.4s ease;
+        }
+
+        .sticker-img {
+            position: absolute;
+            left: 180px;
+            top: 120px;
+            width: 160px;
+            z-index: 3;
+            filter: drop-shadow(0 15px 25px rgba(0,0,0,0.5));
+            transform: rotate(10deg);
+            transition: transform 0.4s ease;
+            animation: float 6s ease-in-out infinite;
+        }
+
+        .visual-stack:hover .book-img { transform: rotate(-2deg) scale(1.05); }
+        .visual-stack:hover .sticker-img { transform: rotate(15deg) scale(1.1); }
+
+        @keyframes float {
+            0% { transform: translateY(0px) rotate(10deg); }
+            50% { transform: translateY(-15px) rotate(12deg); }
+            100% { transform: translateY(0px) rotate(10deg); }
+        }
+
+        /* Form Elements */
+        .form-title {
+            font-size: 1.8rem;
+            margin-bottom: 30px;
+            font-weight: 600;
+        }
+
+        .input-group {
+            margin-bottom: 20px;
+            position: relative;
+        }
+
+        .input-group input {
+            width: 100%;
+            padding: 16px 20px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            color: var(--white);
+            font-family: 'Outfit', sans-serif;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            box-sizing: border-box;
+        }
+
+        .input-group input:focus {
+            outline: none;
+            border-color: var(--gold);
+            background: rgba(255, 255, 255, 0.08);
+            box-shadow: 0 0 0 4px rgba(201, 168, 76, 0.1);
+        }
+
+        .input-group input::placeholder {
+            color: rgba(255, 255, 255, 0.4);
+        }
+
+        .row {
+            display: flex;
+            gap: 15px;
+        }
+        .row .input-group { flex: 1; }
+
+        .submit-btn {
+            width: 100%;
+            padding: 18px;
+            background: linear-gradient(135deg, var(--red) 0%, #901625 100%);
+            border: none;
+            border-radius: 12px;
+            color: var(--white);
+            font-family: 'Outfit', sans-serif;
+            font-size: 1.1rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            cursor: pointer;
+            box-shadow: 0 10px 20px rgba(197, 34, 51, 0.3);
+            transition: transform 0.2s, box-shadow 0.2s;
+            margin-top: 10px;
+        }
+
+        .submit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 15px 25px rgba(197, 34, 51, 0.5);
+        }
+
+        .disclaimer {
+            font-size: 0.75rem;
+            color: rgba(255, 255, 255, 0.3);
+            margin-top: 20px;
+            text-align: center;
+        }
+
+        .logo-top {
+            width: 120px;
+            margin-bottom: 40px;
+        }
+
+        /* Mobile */
+        @media (max-width: 900px) {
+            .preview-wrapper { flex-direction: column; margin: 20px auto; }
+            .left-col, .right-col { padding: 40px 30px; }
+            h1 { font-size: 2.5rem; }
+            .visual-stack { height: 280px; margin-bottom: 20px; }
+            .book-img { width: 180px; }
+            .sticker-img { width: 120px; left: 130px; top: 90px; }
+            .row { flex-direction: column; gap: 0; }
+        }
+
+        /* Particles effect background */
+        .particles {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            pointer-events: none;
+            z-index: 0;
+            background-image: 
+                radial-gradient(circle at 15% 50%, rgba(201, 168, 76, 0.05) 0%, transparent 50%),
+                radial-gradient(circle at 85% 30%, rgba(197, 34, 51, 0.05) 0%, transparent 50%);
+        }
+    </style>
+</head>
+<body>
+
+    <div class="particles"></div>
+
+    <div class="preview-wrapper">
+        <div class="left-col">
+            <img src="nc_assets/img/logo.svg" alt="250Proud" class="logo-top" onerror="this.style.display='none'">
+            <h1>Claim Your <span>Free Gift</span> Bundle Today</h1>
+            <p class="lead">Sign up for the early-access preview of 250PROUD™ and we'll instantly send you our 24-page Digital Coloring Book and mail you our exclusive heritage Eagle Sticker.</p>
+            
+            <div class="visual-stack">
+                <img src="epic_cover_final.png" alt="Coloring Book" class="book-img" onerror="this.style.display='none'">
+                <img src="nc_assets/img/free_eagle_sticker_asset.png" alt="Eagle Sticker" class="sticker-img" onerror="this.style.display='none'">
+            </div>
+        </div>
+
+        <div class="right-col">
+            <div class="form-title">Join the Regiment</div>
+            <form id="preview-signup">
+                <div class="row">
+                    <div class="input-group">
+                        <input type="text" name="FNAME" placeholder="First Name" required>
+                    </div>
+                </div>
+                <div class="input-group">
+                    <input type="email" name="EMAIL" placeholder="Email Address" required>
+                </div>
+                
+                <p style="font-size: 0.85rem; color: var(--gold); margin: 20px 0 10px; text-transform: uppercase; letter-spacing: 1px;">Where should we ship your sticker?</p>
+                
+                <div class="input-group">
+                    <input type="text" name="ADDRESS" placeholder="Street Address" required>
+                </div>
+                <div class="row">
+                    <div class="input-group">
+                        <input type="text" name="CITY" placeholder="City" required>
+                    </div>
+                    <div class="input-group">
+                        <input type="text" name="STATE" placeholder="State" required>
+                    </div>
+                    <div class="input-group">
+                        <input type="text" name="ZIP" placeholder="ZIP" required>
+                    </div>
+                </div>
+
+                 <!-- Honeypot -->
+                 <input type="text" name="b_honeypot" style="display:none;" tabindex="-1">
+
+                <button type="submit" class="submit-btn" id="submit-btn">Unlock Free Gifts</button>
+
+                <p class="disclaimer">By claiming your gifts, you agree to receive recurring updates from LauralAI LLC. No purchase necessary. View Terms & Privacy for more details.</p>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('preview-signup').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const honeypot = document.querySelector('input[name="b_honeypot"]').value;
+            if (honeypot) return;
+
+            const btn = document.getElementById('submit-btn');
+            btn.innerHTML = 'Securing Your Gifts...';
+            btn.style.opacity = '0.7';
+            btn.disabled = true;
+
+            const formData = new FormData(this);
+            const data = Object.fromEntries(formData);
+
+            try {
+                // Point this strictly to our backend subscribe endpoint
+                const response = await fetch('/api/subscribe', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        first_name: data.FNAME,
+                        email: data.EMAIL,
+                        address: data.ADDRESS,
+                        city: data.CITY,
+                        state: data.STATE,
+                        zip: data.ZIP,
+                        source: '250proud_coloring_book_preview_landing'
+                    })
+                });
+
+                if (response.ok) {
+                    document.querySelector('.right-col').innerHTML = \`
+                        <div style="text-align: center; padding: 40px 0;">
+                            <svg width="80" height="80" viewBox="0 0 24 24" fill="none" stroke="var(--gold)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-bottom: 20px;">
+                                <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                                <polyline points="22 4 12 14.01 9 11.01"></polyline>
+                            </svg>
+                            <h2 style="font-family: 'Playfair Display', serif; font-size: 2.5rem; margin-bottom: 15px;">You're Official!</h2>
+                            <p style="color: var(--text-muted); font-size: 1.1rem; line-height: 1.6;">Check your inbox. Your coloring book is waiting.<br>Your sticker will hit the mail shortly.</p>
+                        </div>
+                    \`;
+                } else {
+                    throw new Error('Submission failed');
+                }
+            } catch (error) {
+                console.error(error);
+                btn.innerHTML = 'Something went wrong. Try again.';
+                btn.style.background = 'var(--red)';
+                btn.style.opacity = '1';
+                btn.disabled = false;
+            }
+        });
+    </script>
+</body>
+</html>

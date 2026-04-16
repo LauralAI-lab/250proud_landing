@@ -80,10 +80,10 @@ PAGES = [
         "little_known": "After the war, most women were pushed out of those jobs when the men returned — but the workforce was never quite the same again."
     },
     {
-        "era": "1945–1970 · Postwar America",
-        "headline": "The Interstate Highway System Was Built for War — and Changed Everything Else",
-        "fact": "President Eisenhower signed the Federal Aid Highway Act in 1956, creating 41,000 miles of controlled-access highway. Eisenhower was partly inspired by the German Autobahn and by the military's difficulty moving equipment across the U.S. during the war. The highways transformed how Americans lived, worked, shopped, and vacationed — and made the American road trip possible.",
-        "little_known": "By law, one mile in every five on the interstate system must be straight — so it can be used as an airstrip in a national emergency."
+        "era": "1926–1985 · The American Road Trip",
+        "headline": "Route 66 Became the Main Street of America",
+        "fact": "Established in 1926, Route 66 was one of the original paths in the U.S. Highway System, running 2,448 miles from Chicago, Illinois to Santa Monica, California. Author John Steinbeck famously called it the 'Mother Road' because it became the primary route for hundreds of thousands of families migrating west during the 1930s Dust Bowl. It eventually transformed the American landscape, giving rise to the modern motel, roadside diners, and iconic neon signs.",
+        "little_known": "You can't find Route 66 on a modern highway map. It was officially removed from the U.S. Highway System in 1985 after slowly being entirely replaced by the Interstates."
     },
     {
         "era": "1945–1970 · Postwar America",
@@ -92,7 +92,7 @@ PAGES = [
         "little_known": "Armstrong had less than 30 seconds of fuel left when he landed. Mission Control knew. He didn't tell them he was worried."
     },
     {
-        "era": "1970–2000 · The Modern Age",
+        "era": "1965–2000 · The Modern Age",
         "headline": "The Internet Started as a Military Experiment with Four Computers",
         "fact": "ARPANET sent its first message on October 29, 1969. It was supposed to say 'LOGIN.' The system crashed after 'L' and 'O.' The four computers connected in that first network were at UCLA, Stanford, UC Santa Barbara, and the University of Utah. By 2026, over five billion people use the internet daily. The first message ever sent over what became the internet was 'LO' — accidentally the most poetic beginning imaginable.",
         "little_known": "The first item ever sold on eBay, in 1995, was a broken laser pointer. The buyer knew it was broken. He collected broken laser pointers."

@@ -23,6 +23,7 @@
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&family=Playfair+Display:ital,wght@0,700;1,600&display=swap" rel="stylesheet">
     <link
         href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Oswald:wght@500;700&display=swap"
         rel="stylesheet">
@@ -552,6 +553,233 @@
         #phone-field {
             transition: all 0.2s ease;
         }
+
+        /* --- NEW GIVEAWAY SECTION STYLES --- */
+        .giveaway-section {
+            background-color: var(--navy);
+            background: radial-gradient(circle at 20% 30%, var(--navy-dark) 0%, var(--navy) 100%);
+            padding: 4rem 5%;
+            position: relative;
+            color: var(--white);
+            margin-top: -1rem; /* blend into hero */
+        }
+        
+        .giveaway-section .particles {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            pointer-events: none;
+            z-index: 0;
+            background-image: 
+                radial-gradient(circle at 15% 50%, rgba(201, 168, 76, 0.05) 0%, transparent 50%),
+                radial-gradient(circle at 85% 30%, rgba(197, 34, 51, 0.05) 0%, transparent 50%);
+        }
+
+        .preview-wrapper {
+            max-width: 1200px;
+            width: 100%;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-radius: 24px;
+            box-shadow: 0 30px 60px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+            display: flex;
+            overflow: hidden;
+            position: relative;
+            z-index: 2;
+        }
+
+        .left-col {
+            flex: 1.2;
+            padding: 60px;
+            position: relative;
+            background: linear-gradient(135deg, rgba(201,168,76,0.1) 0%, transparent 100%);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .right-col {
+            flex: 1;
+            padding: 60px;
+            background: rgba(0, 0, 0, 0.2);
+            border-left: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .left-col h2.giveaway-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 3.5rem;
+            line-height: 1.1;
+            margin-bottom: 20px;
+            text-transform: none;
+            background: linear-gradient(to right, var(--white), #E0E0E0);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .left-col h2.giveaway-title span {
+            color: var(--gold);
+            -webkit-text-fill-color: var(--gold);
+        }
+
+        .left-col p.lead {
+            font-size: 1.25rem;
+            color: rgba(255,255,255,0.8);
+            margin-bottom: 40px;
+            line-height: 1.6;
+            font-family: 'Outfit', sans-serif;
+        }
+
+        .visual-stack {
+            position: relative;
+            height: 400px;
+            width: 100%;
+            max-width: 420px;
+            margin: 40px auto 0;
+            perspective: 1000px;
+        }
+
+        .book-img {
+            position: absolute;
+            left: 50px;
+            top: 20px;
+            width: 250px;
+            border-radius: 4px;
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.8), 0 0 0 1px rgba(255,255,255,0.1);
+            transform: rotate(-1deg);
+            z-index: 4;
+            transition: transform 0.6s cubic-bezier(0.2, 0.8, 0.2, 1);
+        }
+
+        .interior-page {
+            position: absolute;
+            width: 250px;
+            border-radius: 4px;
+            background: white;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3), 0 0 0 1px rgba(0,0,0,0.1);
+            transition: transform 0.6s cubic-bezier(0.2, 0.8, 0.2, 1);
+        }
+
+        .page-left {
+            left: -10px;
+            top: 20px;
+            transform: rotate(-12deg);
+            z-index: 2;
+        }
+
+        .page-right {
+            left: 110px;
+            top: 10px;
+            transform: rotate(12deg);
+            z-index: 3;
+        }
+
+        .sticker-img {
+            position: absolute;
+            left: 230px;
+            top: 160px;
+            width: 170px;
+            z-index: 5;
+            filter: drop-shadow(0 15px 25px rgba(0,0,0,0.6));
+            transform: rotate(10deg);
+            animation: stickerFloat 8s ease-in-out infinite;
+        }
+
+        .visual-stack:hover .book-img { transform: rotate(0deg) scale(1.02) translateY(-10px); }
+        .visual-stack:hover .page-left { transform: rotate(-20deg) translateX(-60px) translateY(-10px); }
+        .visual-stack:hover .page-right { transform: rotate(20deg) translateX(60px) translateY(-10px); }
+
+        @keyframes stickerFloat {
+            0% { transform: translateY(0px) rotate(10deg) scale(1.0); }
+            50% { transform: translateY(-25px) rotate(6deg) scale(1.03); }
+            100% { transform: translateY(0px) rotate(10deg) scale(1.0); }
+        }
+
+        /* Form Elements for Giveaway block */
+        .preview-form-title {
+            font-family: 'Outfit', sans-serif;
+            font-size: 1.8rem;
+            margin-bottom: 30px;
+            font-weight: 600;
+        }
+
+        .right-col .input-group {
+            margin-bottom: 15px;
+            position: relative;
+        }
+
+        .right-col .input-group input, 
+        .right-col .input-group select {
+            width: 100%;
+            padding: 14px 18px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            color: var(--white);
+            font-family: 'Outfit', sans-serif;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            box-sizing: border-box;
+        }
+
+        .right-col .input-group input:focus {
+            outline: none;
+            border-color: var(--gold);
+            background: rgba(255, 255, 255, 0.08);
+            box-shadow: 0 0 0 4px rgba(201, 168, 76, 0.1);
+        }
+
+        .right-col .input-group input::placeholder {
+            color: rgba(255, 255, 255, 0.4);
+        }
+
+        .right-col .row {
+            display: flex;
+            gap: 15px;
+        }
+        .right-col .row .input-group { flex: 1; margin-bottom: 15px;}
+
+        .giveaway-submit-btn {
+            width: 100%;
+            padding: 16px;
+            background: linear-gradient(135deg, var(--red) 0%, #901625 100%);
+            border: none;
+            border-radius: 8px;
+            color: var(--white);
+            font-family: 'Outfit', sans-serif;
+            font-size: 1.1rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            cursor: pointer;
+            box-shadow: 0 10px 20px rgba(197, 34, 51, 0.3);
+            transition: transform 0.2s, box-shadow 0.2s;
+            margin-top: 5px;
+        }
+
+        .giveaway-submit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 15px 25px rgba(197, 34, 51, 0.5);
+        }
+
+        .preview-disclaimer {
+            font-size: 0.75rem;
+            color: rgba(255, 255, 255, 0.3);
+            margin-top: 20px;
+            text-align: center;
+            font-family: 'Inter', sans-serif;
+        }
+
+        @media (max-width: 900px) {
+            .preview-wrapper { flex-direction: column; }
+            .left-col, .right-col { padding: 40px 30px; }
+            .left-col h2.giveaway-title { font-size: 2.5rem; }
+            .visual-stack { height: 320px; }
+            .book-img { width: 200px; }
+            .sticker-img { width: 140px; left: 140px; top: 100px; }
+            .right-col .row { flex-direction: column; gap: 0; }
+        }
     </style>
 </head>
 
@@ -582,101 +810,61 @@
       <!-- Poster frame: book cover illustration on warm oak table -->
     </section>
 
-    <!-- HEADLINE BLOCK -->
-    <section class="cta-main">
-      
-      <p class="eyebrow">FREE DOWNLOAD — LIMITED TIME</p>
-      
-      <h2>Get Your Free Copy of<br><em>250 Strong, Built By Hand</em></h2>
-      
-      <p class="subhead">
-        A 24-page illustrated coloring book packed with the real stories behind 
-        America's 250 years. Fun for all ages. Yours free — just join the Regiment.
-      </p>
+    <!-- GIVEAWAY GLASSSMORPHIC SECTION -->
+    <section class="giveaway-section">
+        <div class="particles"></div>
+        <div class="preview-wrapper">
+            <div class="left-col">
+                <h2 class="giveaway-title">Claim Your <span>Free Gift</span> Bundle Today</h2>
+                <p class="lead">Sign up for the early-access preview of 250PROUD™ and we'll instantly send you our 24-page Digital Coloring Book and mail you our exclusive heritage Eagle Sticker.</p>
+                
+                <div class="visual-stack">
+                    <img src="coloring_book/illustrations/page_06.png" class="interior-page page-right" alt="Interior Layout" onerror="this.style.display='none'">
+                    <img src="coloring_book/illustrations/page_12.png" class="interior-page page-left" alt="Interior Layout" onerror="this.style.display='none'">
+                    
+                    <img src="nc_assets/img/generated_true_cover.png" alt="Coloring Book" class="book-img" onerror="this.style.display='none'">
+                    <img src="nc_assets/img/free_eagle_sticker_asset.png" alt="Eagle Sticker" class="sticker-img" onerror="this.style.display='none'">
+                </div>
+            </div>
 
-      <!-- OFFER BLOCK -->
-      <div class="offer-stack">
-        
-        <div class="offer-item">
-          <span class="checkmark">★</span>
-          <span><strong>FREE Digital Download</strong> — The full 24-page coloring book, 
-          delivered instantly to your inbox</span>
+            <div class="right-col">
+                <div class="preview-form-title">Join the Regiment</div>
+                <form id="preview-signup">
+                    <div class="row">
+                        <div class="input-group">
+                            <input type="text" name="FNAME" placeholder="First Name" required>
+                        </div>
+                    </div>
+                    <div class="input-group">
+                        <input type="email" name="EMAIL" placeholder="Email Address" required>
+                    </div>
+                    
+                    <p style="font-size: 0.85rem; color: var(--gold); margin: 20px 0 10px; text-transform: uppercase; letter-spacing: 1px; font-family:'Outfit'">Where should we ship your sticker?</p>
+                    
+                    <div class="input-group">
+                        <input type="text" name="ADDRESS" placeholder="Street Address" required>
+                    </div>
+                    <div class="row">
+                        <div class="input-group">
+                            <input type="text" name="CITY" placeholder="City" required>
+                        </div>
+                        <div class="input-group">
+                            <input type="text" name="STATE" placeholder="State" required>
+                        </div>
+                        <div class="input-group">
+                            <input type="text" name="ZIP" placeholder="ZIP" required>
+                        </div>
+                    </div>
+
+                    <!-- Honeypot -->
+                    <input type="text" name="b_honeypot" style="display:none;" tabindex="-1">
+
+                    <button type="submit" class="giveaway-submit-btn" id="giveaway-submit-btn">Unlock Free Gifts</button>
+
+                    <p class="preview-disclaimer">By claiming your gifts, you agree to receive recurring updates from LauralAI LLC. No purchase necessary. View Terms & Privacy for more details.</p>
+                </form>
+            </div>
         </div>
-        
-        <div class="offer-item">
-          <span class="checkmark">★</span>
-          <span><strong>FREE 250Proud Sticker</strong> — Mailed directly to you, 
-          just for signing up</span>
-        </div>
-        
-        <div class="offer-item">
-          <span class="checkmark">★</span>
-          <span><strong>VIP Early Access</strong> — First look at limited drops, 
-          exclusive pricing, and founding member perks</span>
-        </div>
-
-      </div>
-
-      <!-- STICKER MOCKUP IMAGE -->
-      <img src="nc_assets/img/free_eagle_sticker_asset.png" 
-           alt="Free 250Proud Eagle Sticker" 
-           class="sticker-preview" />
-
-    </section>
-
-    <!-- SIGNUP FORM BLOCK -->
-    <section class="signup-form">
-
-      <h3>Join the Regiment</h3>
-      <p>Enter your info below. We'll email your coloring book instantly 
-      and drop your sticker in the mail.</p>
-
-      <form id="regiment-signup">
-        
-        <input type="text" name="FNAME" placeholder="First Name" required />
-        <input type="email" name="EMAIL" placeholder="Email Address" required />
-        
-        <div class="address-block">
-          <p class="field-label">Mailing Address (for your free sticker)</p>
-          <input type="text" name="ADDRESS" placeholder="Street Address" required />
-          <input type="text" name="CITY" placeholder="City" required />
-          <input type="text" name="STATE" placeholder="State" required />
-          <input type="text" name="ZIP" placeholder="ZIP Code" required />
-        </div>
-
-        <div class="comm-prefs">
-          <p class="field-label">How would you like to hear from us?</p>
-          <label><input type="radio" name="COMM_PREF" value="email_sms" /> Email & SMS Alerts</label>
-          <label><input type="radio" name="COMM_PREF" value="email" checked /> Email Only</label>
-          <label><input type="radio" name="COMM_PREF" value="sms" /> SMS Only</label>
-        </div>
-
-        <div class="phone-field" id="phone-field" style="display:none;">
-          <input type="tel" name="PHONE" placeholder="Mobile Number (SMS)" />
-        </div>
-
-        <!-- Honeypot spam field — keep hidden -->
-        <div style="position:absolute;left:-5000px;" aria-hidden="true">
-          <input type="text" name="b_honeypot" tabindex="-1" value="" />
-        </div>
-
-        <button type="submit" class="cta-button">
-          Send My Free Book & Sticker →
-        </button>
-
-      </form>
-
-      <!-- COMPLIANCE COPY -->
-      <p class="compliance-copy">
-        <strong>Compliance Action & Consent:</strong> By providing your phone number 
-        and/or email address, you agree to receive recurring automated promotional and 
-        personalized marketing text messages and emails (e.g. cart reminders, early drops) 
-        from LauralAI LLC at the cell number and email used when signing up. Consent is 
-        not a condition of any purchase. Reply HELP for help and STOP to cancel. 
-        Msg frequency varies. Msg & data rates may apply. 
-        View <a href="/terms.html">Terms</a> & <a href="/privacy.html">Privacy</a> for more details.
-      </p>
-
     </section>
 
     <section class="mockups-section">
@@ -724,81 +912,53 @@
     </footer>
 
     <script>
-        // Show/hide phone field based on SMS selection
-        document.querySelectorAll('input[name="COMM_PREF"]').forEach(radio => {
-            radio.addEventListener('change', function() {
-                const phoneField = document.getElementById('phone-field');
-                if (this.value === 'sms' || this.value === 'email_sms') {
-                    phoneField.style.display = 'block';
-                    document.querySelector('input[name="PHONE"]').required = true;
-                } else {
-                    phoneField.style.display = 'none';
-                    document.querySelector('input[name="PHONE"]').required = false;
+        // Show/hide phone field based on SMS selection logic if it existed (removed from new form)
+        
+        const previewSignup = document.getElementById('preview-signup');
+        if(previewSignup) {
+            previewSignup.addEventListener('submit', async function(e) {
+                e.preventDefault();
+                
+                const honeypot = document.querySelector('input[name="b_honeypot"]').value;
+                if (honeypot) return;
+
+                const btn = document.getElementById('giveaway-submit-btn');
+                btn.innerHTML = 'Securing Your Gifts...';
+                btn.style.opacity = '0.7';
+                btn.disabled = true;
+
+                const formData = new FormData(this);
+                const data = Object.fromEntries(formData);
+
+                try {
+                    const response = await fetch('/api/subscribe', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            first_name: data.FNAME,
+                            email: data.EMAIL,
+                            address: data.ADDRESS,
+                            city: data.CITY,
+                            state: data.STATE,
+                            zip: data.ZIP,
+                            source: '250proud_coloring_book_index_giveaway'
+                        })
+                    });
+
+                    if (response.ok) {
+                        window.location.href = 'thank-you.html';
+                    } else {
+                        throw new Error('Submission failed');
+                    }
+                } catch (error) {
+                    console.error(error);
+                    btn.innerHTML = 'Something went wrong. Try again.';
+                    btn.style.background = 'var(--red)';
+                    btn.style.opacity = '1';
+                    btn.disabled = false;
                 }
             });
-        });
-
-        // Form submission — connect to Vercel API endpoint
-        document.getElementById('regiment-signup').addEventListener('submit', async function(e) {
-            e.preventDefault();
-
-            // Honeypot check
-            const honeypot = document.querySelector('input[name="b_honeypot"]').value;
-            if (honeypot) {
-                console.warn('Bot detected by honeypot.');
-                document.getElementById('regiment-signup').innerHTML = `
-                    <div class="success-state">
-                        <h3>You're in the Regiment! 🇺🇸</h3>
-                        <p>Check your inbox — your free coloring book is on its way.<br>
-                        Your sticker will be mailed within 5–7 business days.</p>
-                    </div>
-                `;
-                return;
-            }
-            
-            const formData = new FormData(this);
-            const data = Object.fromEntries(formData);
-            const submitBtn = document.querySelector('.cta-button');
-
-            submitBtn.textContent = 'Processing...';
-            submitBtn.disabled = true;
-            
-            try {
-                const response = await fetch('/api/subscribe', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        first_name: data.FNAME,
-                        email: data.EMAIL,
-                        address: data.ADDRESS,
-                        city: data.CITY,
-                        state: data.STATE,
-                        zip: data.ZIP,
-                        phone: data.PHONE || null,
-                        comm_pref: data.COMM_PREF,
-                        source: '250proud_coloring_book_lead_magnet'
-                    })
-                });
-
-                if (response.ok) {
-                    // SUCCESS STATE
-                    document.getElementById('regiment-signup').innerHTML = `
-                        <div class="success-state" style="padding: 2rem;">
-                            <h3 style="color: var(--gold); font-size: 1.6rem;">You're in the Regiment! 🇺🇸</h3>
-                            <p style="color: var(--navy); font-size: 1rem; margin-top: 1rem;">Check your inbox — your free coloring book is on its way.<br>
-                            Your sticker will be mailed within 5–7 business days.</p>
-                        </div>
-                    `;
-                } else {
-                    throw new Error('Submission failed');
-                }
-            } catch (error) {
-                console.error(error);
-                submitBtn.textContent = 'Something went wrong — please try again';
-                submitBtn.style.background = '#8B1A27';
-                submitBtn.disabled = false;
-            }
-        });
+        }
     </script>
 </body>
 

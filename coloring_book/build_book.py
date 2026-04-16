@@ -312,7 +312,7 @@ def draw_back_cover(c):
 
 def build_pdf():
     # Make sure we run from correct working directory context or handle nested calls
-    output_path = "250Proud_ColoringBook_2026_v1.pdf"
+    output_path = "250Proud_ColoringBook_Digital_Edition.pdf"
     
     register_fonts()
     c = canvas.Canvas(output_path, pagesize=letter)

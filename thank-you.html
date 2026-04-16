@@ -90,6 +90,44 @@
             background-color: #D31A47;
         }
 
+        .btn-download {
+            background-color: #C9A84C;
+            color: #0A3161;
+            text-decoration: none;
+            padding: 1.2rem 2.5rem;
+            font-family: 'Oswald', sans-serif;
+            font-size: 1.3rem;
+            font-weight: 700;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            border-radius: 4px;
+            transition: all 0.3s;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            box-shadow: 0 10px 20px rgba(201, 168, 76, 0.4);
+            margin: 1.5rem 0 3rem;
+        }
+
+        .btn-download:hover {
+            background-color: #DFB955;
+            transform: translateY(-2px);
+        }
+
+        .status-box {
+            background-color: var(--white);
+            border: 2px solid var(--gold);
+            border-radius: 8px;
+            max-width: 650px;
+            padding: 1.5rem;
+            margin: 0 auto 2rem;
+            color: var(--navy-dark);
+        }
+
+        .status-box strong {
+            color: #2e7d32;
+        }
+
         /* Letter Container */
         .story-card {
             background-color: var(--white);
@@ -144,8 +182,25 @@
 
     <img src="nc_assets/img/logo.svg" alt="250PROUD™ Logo" class="logo">
 
-    <h1>Welcome to the VIP List</h1>
-    <p style="text-align: center; margin: 0 auto;">Your email has been securely recorded. You are now in line for early access and the exclusive launch discount when the 250PROUD™ collection goes live.</p>
+    <h1>You're in the Regiment! 🇺🇸</h1>
+    
+    <div class="status-box">
+        <p style="margin: 0; font-size: 1.1rem; color: var(--navy-dark);">
+            <strong style="color: var(--red); font-size: 1.3rem;">★ STICKER SECURED:</strong> Your free 250PROUD Heritage Eagle Sticker has been securely recorded and is entering our daily mail queue. Look out for an envelope from us in the next 5-7 business days!<br><br>
+            You are officially on the VIP list to receive early access and exclusive discounts when the official 250PROUD™ collection launches.
+        </p>
+    </div>
+
+    <!-- DIRECT DOWNLOAD ACTION -->
+    <p style="margin-bottom: 0.5rem; font-weight: 700;">Click below to download your free digital coloring book instantly:</p>
+    <a href="/downloads/250Proud_ColoringBook_Digital_Edition.pdf" class="btn-download" download="250Proud_ColoringBook.pdf" target="_blank">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+            <polyline points="7 10 12 15 17 10"></polyline>
+            <line x1="12" y1="15" x2="12" y2="3"></line>
+        </svg>
+        Download The Coloring Book
+    </a>
 
     <div class="story-card">
         <h2>250Proud isn't a merch site. It's a statement.</h2>

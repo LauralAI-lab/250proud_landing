@@ -39,14 +39,15 @@ module.exports = async function handler(req, res) {
     }
 
     // 2. Log to Supabase
-    if (!process.env.SUPABASE_URL || !process.env.SUPABASE_SERVICE_KEY) {
-      return res.status(500).json({ error: 'Missing Databse ENV routing variables on Vercel build.' });
+    const supaUrl = process.env.SUPABASE_URL || process.env.NEXT_PUBLIC_SUPABASE_URL;
+    const supaKey = process.env.SUPABASE_SERVICE_KEY || process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.SUPABASE_ANON_KEY || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+
+    if (!supaUrl || !supaKey) {
+      const activeSupaKeys = Object.keys(process.env).filter(k => k.includes('SUPA') || k.includes('supa')).join(', ');
+      return res.status(500).json({ error: `Missing Database ENV routing variables. Vercel memory sees these keys: [${activeSupaKeys || 'NONE FOUND'}]` });
     }
 
-    const supabase = createClient(
-      process.env.SUPABASE_URL,
-      process.env.SUPABASE_SERVICE_KEY
-    );
+    const supabase = createClient(supaUrl, supaKey);
 
     const { error: dbError } = await supabase
       .from('subscribers')

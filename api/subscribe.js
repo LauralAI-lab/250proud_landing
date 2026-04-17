@@ -10,8 +10,9 @@ module.exports = async function handler(req, res) {
       return res.status(405).json({ error: 'Method not allowed' });
     }
 
+    const rawBody = typeof req.body === 'string' ? JSON.parse(req.body) : req.body || {};
     const { first_name, email, address, city, state, zip, 
-            phone, comm_pref, source } = req.body;
+            phone, comm_pref, source } = rawBody;
 
     // 1. Add to Mailchimp
     mailchimp.setConfig({
@@ -22,7 +23,7 @@ module.exports = async function handler(req, res) {
     try {
       if (process.env.MAILCHIMP_API_KEY) {
         await mailchimp.lists.addListMember(process.env.MAILCHIMP_LIST_ID, {
-          email_address: email,
+          email_address: email || '',
           status: 'subscribed',
           merge_fields: {
             FNAME: first_name || '',
@@ -66,7 +67,7 @@ module.exports = async function handler(req, res) {
 
     if (dbError) {
       console.error('Supabase error:', dbError);
-      return res.status(500).json({ error: 'Database constraint or schema rejection', details: dbError });
+      return res.status(500).json({ error: `Database error: ${dbError.message || JSON.stringify(dbError)}` });
     }
 
     return res.status(200).json({ success: true });

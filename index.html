@@ -967,6 +967,10 @@
                     });
 
                     if (response.ok) {
+                        const payload = await response.json();
+                        if (payload.mc_debug && (!payload.mc_debug.key || !payload.mc_debug.list)) {
+                            throw new Error(`MISSING KEY: ${payload.mc_debug.key ? '' : 'API_KEY '}${payload.mc_debug.list ? '' : 'LIST_ID'}`);
+                        }
                         window.location.href = 'thank-you.html';
                     } else {
                         const errPayload = await response.text();

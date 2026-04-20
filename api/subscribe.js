@@ -78,7 +78,14 @@ module.exports = async function handler(req, res) {
       return res.status(500).json({ error: `Database error: ${dbError.message || JSON.stringify(dbError)}` });
     }
 
-    return res.status(200).json({ success: true });
+    return res.status(200).json({ 
+      success: true,
+      mc_debug: {
+        key: !!process.env.MAILCHIMP_API_KEY,
+        list: !!process.env.MAILCHIMP_LIST_ID,
+        prefix: !!process.env.MAILCHIMP_SERVER_PREFIX
+      }
+    });
   } catch (err) {
     console.error("FATAL BINDING ERROR:", err);
     return res.status(500).json({ error: 'Fatal Exception in endpoint', details: err.message, stack: err.stack });

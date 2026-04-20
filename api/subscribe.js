@@ -11,7 +11,7 @@ module.exports = async function handler(req, res) {
     }
 
     const rawBody = typeof req.body === 'string' ? JSON.parse(req.body) : req.body || {};
-    const { first_name, email, address, city, state, zip, 
+    const { first_name, last_name, email, address, city, state, zip, 
             phone, comm_pref, source } = rawBody;
 
     // 1. Add to Mailchimp
@@ -27,6 +27,7 @@ module.exports = async function handler(req, res) {
           status: 'subscribed',
           merge_fields: {
             FNAME: first_name || '',
+            LNAME: last_name || '',
             ADDRESS: { addr1: address || '', city: city || '', state: state || '', zip: zip || '', country: 'US' },
             PHONE: phone || '',
             COMM_PREF: comm_pref || '',
@@ -50,10 +51,12 @@ module.exports = async function handler(req, res) {
 
     const supabase = createClient(supaUrl, supaKey);
 
+    const full_name = last_name ? `${first_name || ''} ${last_name}`.trim() : (first_name || null);
+
     const { error: dbError } = await supabase
       .from('subscribers')
       .insert([{
-        first_name: first_name || null,
+        first_name: full_name,
         email: email || null,
         address: address || null,
         city: city || null,

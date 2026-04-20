@@ -832,11 +832,30 @@
                 <form id="preview-signup">
                     <div class="row">
                         <div class="input-group">
-                            <input type="text" name="FNAME" placeholder="First & Last Name" required>
+                            <input type="text" name="FNAME" placeholder="First Name" required>
+                        </div>
+                        <div class="input-group">
+                            <input type="text" name="LNAME" placeholder="Last Name" required>
                         </div>
                     </div>
-                    <div class="input-group">
-                        <input type="email" name="EMAIL" placeholder="Email Address" required>
+                    <div class="row">
+                        <div class="input-group">
+                            <input type="email" name="EMAIL" placeholder="Email Address" required>
+                        </div>
+                        <div class="input-group">
+                            <input type="tel" name="PHONE" placeholder="Phone Number (Optional)">
+                        </div>
+                    </div>
+                    
+                    <div style="margin-bottom: 25px;">
+                        <p style="font-size: 0.85rem; color: var(--gold); margin: 0 0 10px; text-transform: uppercase;">Communication Preference:</p>
+                        <label style="margin-right: 15px; font-size: 0.9rem; cursor: pointer; color: white;">
+                            <input type="radio" name="COMM_PREF" value="email" checked> Email Only
+                        </label>
+                        <label style="font-size: 0.9rem; cursor: pointer; color: white;">
+                            <input type="radio" name="COMM_PREF" value="email_sms"> Email & SMS
+                        </label>
+                    </div>
                     </div>
                     
                     <p style="font-size: 0.85rem; color: var(--gold); margin: 20px 0 10px; text-transform: uppercase; letter-spacing: 1px; font-family:'Outfit'">Where should we ship your sticker?</p>
@@ -936,13 +955,14 @@
                         headers: { 'Content-Type': 'application/json' },
                         body: JSON.stringify({
                             first_name: data.FNAME,
+                            last_name: data.LNAME,
                             email: data.EMAIL,
                             address: data.ADDRESS,
                             city: data.CITY,
                             state: data.STATE,
                             zip: data.ZIP,
-                            phone: null,
-                            comm_pref: 'email',
+                            phone: data.PHONE || null,
+                            comm_pref: data.COMM_PREF || 'email',
                             source: '250proud_coloring_book_lead_magnet'
                         })
                     });

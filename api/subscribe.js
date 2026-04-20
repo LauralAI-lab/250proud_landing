@@ -38,6 +38,11 @@ module.exports = async function handler(req, res) {
       }
     } catch (mcError) {
       console.error('Mailchimp error:', mcError);
+      let errMsg = mcError.message;
+      if (mcError.response && mcError.response.body) {
+        errMsg = `${mcError.response.body.title} - ${mcError.response.body.detail}`;
+      }
+      return res.status(500).json({ error: `MAILCHIMP REJECTED: ${errMsg}` });
     }
 
     // 2. Log to Supabase

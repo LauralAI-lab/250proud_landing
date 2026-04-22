@@ -15,3 +15,13 @@ CREATE TABLE IF NOT EXISTS subscribers (
 
 -- Index on email for deduplication checks
 CREATE UNIQUE INDEX IF NOT EXISTS subscribers_email_idx ON subscribers(email);
+
+-- Enforce Row-Level Security (RLS) to secure the table
+ALTER TABLE subscribers ENABLE ROW LEVEL SECURITY;
+
+-- Allow anonymous inserts (so landing page can submit data if using Anon Key)
+-- Service Role keys in Vercel bypass RLS automatically.
+CREATE POLICY "Enable insert for anonymous users" 
+ON subscribers FOR INSERT 
+TO public 
+WITH CHECK (true);

@@ -22,17 +22,37 @@ module.exports = async function handler(req, res) {
 
     try {
       if (process.env.MAILCHIMP_API_KEY) {
+        // Build merge fields dynamically to prevent Mailchimp validation crashes
+        const mergeFields = {
+          FNAME: first_name || '',
+          LNAME: last_name || ''
+        };
+        
+        // Mailchimp strictly requires addr2 property if sending ADDRESS
+        if (address && city && state && zip) {
+          mergeFields.ADDRESS = { 
+            addr1: address, 
+            addr2: '', 
+            city: city, 
+            state: state, 
+            zip: zip, 
+            country: 'US' 
+          };
+        }
+        
+        // Only include PHONE if it has a value (empty string crashes Mailchimp phone validation)
+        if (phone && phone.trim() !== '') {
+          mergeFields.PHONE = phone;
+        }
+
+        // Add custom fields (ensure COMM_PREF and SOURCE merge tags are created in Mailchimp)
+        if (comm_pref) mergeFields.COMM_PREF = comm_pref;
+        if (source) mergeFields.SOURCE = source;
+
         await mailchimp.lists.addListMember(process.env.MAILCHIMP_LIST_ID, {
           email_address: email || '',
           status: 'subscribed',
-          merge_fields: {
-            FNAME: first_name || '',
-            LNAME: last_name || '',
-            ADDRESS: { addr1: address || '', city: city || '', state: state || '', zip: zip || '', country: 'US' },
-            PHONE: phone || '',
-            COMM_PREF: comm_pref || '',
-            SOURCE: source || ''
-          },
+          merge_fields: mergeFields,
           tags: ['coloring-book-lead', '250proud-launch']
         });
       }
@@ -40,9 +60,9 @@ module.exports = async function handler(req, res) {
       console.error('Mailchimp error:', mcError);
       let errMsg = mcError.message;
       if (mcError.response && mcError.response.body) {
-        errMsg = `${mcError.response.body.title} - ${mcError.response.body.detail}`;
+        errMsg = `${mcError.response.body.title} - ${mcError.response.body.detail} (Check Audience Merge Tags)`;
       }
-      return res.status(500).json({ error: `MAILCHIMP REJECTED: ${errMsg}` });
+      return res.status(400).json({ error: `MAILCHIMP REJECTED: ${errMsg}` });
     }
 
     // 2. Log to Supabase
@@ -74,8 +94,13 @@ module.exports = async function handler(req, res) {
       }]);
 
     if (dbError) {
-      console.error('Supabase error:', dbError);
-      return res.status(500).json({ error: `Database error: ${dbError.message || JSON.stringify(dbError)}` });
+      // 23505 is PostgreSQL's error code for a Unique Violation (Duplicate Key)
+      if (dbError.code === '23505' || (dbError.message && dbError.message.includes('duplicate'))) {
+        console.log(`Email ${email} is already in the database. Gracefully proceeding.`);
+      } else {
+        console.error('Supabase error:', dbError);
+        return res.status(500).json({ error: `Database error: ${dbError.message || JSON.stringify(dbError)}` });
+      }
     }
 
     return res.status(200).json({ 

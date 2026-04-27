@@ -967,19 +967,22 @@
                     });
 
                     if (response.ok) {
-                        const payload = await response.json();
-                        if (payload.mc_debug && (!payload.mc_debug.key || !payload.mc_debug.list)) {
-                            throw new Error(`MISSING KEY: ${payload.mc_debug.key ? '' : 'API_KEY '}${payload.mc_debug.list ? '' : 'LIST_ID'}`);
-                        }
                         window.location.href = 'thank-you.html';
                     } else {
                         const errPayload = await response.text();
                         throw new Error(errPayload);
                     }
                 } catch (error) {
-                    console.error(error);
-                    const errorMsg = error.message.includes('html') ? '500 Server Error (Check logs)' : error.message;
-                    btn.innerHTML = 'ERROR: ' + errorMsg.substring(0, 45) + '...';
+                    console.error('Submission Error:', error);
+                    let displayMsg = error.message;
+                    if (displayMsg.includes('html')) displayMsg = '500 Server Error';
+                    
+                    // Display full error via alert to help debugging Mailchimp issues
+                    if (displayMsg.includes('MAILCHIMP REJECTED')) {
+                        alert("Mailchimp Integration Error:\n\n" + displayMsg + "\n\nTip: You might need to add COMM_PREF or SOURCE as Merge Tags in your Mailchimp Audience Settings.");
+                    }
+                    
+                    btn.innerHTML = 'ERROR SUBMITTING';
                     btn.style.background = 'var(--red)';
                     btn.style.opacity = '1';
                     btn.disabled = false;

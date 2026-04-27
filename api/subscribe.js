@@ -3,6 +3,7 @@
 
 const { createClient } = require('@supabase/supabase-js');
 const mailchimp = require('@mailchimp/mailchimp_marketing');
+const crypto = require('crypto');
 
 module.exports = async function handler(req, res) {
   try {
@@ -14,35 +15,72 @@ module.exports = async function handler(req, res) {
     const { first_name, last_name, email, address, city, state, zip, 
             phone, comm_pref, source } = rawBody;
 
-    // 1. Add to Mailchimp
+    // 1. Add/Update Mailchimp
     mailchimp.setConfig({
       apiKey: process.env.MAILCHIMP_API_KEY || 'missing_key',
       server: process.env.MAILCHIMP_SERVER_PREFIX || 'us21', 
     });
 
-    try {
-      if (process.env.MAILCHIMP_API_KEY) {
-        await mailchimp.lists.addListMember(process.env.MAILCHIMP_LIST_ID, {
+    let mcDebugInfo = { status: 'skipped', message: 'No API Key' };
+
+    if (process.env.MAILCHIMP_API_KEY && process.env.MAILCHIMP_API_KEY !== 'missing_key') {
+      const listId = process.env.MAILCHIMP_LIST_ID;
+      const subscriberHash = crypto.createHash('md5').update((email || '').toLowerCase()).digest('hex');
+
+      // Build merge fields
+      const mergeFields = {
+        FNAME: first_name || '',
+        LNAME: last_name || ''
+      };
+      
+      if (address && city && state && zip) {
+        mergeFields.ADDRESS = { 
+          addr1: address, addr2: '', city: city, state: state, zip: zip, country: 'US' 
+        };
+      }
+      
+      if (phone && phone.trim() !== '') {
+        mergeFields.PHONE = phone;
+      }
+      if (comm_pref) mergeFields.COMM_PREF = comm_pref;
+      if (source) mergeFields.SOURCE = source;
+
+      try {
+        // PASS 1: Attempt Upsert with all fields
+        await mailchimp.lists.setListMember(listId, subscriberHash, {
           email_address: email || '',
-          status: 'subscribed',
-          merge_fields: {
-            FNAME: first_name || '',
-            LNAME: last_name || '',
-            ADDRESS: { addr1: address || '', city: city || '', state: state || '', zip: zip || '', country: 'US' },
-            PHONE: phone || '',
-            COMM_PREF: comm_pref || '',
-            SOURCE: source || ''
-          },
-          tags: ['coloring-book-lead', '250proud-launch']
+          status_if_new: 'subscribed',
+          merge_fields: mergeFields,
         });
+        mcDebugInfo = { status: 'success', pass: 1 };
+      } catch (mcError) {
+        // PASS 2: If Mailchimp rejects custom fields, fallback to basic fields
+        console.warn('Mailchimp Pass 1 Failed. Trying Pass 2 with basic fields...', mcError.message);
+        try {
+          await mailchimp.lists.setListMember(listId, subscriberHash, {
+            email_address: email || '',
+            status_if_new: 'subscribed',
+            merge_fields: { FNAME: first_name || '', LNAME: last_name || '' },
+          });
+          mcDebugInfo = { status: 'success', pass: 2, fallbackUsed: true };
+        } catch (mcError2) {
+          console.error('Mailchimp Pass 2 error:', mcError2);
+          let errMsg = mcError2.response?.body?.detail || mcError2.message;
+          return res.status(400).json({ error: `MAILCHIMP REJECTED: ${errMsg}` });
+        }
       }
-    } catch (mcError) {
-      console.error('Mailchimp error:', mcError);
-      let errMsg = mcError.message;
-      if (mcError.response && mcError.response.body) {
-        errMsg = `${mcError.response.body.title} - ${mcError.response.body.detail}`;
+
+      // Explicitly Add Tags to trigger Automations
+      try {
+        await mailchimp.lists.updateListMemberTags(listId, subscriberHash, {
+          tags: [
+            { name: 'coloring-book-lead', status: 'active' },
+            { name: '250proud-launch', status: 'active' }
+          ]
+        });
+      } catch (tagError) {
+        console.warn('Mailchimp Tagging Warning: Could not apply tags', tagError.message);
       }
-      return res.status(500).json({ error: `MAILCHIMP REJECTED: ${errMsg}` });
     }
 
     // 2. Log to Supabase
@@ -50,12 +88,10 @@ module.exports = async function handler(req, res) {
     const supaKey = process.env.SUPABASE_SERVICE_KEY || process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.SUPABASE_ANON_KEY || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
 
     if (!supaUrl || !supaKey) {
-      const activeSupaKeys = Object.keys(process.env).filter(k => k.includes('SUPA') || k.includes('supa')).join(', ');
-      return res.status(500).json({ error: `Missing Database ENV routing variables. Vercel memory sees these keys: [${activeSupaKeys || 'NONE FOUND'}]` });
+      return res.status(500).json({ error: `Missing Supabase Environment Variables.` });
     }
 
     const supabase = createClient(supaUrl, supaKey);
-
     const full_name = last_name ? `${first_name || ''} ${last_name}`.trim() : (first_name || null);
 
     const { error: dbError } = await supabase
@@ -74,20 +110,22 @@ module.exports = async function handler(req, res) {
       }]);
 
     if (dbError) {
-      console.error('Supabase error:', dbError);
-      return res.status(500).json({ error: `Database error: ${dbError.message || JSON.stringify(dbError)}` });
+      // Gracefully handle Duplicate Email constraint (23505)
+      const errStr = String(dbError.message || '').toLowerCase();
+      if (dbError.code === '23505' || errStr.includes('duplicate') || errStr.includes('unique')) {
+        console.log(`Email ${email} is already in the database. Gracefully proceeding.`);
+      } else {
+        console.error('Supabase error:', dbError);
+        return res.status(500).json({ error: `Database error: ${dbError.message || JSON.stringify(dbError)}` });
+      }
     }
 
     return res.status(200).json({ 
       success: true,
-      mc_debug: {
-        key: !!process.env.MAILCHIMP_API_KEY,
-        list: !!process.env.MAILCHIMP_LIST_ID,
-        prefix: !!process.env.MAILCHIMP_SERVER_PREFIX
-      }
+      mc_debug: mcDebugInfo
     });
   } catch (err) {
     console.error("FATAL BINDING ERROR:", err);
-    return res.status(500).json({ error: 'Fatal Exception in endpoint', details: err.message, stack: err.stack });
+    return res.status(500).json({ error: 'Fatal Exception in endpoint', details: err.message });
   }
 }

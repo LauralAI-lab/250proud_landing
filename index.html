@@ -789,8 +789,11 @@
         <div class="logo-container">
             <img src="nc_assets/img/logo.svg" alt="250PROUD™ Official Logo">
         </div>
-        <div class="header-badge">
-            <span class="badge">CREATED FOR PATRIOTIC PEOPLE EVERYWHERE</span>
+        <div style="display: flex; align-items: center; gap: 1.5rem;">
+            <a href="b2b-configurator.html" style="color: var(--navy); text-decoration: none; font-weight: 700; font-family: 'Oswald', sans-serif; text-transform: uppercase; font-size: 1.1rem; transition: color 0.2s ease;">B2B Program</a>
+            <div class="header-badge">
+                <span class="badge">CREATED FOR PATRIOTIC PEOPLE EVERYWHERE</span>
+            </div>
         </div>
     </header>
 
@@ -967,10 +970,6 @@
                     });
 
                     if (response.ok) {
-                        const payload = await response.json();
-                        if (payload.mc_debug && (!payload.mc_debug.key || !payload.mc_debug.list)) {
-                            throw new Error(`MISSING KEY: ${payload.mc_debug.key ? '' : 'API_KEY '}${payload.mc_debug.list ? '' : 'LIST_ID'}`);
-                        }
                         window.location.href = 'thank-you.html';
                     } else {
                         const errPayload = await response.text();

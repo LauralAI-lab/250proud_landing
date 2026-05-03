@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>250PROUD B2B Configurator - Back Cover Template</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@300;400;600;800&family=Playfair+Display:ital,wght@0,600;0,700;1,600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            /* 250PROUD base colors */
+            --navy: #0A3161;
+            --gold: #B8922A;
+            --red: #B31942;
+            --white: #FFFFFF;
+            --off-white: #F9F9F9;
+            --gray-dark: #333333;
+            --gray-light: #EAEAEA;
+            
+            /* Sponsor colors (can be customized by config) */
+            --primary: var(--navy);
+            --text-main: #222222;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            background-color: #e0e0e0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            font-family: 'Inter', sans-serif;
+            padding: 0;
+            overflow: hidden;
+        }
+
+        /* 8.5 x 11 aspect ratio container (Print standard at 96dpi is 816x1056) */
+        .page {
+            width: 816px;
+            height: 1056px;
+            background-color: var(--white);
+            box-shadow: 0 20px 50px rgba(0,0,0,0.15);
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            box-sizing: border-box;
+        }
+
+        /* Top Hero Section */
+        .hero-section {
+            position: relative;
+            height: 40%;
+            width: 100%;
+            flex-shrink: 0;
+        }
+
+        .hero-img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .hero-overlay {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 40%;
+            background: linear-gradient(to top, rgba(0,0,0,0.6), transparent);
+        }
+
+        /* Headshot Overlay */
+        .headshot-container {
+            position: absolute;
+            bottom: -60px;
+            right: 60px;
+            width: 180px;
+            height: 180px;
+            border-radius: 50%;
+            border: 6px solid var(--white);
+            overflow: hidden;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+            z-index: 10;
+        }
+
+        .headshot-img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        /* Main Content Section */
+        .content-section {
+            padding: 20px 60px;
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+            position: relative;
+        }
+
+        .headline {
+            font-family: 'Playfair Display', serif;
+            font-size: 2.5rem;
+            color: var(--primary);
+            margin: 0 0 15px 0;
+            line-height: 1.1;
+            max-width: 480px;
+        }
+
+        .copy-and-image-wrapper {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            width: 100%;
+        }
+
+        .ad-copy {
+            font-size: 0.95rem;
+            color: var(--text-main);
+            line-height: 1.45;
+            margin: 0;
+            flex: 1;
+            padding-right: 35px;
+        }
+
+        /* Secondary Image */
+        .interior-img-container {
+            width: 260px;
+            height: 200px;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 12px 25px rgba(0,0,0,0.15);
+            flex-shrink: 0;
+        }
+
+        .interior-img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.3s ease;
+        }
+        
+        .interior-img-container:hover .interior-img {
+            transform: scale(1.05);
+        }
+
+        /* Footer Section */
+        .footer-section {
+            background-color: var(--off-white);
+            padding: 20px 60px 30px 60px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-top: 1px solid var(--gray-light);
+            height: 15%;
+            position: relative;
+            flex-shrink: 0;
+        }
+
+        .sponsor-logo {
+            height: 110px;
+            object-fit: contain;
+            max-width: 350px;
+        }
+
+        .contact-info {
+            text-align: right;
+        }
+
+        .contact-info h3 {
+            margin: 0 0 5px 0;
+            font-family: 'Outfit', sans-serif;
+            font-size: 1.25rem;
+            color: var(--primary);
+            letter-spacing: 0.5px;
+        }
+
+        .contact-info p {
+            margin: 0 0 3px 0;
+            font-size: 0.95rem;
+            color: #555;
+            line-height: 1.4;
+        }
+
+        .proud-tag {
+            position: absolute;
+            bottom: 12px;
+            left: 0;
+            width: 100%;
+            text-align: center;
+            font-size: 0.7rem;
+            color: #999;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+        }
+
+        @media print {
+            @page {
+                size: 8.5in 11in;
+                margin: 0;
+            }
+            body {
+                padding: 0;
+                margin: 0;
+                background-color: white;
+            }
+            .page {
+                box-shadow: none;
+                width: 8.5in;
+                height: 11in;
+                page-break-after: avoid;
+            }
+            .interior-img-container, .headshot-container {
+                box-shadow: none; /* Prevent ghosting in PDF output */
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="page" id="back-cover">
+        
+        <!-- TOP: HERO IMAGE -->
+        <div class="hero-section">
+            <!-- image 1 -->
+            <img src="{{HERO_URL}}" alt="Hero Image" class="hero-img">
+            <div class="hero-overlay"></div>
+            
+            <!-- OVERLAY: HEADSHOT -->
+            <div class="headshot-container" style="display: {{HEADSHOT_DISPLAY}};">
+                <!-- image 2 -->
+                <img src="{{HEADSHOT_URL}}" alt="Headshot Graphic" class="headshot-img">
+            </div>
+        </div>
+
+        <!-- MIDDLE: AD COPY & SECONDARY IMAGE -->
+        <div class="content-section">
+            <h1 class="headline">{{HEADLINE}}</h1>
+            
+            <div class="copy-and-image-wrapper">
+                <p class="ad-copy">
+                    {{COPY}}
+                </p>
+                
+                <!-- SECONDARY LIFESTYLE IMAGE -->
+                <div class="interior-img-container">
+                    <!-- image 3 -->
+                    <img src="{{INTERIOR_URL}}" alt="Interior Lifestyle" class="interior-img">
+                </div>
+            </div>
+        </div>
+
+        <!-- BOTTOM: FOOTER -->
+        <div class="footer-section">
+            <!-- LOGO -->
+            <!-- image 4 -->
+            <img src="{{LOGO_URL}}" alt="Sponsor Logo Placeholder" class="sponsor-logo">
+            
+            <!-- CONTACT INFO -->
+            <div class="contact-info">
+                <h3>{{COMPANY_NAME}}</h3>
+                <p>{{PHONE}}</p>
+                <p>{{EMAIL}}</p>
+                <p>{{WEBSITE}}</p>
+            </div>
+            
+            <div class="proud-tag">
+                Back cover customized and provided by {{COMPANY_NAME}}. Copyright 250PROUD™
+            </div>
+        </div>
+
+    </div>
+
+</body>
+</html>

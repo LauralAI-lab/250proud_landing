@@ -1,0 +1,748 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>250 Strong Coloring Book Configurator</title>
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;600;800&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --bg-dark: #070B14;
+            --bg-gradient: linear-gradient(135deg, #0a1122 0%, #121f3d 100%);
+            --glass-bg: rgba(255, 255, 255, 0.03);
+            --glass-border: rgba(255, 255, 255, 0.08);
+            --glass-highlight: rgba(255, 255, 255, 0.15);
+            --accent-blue: #3B82F6;
+            --accent-blue-glow: rgba(59, 130, 246, 0.5);
+            --accent-gold: #D4AF37;
+            --text-main: #F8FAFC;
+            --text-muted: #94A3B8;
+            --input-bg: rgba(0, 0, 0, 0.2);
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--bg-dark);
+            background-image: var(--bg-gradient);
+            color: var(--text-main);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        /* Ambient Glow Background */
+        .ambient-glow {
+            position: absolute;
+            width: 600px;
+            height: 600px;
+            background: radial-gradient(circle, var(--accent-blue-glow) 0%, rgba(0,0,0,0) 70%);
+            top: -200px;
+            left: -200px;
+            z-index: 0;
+            opacity: 0.4;
+            filter: blur(60px);
+            pointer-events: none;
+        }
+
+        .ambient-glow.right {
+            top: auto;
+            bottom: -200px;
+            left: auto;
+            right: -200px;
+            background: radial-gradient(circle, rgba(212, 175, 55, 0.2) 0%, rgba(0,0,0,0) 70%);
+        }
+
+        /* Configurator Container */
+        .configurator-wrapper {
+            position: relative;
+            z-index: 10;
+            width: 100%;
+            max-width: 800px;
+            padding: 2rem;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 2.5rem;
+        }
+
+        .header h1 {
+            font-family: 'Outfit', sans-serif;
+            font-size: 2.5rem;
+            font-weight: 800;
+            letter-spacing: -0.02em;
+            margin-bottom: 0.5rem;
+            background: linear-gradient(to right, #fff, #a5b4fc);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .header p {
+            color: var(--text-muted);
+            font-size: 1.1rem;
+        }
+
+        /* Glassmorphic Panel */
+        .glass-panel {
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            border-radius: 24px;
+            padding: 3rem;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* Progress Bar */
+        .progress-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 3rem;
+            position: relative;
+        }
+
+        .progress-container::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: var(--glass-border);
+            z-index: 1;
+        }
+
+        .progress-line {
+            position: absolute;
+            top: 50%;
+            left: 0;
+            height: 2px;
+            background: var(--accent-blue);
+            z-index: 2;
+            width: 0%;
+            transition: var(--transition);
+        }
+
+        .step-indicator {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: var(--bg-dark);
+            border: 2px solid var(--glass-border);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            position: relative;
+            z-index: 3;
+            transition: var(--transition);
+            color: var(--text-muted);
+        }
+
+        .step-indicator.active {
+            border-color: var(--accent-blue);
+            background: var(--accent-blue);
+            color: white;
+            box-shadow: 0 0 15px var(--accent-blue-glow);
+        }
+
+        .step-indicator.completed {
+            border-color: var(--accent-blue);
+            background: var(--glass-highlight);
+            color: white;
+        }
+
+        /* Form Steps */
+        .step-content {
+            display: none;
+            animation: fadeIn 0.4s ease-out forwards;
+        }
+
+        .step-content.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .step-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: white;
+        }
+
+        .step-desc {
+            color: var(--text-muted);
+            margin-bottom: 2rem;
+            font-size: 0.95rem;
+        }
+
+        /* Form Controls */
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+        }
+
+        label {
+            display: block;
+            font-size: 0.85rem;
+            font-weight: 500;
+            color: var(--text-muted);
+            margin-bottom: 0.5rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        input[type="text"],
+        input[type="email"],
+        input[type="tel"],
+        textarea {
+            width: 100%;
+            background: var(--input-bg);
+            border: 1px solid var(--glass-border);
+            color: white;
+            padding: 1rem 1.25rem;
+            border-radius: 12px;
+            font-family: 'Inter', sans-serif;
+            font-size: 1rem;
+            transition: var(--transition);
+        }
+
+        input:focus,
+        textarea:focus {
+            outline: none;
+            border-color: var(--accent-blue);
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
+        }
+
+        textarea {
+            min-height: 120px;
+            resize: vertical;
+        }
+
+        /* File Upload Zone */
+        .upload-zone {
+            border: 2px dashed var(--glass-border);
+            border-radius: 12px;
+            padding: 2rem;
+            text-align: center;
+            cursor: pointer;
+            transition: var(--transition);
+            background: rgba(0,0,0,0.1);
+        }
+
+        .upload-zone:hover {
+            border-color: var(--accent-blue);
+            background: rgba(59, 130, 246, 0.05);
+        }
+
+        .upload-zone.success {
+            border-color: #10B981;
+            background: rgba(16, 185, 129, 0.05);
+        }
+        .upload-zone.success svg {
+            fill: #10B981;
+        }
+        .upload-zone.success .upload-text strong {
+            color: #10B981;
+        }
+
+        .upload-zone svg {
+            width: 32px;
+            height: 32px;
+            fill: var(--text-muted);
+            margin-bottom: 1rem;
+            transition: var(--transition);
+        }
+
+        .upload-zone:hover svg {
+            fill: var(--accent-blue);
+        }
+
+        .upload-text {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+        }
+
+        .upload-text strong {
+            color: white;
+        }
+
+        .file-input {
+            display: none;
+        }
+
+        /* Controls / Buttons */
+        .wizard-controls {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 3rem;
+            padding-top: 2rem;
+            border-top: 1px solid var(--glass-border);
+        }
+
+        .btn {
+            padding: 0.875rem 2rem;
+            border-radius: 12px;
+            font-family: 'Inter', sans-serif;
+            font-weight: 600;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: var(--transition);
+            border: none;
+        }
+
+        .btn-secondary {
+            background: transparent;
+            color: white;
+            border: 1px solid var(--glass-border);
+        }
+
+        .btn-secondary:hover {
+            background: var(--glass-highlight);
+        }
+
+        .btn-primary {
+            background: var(--accent-blue);
+            color: white;
+            box-shadow: 0 4px 14px 0 rgba(59, 130, 246, 0.39);
+        }
+
+        .btn-primary:hover {
+            background: #2563EB;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(59, 130, 246, 0.5);
+        }
+
+        /* Preview Step Styling */
+        .preview-container {
+            background: white;
+            border-radius: 8px;
+            padding: 2rem;
+            color: black;
+            font-family: 'Times New Roman', Times, serif;
+            position: relative;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            text-align: center;
+        }
+        
+        .preview-title {
+            font-size: 1.8rem;
+            font-weight: bold;
+            margin-bottom: 1rem;
+        }
+
+        .preview-copy {
+            font-size: 1.1rem;
+            line-height: 1.5;
+            margin-bottom: 2rem;
+        }
+
+        .preview-footer {
+            border-top: 1px solid #ccc;
+            padding-top: 1rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-family: 'Arial', sans-serif;
+            font-size: 0.85rem;
+            color: #555;
+        }
+
+        /* Responsive */
+        @media (max-width: 640px) {
+            .form-row {
+                grid-template-columns: 1fr;
+                gap: 0;
+            }
+            .glass-panel {
+                padding: 2rem 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="ambient-glow"></div>
+    <div class="ambient-glow right"></div>
+
+    <div class="configurator-wrapper">
+        
+        <div class="header">
+            <h1>250 Strong Coloring Book Configurator</h1>
+            <p>Customize your white-labeled coloring book in seconds.</p>
+        </div>
+
+        <div class="glass-panel">
+            
+            <div class="progress-container">
+                <div class="progress-line" id="progressLine"></div>
+                <div class="step-indicator active" data-step="1">1</div>
+                <div class="step-indicator" data-step="2">2</div>
+                <div class="step-indicator" data-step="3">3</div>
+                <div class="step-indicator" data-step="4">4</div>
+            </div>
+
+            <!-- STEP 1: Details -->
+            <div class="step-content active" id="step1">
+                <h2 class="step-title">Brand Identity</h2>
+                <p class="step-desc">Enter the contact information that will appear on the back cover.</p>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="companyName">Company / Agent Name</label>
+                        <input type="text" id="companyName" placeholder="e.g. Acme Realty">
+                    </div>
+                    <div class="form-group">
+                        <label for="phone">Phone Number</label>
+                        <input type="tel" id="phone" placeholder="(555) 123-4567">
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="email">Email Address</label>
+                        <input type="email" id="email" placeholder="agent@example.com">
+                    </div>
+                    <div class="form-group">
+                        <label for="website">Website URL</label>
+                        <input type="text" id="website" placeholder="www.yourwebsite.com">
+                    </div>
+                </div>
+            </div>
+
+            <!-- STEP 2: Messaging -->
+            <div class="step-content" id="step2">
+                <h2 class="step-title">Custom Messaging</h2>
+                <p class="step-desc">Write the headline and paragraph copy that sells your services.</p>
+                
+                <div class="form-group">
+                    <label for="headline">Headline</label>
+                    <input type="text" id="headline" value="Celebrate 250 Years of American Freedom." placeholder="Your Headline Here (e.g., Proud to Serve Our Community)">
+                </div>
+                <div class="form-group" style="position: relative;">
+                    <label for="copy" style="display: flex; justify-content: space-between; align-items: center;">
+                        <span>Ad Copy / Paragraph</span>
+                        <button type="button" class="btn btn-secondary" style="padding: 0.4rem 0.8rem; font-size: 0.8rem; border-radius: 8px; color: #D4AF37; border-color: #D4AF37;" onclick="generateAICopy()">✨ Generate with AI</button>
+                    </label>
+                    <textarea id="copy" placeholder="Replace this paragraph with your custom copy here to explain your services...">EDIT THIS COPY: 250 Strong, Built By Hand is a celebration of American grit — 24 pages of stories you may have never known, paired with original illustrations honoring the makers, builders, and dreamers who've shaped this country from 1776 to 2026. Download it, print the pages you love, and share it with your kids, your parents, your neighbors, your veterans, your team at work — anyone old enough to hold a colored pencil and proud enough to call themselves American. Color one page or all twenty-four. Frame your favorite. Pin it to the fridge. It's yours to keep, yours to share, and built to outlast the noise.</textarea>
+                </div>
+            </div>
+
+            <!-- STEP 3: Assets -->
+            <div class="step-content" id="step3">
+                <h2 class="step-title">Visual Assets</h2>
+                <p class="step-desc">Upload your logos and photos. (Preview feature handles layout automatically).</p>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Hero Graphic (Recommended 816 x 422 pixels)</label>
+                        <div class="upload-zone" onclick="document.getElementById('heroUpload').click()">
+                            <svg viewBox="0 0 24 24" id="heroIcon"><path d="M19.35 10.04A7.49 7.49 0 0012 4C9.11 4 6.6 5.64 5.35 8.04A5.994 5.994 0 000 14c0 3.31 2.69 6 6 6h13c2.76 0 5-2.24 5-5 0-2.64-2.05-4.78-4.65-4.96zM14 13v4h-4v-4H7l5-5 5 5h-3z"/></svg>
+                            <p class="upload-text" id="heroText"><strong>Click to upload</strong> hero graphic</p>
+                            <input type="file" id="heroUpload" class="file-input" accept="image/*" onchange="handleUpload(this, 'heroIcon', 'heroText')">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Secondary Graphic (Recommended 260 x 200 pixels)</label>
+                        <div class="upload-zone" onclick="document.getElementById('interiorUpload').click()">
+                            <svg viewBox="0 0 24 24" id="interiorIcon"><path d="M19.35 10.04A7.49 7.49 0 0012 4C9.11 4 6.6 5.64 5.35 8.04A5.994 5.994 0 000 14c0 3.31 2.69 6 6 6h13c2.76 0 5-2.24 5-5 0-2.64-2.05-4.78-4.65-4.96zM14 13v4h-4v-4H7l5-5 5 5h-3z"/></svg>
+                            <p class="upload-text" id="interiorText"><strong>Click to upload</strong> secondary graphic</p>
+                            <input type="file" id="interiorUpload" class="file-input" accept="image/*" onchange="handleUpload(this, 'interiorIcon', 'interiorText')">
+                        </div>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Company Logo (Recommended 350 x 110 pixels)</label>
+                        <div class="upload-zone" onclick="document.getElementById('logoUpload').click()">
+                            <svg viewBox="0 0 24 24" id="logoIcon"><path d="M19.35 10.04A7.49 7.49 0 0012 4C9.11 4 6.6 5.64 5.35 8.04A5.994 5.994 0 000 14c0 3.31 2.69 6 6 6h13c2.76 0 5-2.24 5-5 0-2.64-2.05-4.78-4.65-4.96zM14 13v4h-4v-4H7l5-5 5 5h-3z"/></svg>
+                            <p class="upload-text" id="logoText"><strong>Click to upload</strong> logo</p>
+                            <input type="file" id="logoUpload" class="file-input" accept="image/*" onchange="handleUpload(this, 'logoIcon', 'logoText')">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Headshot Graphic (Optional) (Recommended 180 x 180 pixels)</label>
+                        <div class="upload-zone" onclick="document.getElementById('headshotUpload').click()">
+                            <svg viewBox="0 0 24 24" id="headshotIcon"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
+                            <p class="upload-text" id="headshotText"><strong>Click to upload</strong> headshot graphic</p>
+                            <input type="file" id="headshotUpload" class="file-input" accept="image/*" onchange="handleUpload(this, 'headshotIcon', 'headshotText')">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- STEP 4: Preview -->
+            <div class="step-content" id="step4">
+                <h2 class="step-title">Final Review</h2>
+                <p class="step-desc">Here is a quick preview of your layout data. Ready to generate the PDF?</p>
+                
+                <div style="display: flex; justify-content: center; align-items: flex-start; background: rgba(0,0,0,0.2); padding: 2rem; border-radius: 12px; border: 1px solid var(--glass-border); overflow: hidden; height: 600px;">
+                    <div style="width: 816px; height: 1056px; transform: scale(0.5); transform-origin: top center; flex-shrink: 0;">
+                        <iframe id="previewIframe" style="width: 100%; height: 100%; border: none; box-shadow: 0 20px 50px rgba(0,0,0,0.5); background: white;"></iframe>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Navigation Controls -->
+            <div class="wizard-controls">
+                <button class="btn btn-secondary" id="btnBack" style="visibility: hidden;">Go Back</button>
+                <button class="btn btn-primary" id="btnNext">Continue Step</button>
+                <button class="btn btn-primary" id="btnGenerate" style="display: none;">Complete Order</button>
+            </div>
+
+        </div>
+    </div>
+
+    <script>
+        // Wizard Logic
+        let currentStep = 1;
+        const totalSteps = 4;
+
+        function handleUpload(input, iconId, textId) {
+            if (input.files && input.files[0]) {
+                const zone = input.closest('.upload-zone');
+                const text = document.getElementById(textId);
+                const icon = document.getElementById(iconId);
+                
+                zone.classList.add('success');
+                text.innerHTML = `<strong>Uploaded:</strong> ${input.files[0].name}`;
+                icon.innerHTML = `<path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/>`;
+            }
+        }
+
+        async function generateAICopy() {
+            const headlineEl = document.getElementById('headline');
+            const copyEl = document.getElementById('copy');
+            const bizName = document.getElementById('companyName').value || 'Our company';
+            
+            headlineEl.value = 'Generating...';
+            copyEl.value = 'Generating...';
+            
+            try {
+                const res = await fetch('/api/generate-text', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ companyName: bizName })
+                });
+                
+                if(!res.ok) throw new Error('API Error');
+                
+                const data = await res.json();
+                headlineEl.value = data.headline;
+                copyEl.value = data.copy;
+            } catch(e) {
+                headlineEl.value = '';
+                copyEl.value = '';
+                alert('AI Generation failed. Please try again or write your own copy.');
+            }
+        }
+
+        const btnNext = document.getElementById('btnNext');
+        const btnBack = document.getElementById('btnBack');
+        const btnGenerate = document.getElementById('btnGenerate');
+        const progressLine = document.getElementById('progressLine');
+        
+        function updateWizard() {
+            // Update Step Content
+            document.querySelectorAll('.step-content').forEach((el, index) => {
+                if (index + 1 === currentStep) {
+                    el.classList.add('active');
+                } else {
+                    el.classList.remove('active');
+                }
+            });
+
+            // Update Indicators
+            document.querySelectorAll('.step-indicator').forEach((el, index) => {
+                const stepNum = index + 1;
+                el.classList.remove('active', 'completed');
+                if (stepNum < currentStep) {
+                    el.classList.add('completed');
+                } else if (stepNum === currentStep) {
+                    el.classList.add('active');
+                }
+            });
+
+            // Update Progress Line
+            const progress = ((currentStep - 1) / (totalSteps - 1)) * 100;
+            progressLine.style.width = `${progress}%`;
+
+            // Update Buttons
+            btnBack.style.visibility = currentStep === 1 ? 'hidden' : 'visible';
+            
+            if (currentStep === totalSteps) {
+                btnNext.style.display = 'none';
+                btnGenerate.style.display = 'block';
+                populatePreview();
+            } else {
+                btnNext.style.display = 'block';
+                btnGenerate.style.display = 'none';
+            }
+        }
+
+        // Live Preview Data Mapping
+        async function populatePreview() {
+            try {
+                // Fetch template
+                const res = await fetch('back_cover_template.html');
+                let html = await res.text();
+                
+                // Get form values
+                const data = {
+                    companyName: document.getElementById('companyName').value || 'Your Company Name',
+                    phone: document.getElementById('phone').value || '(555) 012-3456',
+                    email: document.getElementById('email').value || 'example@example.com',
+                    website: document.getElementById('website').value || 'Your website address',
+                    headline: document.getElementById('headline').value || 'Your headline here',
+                    copy: document.getElementById('copy').value || 'Replace this paragraph with your custom copy here to explain your services...'
+                };
+                
+                // Get image URLs using createObjectURL for live preview
+                let logoUrl = 'https://placehold.co/400x150/e0e0e0/555555?text=Replace+Logo+Here';
+                const logoInput = document.getElementById('logoUpload');
+                if (logoInput.files[0]) logoUrl = window.URL.createObjectURL(logoInput.files[0]);
+                
+                let headshotUrl = '';
+                let headshotDisplay = 'none';
+                const headshotInput = document.getElementById('headshotUpload');
+                if (headshotInput.files[0]) {
+                    headshotUrl = window.URL.createObjectURL(headshotInput.files[0]);
+                    headshotDisplay = 'block';
+                }
+                
+                let heroUrl = 'nc_assets/img/configurator/agent_exterior_home.jpeg';
+                const heroInput = document.getElementById('heroUpload');
+                if (heroInput.files[0]) heroUrl = window.URL.createObjectURL(heroInput.files[0]);
+                
+                let interiorUrl = 'nc_assets/img/configurator/agent_interior_home.jpeg';
+                const interiorInput = document.getElementById('interiorUpload');
+                if (interiorInput.files[0]) interiorUrl = window.URL.createObjectURL(interiorInput.files[0]);
+
+                // Replace tokens
+                html = html.replace(/{{COMPANY_NAME}}/g, data.companyName);
+                html = html.replace(/{{PHONE}}/g, data.phone);
+                html = html.replace(/{{EMAIL}}/g, data.email);
+                html = html.replace(/{{WEBSITE}}/g, data.website);
+                html = html.replace(/{{HEADLINE}}/g, data.headline);
+                html = html.replace(/{{COPY}}/g, data.copy);
+                html = html.replace(/{{LOGO_URL}}/g, logoUrl);
+                html = html.replace(/{{HEADSHOT_URL}}/g, headshotUrl);
+                html = html.replace(/{{HEADSHOT_DISPLAY}}/g, headshotDisplay);
+                html = html.replace(/{{HERO_URL}}/g, heroUrl);
+                html = html.replace(/{{INTERIOR_URL}}/g, interiorUrl);
+
+                // Write to iframe
+                const iframe = document.getElementById('previewIframe');
+                const doc = iframe.contentWindow.document;
+                doc.open();
+                doc.write(html);
+                doc.close();
+            } catch (err) {
+                console.error("Error generating preview", err);
+                alert("Preview failed to load. If you opened this file directly, please run 'node server.js' and go to http://localhost:3000/configurator.html instead.");
+            }
+        }
+
+        btnNext.addEventListener('click', () => {
+            if (currentStep < totalSteps) {
+                currentStep++;
+                updateWizard();
+            }
+        });
+
+        btnBack.addEventListener('click', () => {
+            if (currentStep > 1) {
+                currentStep--;
+                updateWizard();
+            }
+        });
+
+        btnGenerate.addEventListener('click', async () => {
+            const originalText = btnGenerate.innerText;
+            btnGenerate.innerText = 'Creating Checkout Session...';
+            btnGenerate.disabled = true;
+            btnGenerate.style.opacity = '0.7';
+
+            try {
+                const formData = new FormData();
+                formData.append('companyName', document.getElementById('companyName').value);
+                formData.append('phone', document.getElementById('phone').value);
+                formData.append('email', document.getElementById('email').value);
+                formData.append('website', document.getElementById('website').value);
+                formData.append('headline', document.getElementById('headline').value);
+                formData.append('copy', document.getElementById('copy').value);
+                
+                const heroInput = document.getElementById('heroUpload');
+                if (heroInput.files[0]) formData.append('heroUpload', heroInput.files[0]);
+                
+                const interiorInput = document.getElementById('interiorUpload');
+                if (interiorInput.files[0]) formData.append('interiorUpload', interiorInput.files[0]);
+                
+                const logoInput = document.getElementById('logoUpload');
+                if (logoInput.files[0]) formData.append('logoUpload', logoInput.files[0]);
+                
+                const headshotInput = document.getElementById('headshotUpload');
+                if (headshotInput.files[0]) formData.append('headshotUpload', headshotInput.files[0]);
+
+                const response = await fetch('/api/checkout-session', {
+                    method: 'POST',
+                    body: formData
+                });
+
+                if (!response.ok) {
+                    throw new Error(`Server error: ${response.statusText}`);
+                }
+
+                const data = await response.json();
+                
+                btnGenerate.innerText = 'Redirecting to Shopify...';
+                btnGenerate.style.background = '#10B981';
+                btnGenerate.style.boxShadow = '0 4px 14px 0 rgba(16, 185, 129, 0.39)';
+                
+                setTimeout(() => {
+                    alert(`In production, you will instantly redirect to Shopify:\n\n${data.checkoutUrl}\n\nWhen payment clears, Shopify hits our webhook and the PDF is generated and emailed!`);
+                    // In production, uncomment the line below:
+                    // window.location.href = data.checkoutUrl;
+                    
+                    btnGenerate.innerText = '✅ Order Pending Payment';
+                }, 1000);
+            } catch (err) {
+                console.error(err);
+                alert('Error creating checkout: ' + err.message);
+                btnGenerate.innerText = 'Try Again';
+                btnGenerate.disabled = false;
+                btnGenerate.style.opacity = '1';
+                btnGenerate.style.background = 'var(--accent-blue)';
+                btnGenerate.style.boxShadow = '0 4px 14px 0 rgba(59, 130, 246, 0.39)';
+            }
+        });
+
+    </script>
+</body>
+</html>

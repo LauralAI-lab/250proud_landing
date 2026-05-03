@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>250PROUD™ | Brand Your Own Coloring Book</title>
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&family=Playfair+Display:ital,wght@0,700;1,600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Oswald:wght@500;700&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --navy: #0A3161;
+            --navy-dark: #071E3D;
+            --red: #B31942;
+            --red-bright: #D31A47;
+            --white: #FFFFFF;
+            --off-white: #F5F0E8;
+            --gold: #B8922A;
+            --gray: #E0E0E0;
+            --gray-dark: #333333;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--off-white);
+            color: var(--navy-dark);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        h1, h2, h3, .heading-font {
+            font-family: 'Oswald', sans-serif;
+            text-transform: uppercase;
+        }
+
+        header {
+            background-color: var(--white);
+            padding: 1.5rem 5%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 2px solid var(--navy);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .logo-container img {
+            height: 100px;
+            width: auto;
+        }
+
+        .badge {
+            background-color: var(--navy);
+            color: var(--white);
+            padding: 0.5rem 1rem;
+            font-weight: 700;
+            font-size: 0.85rem;
+            letter-spacing: 2px;
+            border-radius: 4px;
+            display: inline-block;
+        }
+
+        /* Hero Section */
+        .hero {
+            background: linear-gradient(135deg, var(--navy-dark) 0%, var(--navy) 100%);
+            color: var(--white);
+            padding: 6rem 5%;
+            text-align: center;
+            position: relative;
+        }
+
+        .hero::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml;utf8,<svg width="100" height="100" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"><path d="M50 0 L52 48 L100 50 L52 52 L50 100 L48 52 L0 50 L48 48 Z" fill="rgba(255,255,255,0.03)"/></svg>') repeat;
+            opacity: 0.5;
+            pointer-events: none;
+        }
+
+        .hero h1 {
+            font-size: clamp(2.5rem, 5vw, 4.5rem);
+            margin-bottom: 1.5rem;
+            line-height: 1.1;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+            max-width: 900px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .hero h1 span {
+            color: var(--gold);
+        }
+
+        .lead-text {
+            font-size: 1.25rem;
+            max-width: 800px;
+            margin: 0 auto 3rem;
+            font-weight: 400;
+            color: rgba(255,255,255,0.9);
+        }
+
+        .cta-btn {
+            background-color: var(--red);
+            color: var(--white);
+            border: none;
+            padding: 1.25rem 2.5rem;
+            font-size: 1.2rem;
+            font-weight: 700;
+            font-family: 'Oswald', sans-serif;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            cursor: pointer;
+            border-radius: 4px;
+            text-decoration: none;
+            display: inline-block;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            box-shadow: 0 10px 20px rgba(179, 25, 66, 0.3);
+        }
+
+        .cta-btn:hover {
+            background-color: var(--red-bright);
+            transform: translateY(-2px);
+            box-shadow: 0 15px 25px rgba(179, 25, 66, 0.4);
+        }
+
+        /* Features Section */
+        .features {
+            padding: 5rem 5%;
+            background-color: var(--white);
+            text-align: center;
+        }
+
+        .features h2 {
+            font-size: 2.5rem;
+            color: var(--navy);
+            margin-bottom: 3rem;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .feature-card {
+            background: var(--off-white);
+            border: 1px solid var(--gray);
+            border-radius: 8px;
+            padding: 2.5rem 2rem;
+            transition: transform 0.3s ease;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.05);
+        }
+
+        .icon-circle {
+            width: 80px;
+            height: 80px;
+            background: var(--navy);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1.5rem;
+            color: var(--gold);
+        }
+
+        .icon-circle svg {
+            width: 40px;
+            height: 40px;
+            fill: currentColor;
+        }
+
+        .feature-card h3 {
+            font-size: 1.5rem;
+            color: var(--navy-dark);
+            margin-bottom: 1rem;
+        }
+
+        .feature-card p {
+            color: var(--gray-dark);
+            font-size: 1rem;
+        }
+
+        /* Demo/Pricing Section */
+        .pricing-section {
+            padding: 5rem 5%;
+            background-color: var(--navy);
+            color: var(--white);
+            text-align: center;
+        }
+
+        .price-box {
+            background: var(--white);
+            color: var(--navy-dark);
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 3rem;
+            border-radius: 8px;
+            border: 4px solid var(--gold);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+        }
+
+        .price-box h2 {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .price {
+            font-size: 4rem;
+            font-family: 'Oswald', sans-serif;
+            color: var(--red);
+            font-weight: 700;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .price span {
+            font-size: 1.5rem;
+            color: var(--gray-dark);
+            text-transform: uppercase;
+            font-weight: 500;
+        }
+
+        .price-features {
+            list-style: none;
+            margin: 2rem 0;
+            text-align: left;
+        }
+
+        .price-features li {
+            margin-bottom: 1rem;
+            font-size: 1.1rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .price-features li::before {
+            content: '★';
+            color: var(--gold);
+            font-size: 1.2rem;
+        }
+
+        footer {
+            background-color: var(--navy-dark);
+            color: var(--white);
+            text-align: center;
+            padding: 3rem 5%;
+        }
+
+        @media (max-width: 768px) {
+            header {
+                flex-direction: column;
+                gap: 1rem;
+            }
+            .hero {
+                padding: 4rem 5%;
+            }
+            .price-box {
+                padding: 2rem;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <header>
+        <div class="logo-container">
+            <img src="nc_assets/img/logo.svg" alt="250PROUD™ Official Logo">
+        </div>
+        <div class="header-badge">
+            <span class="badge">B2B PARTNERSHIP PROGRAM</span>
+        </div>
+    </header>
+
+    <section class="hero">
+        <h1>BRAND THE <span>250PROUD™</span> COLORING BOOK AS YOUR OWN</h1>
+        <p class="lead-text">The perfect digital closing gift, email blast, or community outreach tool. Upload your logo, add your headshot, and instantly generate a custom-branded digital PDF to email to your clients or print yourself.</p>
+        <a href="configurator.html" class="cta-btn">Try The Live Configurator</a>
+    </section>
+
+    <section class="features">
+        <h2>THE ULTIMATE MARKETING TOOL</h2>
+        <div class="grid">
+            <div class="feature-card">
+                <div class="icon-circle">
+                    <svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-5 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z"/></svg>
+                </div>
+                <h3>100% Custom Back Cover</h3>
+                <p>Upload your company logo, an optional headshot, and a hero graphic. Our system automatically perfectly formats your assets onto the back cover.</p>
+            </div>
+            <div class="feature-card">
+                <div class="icon-circle">
+                    <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/></svg>
+                </div>
+                <h3>AI-Powered Copywriting</h3>
+                <p>Not a writer? No problem. Use our built-in AI assistant to generate patriotic, highly-converting ad copy tailored to your business in seconds.</p>
+            </div>
+            <div class="feature-card">
+                <div class="icon-circle">
+                    <svg viewBox="0 0 24 24"><path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/></svg>
+                </div>
+                <h3>Instant Digital Delivery</h3>
+                <p>Preview your exact cover in real-time. When you're ready, complete your order to instantly download a high-resolution, print-ready PDF file.</p>
+            </div>
+        </div>
+    </section>
+
+    <section class="pricing-section">
+        <div class="price-box">
+            <h2>UNLIMITED PRINT LICENSE</h2>
+            <div class="price">
+                $19.99 <span>/ ONE-TIME</span>
+            </div>
+            <p style="color: var(--gray-dark); margin-bottom: 1.5rem;">No subscriptions. No hidden fees. Own it forever.</p>
+            
+            <ul class="price-features">
+                <li>High-resolution 8.5" x 11" printable PDF</li>
+                <li>Full 24-page 250PROUD™ coloring book interior</li>
+                <li>Your custom-branded back cover</li>
+                <li>Unlimited printing rights for your business</li>
+                <li>Instant delivery upon checkout</li>
+            </ul>
+
+            <a href="configurator.html" class="cta-btn" style="width: 100%; margin-top: 1rem;">Build Yours Now</a>
+        </div>
+    </section>
+
+    <footer>
+        <p>© 2026 250PROUD™ | A Lauralai LLC Brand</p>
+    </footer>
+
+</body>
+</html>

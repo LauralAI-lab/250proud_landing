@@ -222,6 +222,7 @@
         input[type="text"],
         input[type="email"],
         input[type="tel"],
+        input[type="password"],
         textarea {
             width: 100%;
             background: var(--input-bg);
@@ -377,6 +378,13 @@
 
         /* Responsive */
         @media (max-width: 640px) {
+            .preview-iframe-inner {
+                transform: scale(0.38) !important;
+            }
+            .preview-iframe-wrapper {
+                height: 480px !important;
+                padding: 1rem !important;
+            }
             .form-row {
                 grid-template-columns: 1fr;
                 gap: 0;
@@ -384,6 +392,95 @@
             .glass-panel {
                 padding: 2rem 1.5rem;
             }
+
+        @media (max-width: 400px) {
+            .preview-iframe-inner {
+                transform: scale(0.32) !important;
+            }
+            .preview-iframe-wrapper {
+                height: 400px !important;
+                padding: 0.5rem !important;
+            }
+        }
+        }
+        
+        /* Stock Graphics Modal */
+        .stock-modal-overlay {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.8);
+            backdrop-filter: blur(8px);
+            z-index: 100;
+            display: none;
+            justify-content: center;
+            align-items: center;
+        }
+        .stock-modal {
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            width: 90%;
+            max-width: 800px;
+            max-height: 80vh;
+            border-radius: 12px;
+            padding: 2rem;
+            overflow-y: auto;
+            position: relative;
+        }
+        .stock-modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            border-bottom: 1px solid var(--glass-border);
+            padding-bottom: 1rem;
+        }
+        .stock-modal-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: white;
+            margin: 0;
+        }
+        .stock-close-btn {
+            background: transparent;
+            border: none;
+            color: white;
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+        .stock-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 1rem;
+        }
+        .stock-item {
+            border-radius: 8px;
+            overflow: hidden;
+            cursor: pointer;
+            border: 2px solid transparent;
+            transition: all 0.2s ease;
+            position: relative;
+            background: #111;
+            aspect-ratio: 16/9;
+        }
+        .stock-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+        }
+        .stock-item:hover {
+            border-color: var(--accent-blue);
+            transform: scale(1.02);
+        }
+        .stock-btn-link {
+            display: inline-block;
+            margin-top: 0.5rem;
+            color: var(--accent-blue);
+            text-decoration: underline;
+            font-size: 0.85rem;
+            cursor: pointer;
+            text-align: center;
+            width: 100%;
         }
     </style>
 </head>
@@ -394,9 +491,20 @@
 
     <div class="configurator-wrapper">
         
-        <div class="header">
-            <h1>250 Strong Coloring Book Configurator</h1>
-            <p>Customize your white-labeled coloring book in seconds.</p>
+        <header style="padding: 1.5rem 5%; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(255,255,255,0.1); background: rgba(0,0,0,0.2); position: relative; z-index: 10; margin-bottom: 2rem; border-radius: 12px;">
+            <div class="logo-container">
+                <a href="index.html">
+                    <img src="nc_assets/img/logo.svg" alt="250PROUD™ Official Logo" style="height: 150px; width: auto; filter: brightness(0) invert(1);">
+                </a>
+            </div>
+            <div>
+                <a href="index.html" style="color: white; text-decoration: none; font-weight: 700; font-family: 'Oswald', sans-serif; text-transform: uppercase; font-size: 1rem; border: 1px solid rgba(255,255,255,0.3); padding: 0.5rem 1.5rem; border-radius: 6px; transition: background 0.2s;">← Return to Main Page</a>
+            </div>
+        </header>
+
+        <div style="text-align: center; margin-bottom: 2rem;">
+            <h1 style="color: white; font-family: 'Oswald', sans-serif; font-size: 2.5rem; letter-spacing: 1px;">250 Strong Configurator</h1>
+            <p style="color: var(--text-muted); font-size: 1.1rem;">Customize your white-labeled coloring book in seconds.</p>
         </div>
 
         <div class="glass-panel">
@@ -407,6 +515,7 @@
                 <div class="step-indicator" data-step="2">2</div>
                 <div class="step-indicator" data-step="3">3</div>
                 <div class="step-indicator" data-step="4">4</div>
+                <div class="step-indicator" data-step="5">5</div>
             </div>
 
             <!-- STEP 1: Details -->
@@ -443,14 +552,24 @@
                 
                 <div class="form-group">
                     <label for="headline">Headline</label>
-                    <input type="text" id="headline" value="Celebrate 250 Years of American Freedom." placeholder="Your Headline Here (e.g., Proud to Serve Our Community)">
+                    <input type="text" id="headline" value="Building Communities Since 1776. Proudly Supported by Our Company." placeholder="Your Headline Here (e.g., Proud to Serve Our Community)">
                 </div>
                 <div class="form-group" style="position: relative;">
-                    <label for="copy" style="display: flex; justify-content: space-between; align-items: center;">
+                    <label for="copy" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
                         <span>Ad Copy / Paragraph</span>
-                        <button type="button" class="btn btn-secondary" style="padding: 0.4rem 0.8rem; font-size: 0.8rem; border-radius: 8px; color: #D4AF37; border-color: #D4AF37;" onclick="generateAICopy()">✨ Generate with AI</button>
+                        <div style="display: flex; gap: 10px;">
+                            <select id="aiIndustry" style="background: white; border: 1px solid var(--glass-border); color: black; border-radius: 8px; padding: 0.4rem; font-size: 0.8rem; font-family: 'Inter', sans-serif;">
+                                <option value="Real Estate" selected>Real Estate Agent</option>
+                                <option value="Corporate">General Corporate</option>
+                                <option value="Mortgage">Mortgage Broker</option>
+                                <option value="Insurance">Insurance Agency</option>
+                                <option value="Home Services">Home Services / Trades</option>
+                                <option value="Wealth Management">Wealth Management</option>
+                            </select>
+                            <button type="button" class="btn btn-secondary" style="padding: 0.4rem 0.8rem; font-size: 0.8rem; border-radius: 8px; color: #D4AF37; border-color: #D4AF37;" onclick="generateAICopy()">✨ Generate with AI</button>
+                        </div>
                     </label>
-                    <textarea id="copy" placeholder="Replace this paragraph with your custom copy here to explain your services...">EDIT THIS COPY: 250 Strong, Built By Hand is a celebration of American grit — 24 pages of stories you may have never known, paired with original illustrations honoring the makers, builders, and dreamers who've shaped this country from 1776 to 2026. Download it, print the pages you love, and share it with your kids, your parents, your neighbors, your veterans, your team at work — anyone old enough to hold a colored pencil and proud enough to call themselves American. Color one page or all twenty-four. Frame your favorite. Pin it to the fridge. It's yours to keep, yours to share, and built to outlast the noise.</textarea>
+                    <textarea id="copy" placeholder="Replace this paragraph with your custom copy here to explain your services...">America was built on the idea of home—a place to raise a family, build a future, and put down roots. For 250 years, the American dream of homeownership has driven our nation forward. At Our Company, we help families find their piece of that dream. Enjoy this exclusive 24-page coloring book celebrating the history and heroes of the land we love.</textarea>
                 </div>
             </div>
 
@@ -461,7 +580,10 @@
                 
                 <div class="form-row">
                     <div class="form-group">
-                        <label>Hero Graphic (Recommended 816 x 422 pixels)</label>
+                        <label style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
+                            <span>Hero Graphic (Recommended 816 x 422 pixels)</span>
+                            <!-- <button type="button" class="btn btn-secondary" style="padding: 0.3rem 0.6rem; font-size: 0.75rem; border-radius: 6px; color: var(--accent-blue); border-color: var(--accent-blue);" onclick="openStockModal('hero')">📸 Browse Stock Library</button> -->
+                        </label>
                         <div class="upload-zone" onclick="document.getElementById('heroUpload').click()">
                             <svg viewBox="0 0 24 24" id="heroIcon"><path d="M19.35 10.04A7.49 7.49 0 0012 4C9.11 4 6.6 5.64 5.35 8.04A5.994 5.994 0 000 14c0 3.31 2.69 6 6 6h13c2.76 0 5-2.24 5-5 0-2.64-2.05-4.78-4.65-4.96zM14 13v4h-4v-4H7l5-5 5 5h-3z"/></svg>
                             <p class="upload-text" id="heroText"><strong>Click to upload</strong> hero graphic</p>
@@ -469,7 +591,10 @@
                         </div>
                     </div>
                     <div class="form-group">
-                        <label>Secondary Graphic (Recommended 260 x 200 pixels)</label>
+                        <label style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
+                            <span>Secondary Graphic (Recommended 260 x 200 pixels)</span>
+                            <!-- <button type="button" class="btn btn-secondary" style="padding: 0.3rem 0.6rem; font-size: 0.75rem; border-radius: 6px; color: var(--accent-blue); border-color: var(--accent-blue);" onclick="openStockModal('interior')">📸 Browse Stock Library</button> -->
+                        </label>
                         <div class="upload-zone" onclick="document.getElementById('interiorUpload').click()">
                             <svg viewBox="0 0 24 24" id="interiorIcon"><path d="M19.35 10.04A7.49 7.49 0 0012 4C9.11 4 6.6 5.64 5.35 8.04A5.994 5.994 0 000 14c0 3.31 2.69 6 6 6h13c2.76 0 5-2.24 5-5 0-2.64-2.05-4.78-4.65-4.96zM14 13v4h-4v-4H7l5-5 5 5h-3z"/></svg>
                             <p class="upload-text" id="interiorText"><strong>Click to upload</strong> secondary graphic</p>
@@ -497,13 +622,41 @@
                 </div>
             </div>
 
-            <!-- STEP 4: Preview -->
+            <!-- STEP 4: Account Creation -->
             <div class="step-content" id="step4">
+                <h2 class="step-title">Resource Center Account</h2>
+                <p class="step-desc">Create your login to access your free Marketing Resource Center.</p>
+                
+                <div class="form-group">
+                    <label for="accountEmail">Resource Center Login Email</label>
+                    <input type="email" id="accountEmail" placeholder="agent@company.com" required>
+                    <small style="color: var(--text-muted); display: block; margin-top: 5px;">This is the email you will use to log in and manage your AI copy and graphics.</small>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="password">Password</label>
+                        <input type="password" id="password" placeholder="At least 8 characters" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="confirmPassword">Confirm Password</label>
+                        <input type="password" id="confirmPassword" placeholder="Must match password" required>
+                        <small id="passwordStatus" style="color: #EF4444; display: block; margin-top: 5px;"></small>
+                    </div>
+                </div>
+            </div>
+
+            <!-- STEP 5: Preview -->
+            <div class="step-content" id="step5">
                 <h2 class="step-title">Final Review</h2>
                 <p class="step-desc">Here is a quick preview of your layout data. Ready to generate the PDF?</p>
                 
-                <div style="display: flex; justify-content: center; align-items: flex-start; background: rgba(0,0,0,0.2); padding: 2rem; border-radius: 12px; border: 1px solid var(--glass-border); overflow: hidden; height: 600px;">
-                    <div style="width: 816px; height: 1056px; transform: scale(0.5); transform-origin: top center; flex-shrink: 0;">
+                <div style="background-color: rgba(212, 175, 55, 0.1); border-left: 4px solid #D4AF37; padding: 1rem; border-radius: 4px; margin-bottom: 2rem;">
+                    <strong style="color: white; display: block; margin-bottom: 0.3rem;">⚠️ Important Delivery Note</strong>
+                    <p style="margin: 0; color: #e2e8f0; font-size: 0.9rem;">Your custom PDFs and access to the Marketing Resource Center will be emailed to you immediately after checkout. <strong>Please check your Spam or Junk folder</strong> if you do not see the email in your inbox within 2 minutes.</p>
+                </div>
+                
+                <div class="preview-iframe-wrapper" style="display: flex; justify-content: center; align-items: flex-start; background: rgba(0,0,0,0.2); padding: 2rem; border-radius: 12px; border: 1px solid var(--glass-border); overflow: hidden; height: 600px;">
+                    <div class="preview-iframe-inner" style="width: 816px; height: 1056px; transform: scale(0.5); transform-origin: top center; flex-shrink: 0;">
                         <iframe id="previewIframe" style="width: 100%; height: 100%; border: none; box-shadow: 0 20px 50px rgba(0,0,0,0.5); background: white;"></iframe>
                     </div>
                 </div>
@@ -519,10 +672,127 @@
         </div>
     </div>
 
+    <!-- Stock Graphics Modal (Disabled for launch)
+    <div class="stock-modal-overlay" id="stockModalOverlay">
+        <div class="stock-modal">
+            <div class="stock-modal-header">
+                <h3 class="stock-modal-title" id="stockModalTitle">Select a Graphic</h3>
+                <button class="stock-close-btn" onclick="closeStockModal()">×</button>
+            </div>
+            <p style="color: var(--text-muted); margin-bottom: 1.5rem; font-size: 0.9rem;">Choose from our curated library of premium royalty-free images.</p>
+            <div class="stock-grid" id="stockGrid">
+                <!-- Images will be injected here via JS -->
+            </div>
+        </div>
+    </div>
+    -->
+
     <script>
         // Wizard Logic
         let currentStep = 1;
-        const totalSteps = 4;
+        const totalSteps = 5;
+
+        // Industry Templates matching server.js
+        const industryTemplates = {
+            "Real Estate": {
+                headline: "Building Communities Since 1776. Proudly Supported by {companyName}.",
+                copy: "America was built on the idea of home—a place to raise a family, build a future, and put down roots. For 250 years, the American dream of homeownership has driven our nation forward. At {companyName}, we help families find their piece of that dream. Enjoy this exclusive 24-page coloring book celebrating the history and heroes of the land we love."
+            },
+            "Corporate": {
+                headline: "Built on Grit. Proudly Supported by {companyName}.",
+                copy: "For 250 years, this country has been sustained by those who wake up early, work hard, and put family first. At {companyName}, we share those exact values. That's why we're thrilled to gift you '250 Strong, Built By Hand'. This exclusive 24-page collection features beautifully detailed illustrations of American history and local heroes. Print it out, grab some colored pencils, and take a moment to reflect on the freedoms we cherish."
+            },
+            "Mortgage": {
+                headline: "Financing the American Dream. Proudly Supported by {companyName}.",
+                copy: "From the first homesteaders to modern-day neighborhoods, America was built by those who invested in their future. At {companyName}, we are proud to help families finance their piece of the American Dream. Grab some colored pencils and enjoy this 24-page tribute to the history, grit, and enduring spirit of this great nation."
+            },
+            "Insurance": {
+                headline: "Protecting What Matters. Proudly Supported by {companyName}.",
+                copy: "For 250 years, Americans have worked tirelessly to build businesses, homes, and legacies. At {companyName}, we exist to protect what you’ve built. As we celebrate our nation’s history, we invite you to enjoy '250 Strong, Built By Hand'. Share this 24-page coloring book with your family and reflect on the enduring strength of the American spirit."
+            },
+            "Home Services": {
+                headline: "Built By Hand. Maintained With Pride by {companyName}.",
+                copy: "This country wasn't built in a boardroom; it was built by tradesmen, builders, and hard workers who weren't afraid to get their hands dirty. At {companyName}, we honor that tradition of hard work every day. Enjoy this beautiful 24-page coloring book celebrating the makers and builders of America's 250-year history."
+            },
+            "Wealth Management": {
+                headline: "Securing Legacies. Proudly Supported by {companyName}.",
+                copy: "America’s 250-year history is a testament to vision, planning, and perseverance. At {companyName}, we help families and businesses plan for the long term so they can leave a lasting legacy. We hope you enjoy this 24-page coloring book highlighting the pivotal moments and everyday heroes that built our nation's incredible wealth of history."
+            }
+        };
+
+        let userHasModifiedHeadline = false;
+        let userHasModifiedCopy = false;
+
+        async function updateMessagingTemplates(useServer = false) {
+            const companyName = document.getElementById('companyName').value.trim() || 'Our Company';
+            const industry = document.getElementById('aiIndustry').value;
+
+            if (useServer) {
+                // Fetch directly from server endpoint to get latest template data
+                try {
+                    const res = await fetch('/api/generate-text', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ companyName: companyName, industry: industry })
+                    });
+                    if (res.ok) {
+                        const data = await res.json();
+                        if (!userHasModifiedHeadline) {
+                            document.getElementById('headline').value = data.headline;
+                        }
+                        if (!userHasModifiedCopy) {
+                            document.getElementById('copy').value = data.copy;
+                        }
+                        return;
+                    }
+                } catch (e) {
+                    console.warn("Failed to fetch templates from server, falling back to client-side logic", e);
+                }
+            }
+
+            // Client-side fallback / local sync for fast keystrokes
+            const template = industryTemplates[industry] || industryTemplates["Corporate"];
+            if (!userHasModifiedHeadline) {
+                document.getElementById('headline').value = template.headline.replace(/{companyName}/g, companyName);
+            }
+            if (!userHasModifiedCopy) {
+                document.getElementById('copy').value = template.copy.replace(/{companyName}/g, companyName);
+            }
+        }
+
+        // Initialize event listeners for dynamic templating
+        document.addEventListener('DOMContentLoaded', () => {
+            const companyInput = document.getElementById('companyName');
+            const industrySelect = document.getElementById('aiIndustry');
+            const headlineInput = document.getElementById('headline');
+            const copyTextarea = document.getElementById('copy');
+
+            if (companyInput) {
+                companyInput.addEventListener('input', () => {
+                    updateMessagingTemplates(false); // fast local update on input
+                });
+            }
+
+            if (industrySelect) {
+                industrySelect.addEventListener('change', () => {
+                    userHasModifiedHeadline = false;
+                    userHasModifiedCopy = false;
+                    updateMessagingTemplates(true); // fetch fresh copy from server on dropdown change
+                });
+            }
+
+            if (headlineInput) {
+                headlineInput.addEventListener('input', () => {
+                    userHasModifiedHeadline = true;
+                });
+            }
+
+            if (copyTextarea) {
+                copyTextarea.addEventListener('input', () => {
+                    userHasModifiedCopy = true;
+                });
+            }
+        });
 
         function handleUpload(input, iconId, textId) {
             if (input.files && input.files[0]) {
@@ -540,6 +810,7 @@
             const headlineEl = document.getElementById('headline');
             const copyEl = document.getElementById('copy');
             const bizName = document.getElementById('companyName').value || 'Our company';
+            const industry = document.getElementById('aiIndustry').value;
             
             headlineEl.value = 'Generating...';
             copyEl.value = 'Generating...';
@@ -548,7 +819,7 @@
                 const res = await fetch('/api/generate-text', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ companyName: bizName })
+                    body: JSON.stringify({ companyName: bizName, industry: industry })
                 });
                 
                 if(!res.ok) throw new Error('API Error');
@@ -683,32 +954,122 @@
             }
         });
 
+        // Image Compression Helper
+        async function compressImage(file, maxWidth = 1500) {
+            return new Promise((resolve) => {
+                if (!file || !file.type.startsWith('image/')) {
+                    resolve(file);
+                    return;
+                }
+                const reader = new FileReader();
+                reader.readAsDataURL(file);
+                reader.onload = event => {
+                    const img = new Image();
+                    img.src = event.target.result;
+                    img.onerror = () => resolve(file); // Fallback to original file on error
+                    img.onload = () => {
+                        try {
+                            const canvas = document.createElement('canvas');
+                            const ctx = canvas.getContext('2d');
+                            
+                            let width = img.width;
+                            let height = img.height;
+                            
+                            if (width > maxWidth) {
+                                height = Math.round((height * maxWidth) / width);
+                                width = maxWidth;
+                            }
+                            
+                            canvas.width = width;
+                            canvas.height = height;
+                            ctx.drawImage(img, 0, 0, width, height);
+                            
+                            canvas.toBlob(blob => {
+                                if (blob) {
+                                    resolve(new File([blob], file.name, {
+                                        type: 'image/jpeg',
+                                        lastModified: Date.now()
+                                    }));
+                                } else {
+                                    resolve(file); // Fallback
+                                }
+                            }, 'image/jpeg', 0.85); // 85% Quality JPEG
+                        } catch (e) {
+                            resolve(file); // Fallback on canvas error (e.g. tainted canvas)
+                        }
+                    };
+                };
+                reader.onerror = () => resolve(file); // Fallback on reader error
+            });
+        }
+
         btnGenerate.addEventListener('click', async () => {
-            const originalText = btnGenerate.innerText;
-            btnGenerate.innerText = 'Creating Checkout Session...';
+            const emailField = document.getElementById('email').value;
+            if (!emailField || !emailField.includes('@') || !emailField.includes('.')) {
+                alert("Please enter a valid email address with an '@' symbol to proceed to checkout.");
+                return;
+            }
+
+            btnGenerate.innerText = 'Compressing Images & Generating...';
             btnGenerate.disabled = true;
             btnGenerate.style.opacity = '0.7';
 
             try {
                 const formData = new FormData();
+                formData.append('industry', document.getElementById('aiIndustry').value);
                 formData.append('companyName', document.getElementById('companyName').value);
+                formData.append('email', emailField);
                 formData.append('phone', document.getElementById('phone').value);
-                formData.append('email', document.getElementById('email').value);
                 formData.append('website', document.getElementById('website').value);
                 formData.append('headline', document.getElementById('headline').value);
                 formData.append('copy', document.getElementById('copy').value);
                 
+                // Account Creation Fields
+                const password = document.getElementById('password').value;
+                const confirmPassword = document.getElementById('confirmPassword').value;
+                const accountEmail = document.getElementById('accountEmail').value;
+                
+                if(!accountEmail) {
+                    alert('Please enter an account email address.');
+                    btnGenerate.innerText = 'Complete Order';
+                    btnGenerate.disabled = false;
+                    btnGenerate.style.opacity = '1';
+                    return;
+                }
+                
+                if(!password) {
+                    alert('Please create a password for your account.');
+                    btnGenerate.innerText = 'Complete Order';
+                    btnGenerate.disabled = false;
+                    btnGenerate.style.opacity = '1';
+                    return;
+                }
+                
+                if(password !== confirmPassword) {
+                    btnGenerate.innerText = 'Complete Order';
+                    btnGenerate.disabled = false;
+                    btnGenerate.style.opacity = '1';
+                    alert('Passwords do not match. Please try again.');
+                    document.getElementById('passwordStatus').innerText = 'Passwords do not match.';
+                    return;
+                }
+                
+                formData.append('accountEmail', document.getElementById('accountEmail').value);
+                const safeName = document.getElementById('companyName').value.replace(/[^a-zA-Z0-9]/g, '').toLowerCase();
+                formData.append('username', safeName + Math.floor(100 + Math.random() * 900));
+                formData.append('password', password);
+                
                 const heroInput = document.getElementById('heroUpload');
-                if (heroInput.files[0]) formData.append('heroUpload', heroInput.files[0]);
+                if (heroInput.files[0]) formData.append('heroUpload', await compressImage(heroInput.files[0]));
                 
                 const interiorInput = document.getElementById('interiorUpload');
-                if (interiorInput.files[0]) formData.append('interiorUpload', interiorInput.files[0]);
+                if (interiorInput.files[0]) formData.append('interiorUpload', await compressImage(interiorInput.files[0]));
                 
                 const logoInput = document.getElementById('logoUpload');
-                if (logoInput.files[0]) formData.append('logoUpload', logoInput.files[0]);
+                if (logoInput.files[0]) formData.append('logoUpload', await compressImage(logoInput.files[0], 800)); // logos smaller
                 
                 const headshotInput = document.getElementById('headshotUpload');
-                if (headshotInput.files[0]) formData.append('headshotUpload', headshotInput.files[0]);
+                if (headshotInput.files[0]) formData.append('headshotUpload', await compressImage(headshotInput.files[0], 800));
 
                 const response = await fetch('/api/checkout-session', {
                     method: 'POST',
@@ -716,7 +1077,12 @@
                 });
 
                 if (!response.ok) {
-                    throw new Error(`Server error: ${response.statusText}`);
+                    let errMsg = response.statusText;
+                    try {
+                        const errData = await response.json();
+                        if (errData.error) errMsg = errData.error;
+                    } catch (e) {}
+                    throw new Error(`Server error (${response.status}): ${errMsg}`);
                 }
 
                 const data = await response.json();
@@ -725,13 +1091,8 @@
                 btnGenerate.style.background = '#10B981';
                 btnGenerate.style.boxShadow = '0 4px 14px 0 rgba(16, 185, 129, 0.39)';
                 
-                setTimeout(() => {
-                    alert(`In production, you will instantly redirect to Shopify:\n\n${data.checkoutUrl}\n\nWhen payment clears, Shopify hits our webhook and the PDF is generated and emailed!`);
-                    // In production, uncomment the line below:
-                    // window.location.href = data.checkoutUrl;
-                    
-                    btnGenerate.innerText = '✅ Order Pending Payment';
-                }, 1000);
+                // Redirect instantly to Shopify!
+                window.location.href = data.checkoutUrl;
             } catch (err) {
                 console.error(err);
                 alert('Error creating checkout: ' + err.message);
@@ -743,6 +1104,93 @@
             }
         });
 
+        // Stock Library Logic (Disabled for launch)
+        /*
+        const stockLibraries = {
+            hero: [
+                'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?auto=format&fit=crop&w=800&q=80',
+                'https://images.unsplash.com/photo-1512917774080-9991f1c4c750?auto=format&fit=crop&w=800&q=80',
+                'https://images.unsplash.com/photo-1580587771525-78b9dba3b914?auto=format&fit=crop&w=800&q=80',
+                'https://images.unsplash.com/photo-1564013799919-ab600027ffc6?auto=format&fit=crop&w=800&q=80',
+                'https://images.unsplash.com/photo-1449844908441-8829872d2607?auto=format&fit=crop&w=800&q=80',
+                'https://images.unsplash.com/photo-1510627498534-ea0fcd90d3e5?auto=format&fit=crop&w=800&q=80'
+            ],
+            interior: [
+                'https://images.unsplash.com/photo-1568605114967-8130f3a36e1f?auto=format&fit=crop&w=600&q=80',
+                'https://images.unsplash.com/photo-1600607686527-6fb886090705?auto=format&fit=crop&w=600&q=80',
+                'https://images.unsplash.com/photo-1484154218962-a197022b5858?auto=format&fit=crop&w=600&q=80',
+                'https://images.unsplash.com/photo-1505843513577-22bb7dc50c4f?auto=format&fit=crop&w=600&q=80',
+                'https://images.unsplash.com/photo-1448630360428-65456885c650?auto=format&fit=crop&w=600&q=80',
+                'https://images.unsplash.com/photo-1558036117-15d82a90b9b1?auto=format&fit=crop&w=600&q=80'
+            ]
+        };
+
+        let currentStockTarget = '';
+
+        function openStockModal(target) {
+            currentStockTarget = target;
+            const modal = document.getElementById('stockModalOverlay');
+            const grid = document.getElementById('stockGrid');
+            const title = document.getElementById('stockModalTitle');
+            
+            title.innerText = target === 'hero' ? 'Select Hero Graphic' : 'Select Secondary Graphic';
+            grid.innerHTML = '';
+            
+            stockLibraries[target].forEach((url, idx) => {
+                const div = document.createElement('div');
+                div.className = 'stock-item';
+                div.onclick = () => selectStockImage(url);
+                div.innerHTML = `<img src="${url}" alt="Stock Image ${idx + 1}"><span class="stock-btn-link">Select this image</span>`;
+                grid.appendChild(div);
+            });
+            
+            modal.style.display = 'flex';
+        }
+
+        function closeStockModal() {
+            document.getElementById('stockModalOverlay').style.display = 'none';
+        }
+
+        async function selectStockImage(url) {
+            const btn = document.querySelector(`.stock-item img[src="${url}"]`).nextElementSibling;
+            const originalText = btn.innerText;
+            btn.innerText = "Downloading...";
+            try {
+                const res = await fetch(url);
+                const blob = await res.blob();
+                const file = new File([blob], `stock_${currentStockTarget}_${Date.now()}.jpg`, { type: 'image/jpeg' });
+                
+                const dataTransfer = new DataTransfer();
+                dataTransfer.items.add(file);
+                
+                const inputId = currentStockTarget === 'hero' ? 'heroUpload' : 'interiorUpload';
+                const inputEl = document.getElementById(inputId);
+                inputEl.files = dataTransfer.files;
+                
+                const iconId = currentStockTarget === 'hero' ? 'heroIcon' : 'interiorIcon';
+                const textId = currentStockTarget === 'hero' ? 'heroText' : 'interiorText';
+                handleUpload(inputEl, iconId, textId);
+                
+                closeStockModal();
+            } catch (err) {
+                console.error(err);
+                alert("Could not load the stock image. Please try another one.");
+                btn.innerText = originalText;
+            }
+        }
+        */
     </script>
+
+    <footer style="background-color: transparent; border-top: 1px solid rgba(255,255,255,0.1); color: var(--text-muted); text-align: center; padding: 3rem 5%; position: relative; z-index: 10; margin-top: 4rem;">
+        <a href="index.html"><img src="nc_assets/img/logo.svg" alt="250PROUD™ White Logo" style="height: 180px; width: auto; filter: brightness(0) invert(1); opacity: 0.7; margin-bottom: 1rem;"></a>
+        <p>&copy; 2026 Lauralai LLC. All rights reserved. 250PROUD™ is a trademark of Lauralai LLC.</p>
+        <p style="font-size: 0.8rem; margin-top: 0.5rem; opacity: 0.7;">Lauralai LLC | 515 Cypress Dr, Long Beach MS, 39560</p>
+        <div style="margin-top: 1.5rem; font-size: 0.9rem;">
+            <a href="terms.html" style="color: var(--text-muted); text-decoration: none; margin: 0 10px; transition: color 0.2s;">Terms of Service</a> |
+            <a href="privacy.html" style="color: var(--text-muted); text-decoration: none; margin: 0 10px; transition: color 0.2s;">Privacy Policy</a> |
+            <a href="licensing.html" style="color: var(--text-muted); text-decoration: none; margin: 0 10px; transition: color 0.2s;">Licensing Terms</a> |
+            <a href="contact.html" style="color: var(--text-muted); text-decoration: none; margin: 0 10px; transition: color 0.2s;">Contact Us</a>
+        </div>
+    </footer>
 </body>
 </html>

@@ -4,18 +4,18 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>250PROUD™ | Official 250PROUD™ Apparel | Coming Soon</title>
+    <title>250PROUD™ | Official 250PROUD™ Coloring Book & Collection | Coming Soon</title>
 
     <!-- SEO Optimization -->
     <meta name="description"
-        content="Secure your limited edition 250PROUD™ merch before July 4th. Sign up now for exclusive early access to the official 250PROUD™ clothing and gear.">
-    <meta name="keywords" content="250PROUD™, 1776, 2026, patriotic apparel, USA clothing, July 4th merch">
+        content="Celebrate America's 250th with the official 250PROUD™ Coloring Book and Apparel Collection. Sign up now for exclusive early access and a free digital gift.">
+    <meta name="keywords" content="250PROUD™, 1776, 2026, patriotic apparel, USA clothing, July 4th merch, coloring book">
     <link rel="canonical" href="https://250proud.net/">
 
     <!-- Open Graph for Social Media -->
-    <meta property="og:title" content="250PROUD™ | Official 250PROUD™ Apparel">
+    <meta property="og:title" content="250PROUD™ | Official 250PROUD™ Coloring Book & Collection">
     <meta property="og:description"
-        content="Secure your limited edition 250PROUD™ merch before July 4th. Sign up now for early access.">
+        content="Celebrate America's Semiquincentennial with the official 250PROUD™ Coloring Book and Apparel Collection.">
     <meta property="og:image" content="nc_assets/img/logo.png">
     <meta property="og:url" content="https://250proud.net">
     <meta property="og:type" content="website">
@@ -111,8 +111,14 @@
         }
 
         .logo-container img {
-            height: 140px;
+            height: 180px;
             width: auto;
+        }
+
+        @media (max-width: 768px) {
+            .logo-container img {
+                height: 120px;
+            }
         }
 
         .badge {
@@ -333,7 +339,7 @@
 
         .footer-logo {
             filter: brightness(0) invert(1);
-            height: 95px;
+            height: 180px;
             margin-bottom: 1rem;
         }
 
@@ -771,6 +777,188 @@
             font-family: 'Inter', sans-serif;
         }
 
+        /* Animated Marquee */
+        .marquee-container {
+            width: 100%;
+            overflow: hidden;
+            background: var(--navy-dark);
+            padding: 4rem 0;
+            position: relative;
+            box-shadow: inset 0 0 30px rgba(0,0,0,0.8);
+        }
+
+        .marquee-track {
+            display: flex;
+            width: max-content;
+            animation: scroll 40s linear infinite;
+        }
+
+        .marquee-track:hover {
+            animation-play-state: paused;
+        }
+
+        .marquee-track img {
+            width: 280px;
+            height: auto;
+            margin: 0 15px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.4);
+            border-radius: 4px;
+        }
+
+        @keyframes scroll {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(-50%); }
+        }
+
+        /* Use Cases Section */
+        .usecases-section {
+            padding: 5rem 5%;
+            background: var(--white);
+            text-align: center;
+        }
+
+        .usecases-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            margin-top: 3rem;
+        }
+
+        .usecase-card {
+            background: var(--off-white);
+            padding: 2.5rem;
+            border-radius: 8px;
+            border-top: 4px solid var(--red);
+            text-align: left;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            transition: transform 0.2s;
+        }
+        
+        .usecase-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .usecase-card h3 {
+            color: var(--navy);
+            margin-bottom: 15px;
+            font-size: 1.4rem;
+        }
+
+        .btn-sample {
+            display: inline-block;
+            margin-top: 3.5rem;
+            padding: 1.2rem 2.5rem;
+            background: linear-gradient(135deg, var(--gold) 0%, #a38125 100%);
+            color: var(--navy-dark);
+            font-family: 'Outfit', sans-serif;
+            font-size: 1.1rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            text-decoration: none;
+            border-radius: 8px;
+            letter-spacing: 2px;
+            transition: transform 0.2s, box-shadow 0.2s;
+            box-shadow: 0 10px 20px rgba(184, 146, 42, 0.3);
+        }
+
+        .btn-sample:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 15px 25px rgba(184, 146, 42, 0.4);
+        }
+
+        /* Look Inside Book Spreads */
+        .look-inside-section {
+            padding: 5rem 5%;
+            background: var(--off-white);
+            text-align: center;
+        }
+
+        .book-spread {
+            display: flex;
+            max-width: 1000px;
+            margin: 3rem auto;
+            background: var(--white);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            border-radius: 8px;
+            overflow: hidden;
+            position: relative;
+        }
+        
+        .book-spread::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            left: 50%;
+            width: 40px;
+            transform: translateX(-50%);
+            background: linear-gradient(to right, rgba(0,0,0,0) 0%, rgba(0,0,0,0.05) 40%, rgba(0,0,0,0.15) 50%, rgba(0,0,0,0.05) 60%, rgba(0,0,0,0) 100%);
+            pointer-events: none;
+        }
+
+        .spread-left, .spread-right {
+            flex: 1;
+            padding: 3rem;
+            text-align: left;
+        }
+        
+        .spread-left {
+            background: #fdfbf7;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .spread-right {
+            background: #ffffff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .spread-right img {
+            width: 100%;
+            height: auto;
+            border: 2px solid #333;
+            border-radius: 4px;
+        }
+
+        .story-era {
+            font-family: 'Oswald', sans-serif;
+            color: var(--gold);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            font-size: 0.9rem;
+            margin-bottom: 10px;
+        }
+
+        .story-headline {
+            font-family: 'Oswald', sans-serif;
+            font-size: 2.2rem;
+            color: var(--navy-dark);
+            margin-bottom: 20px;
+            line-height: 1.2;
+            text-transform: uppercase;
+        }
+
+        .story-fact {
+            font-family: 'Inter', sans-serif;
+            font-size: 1.1rem;
+            color: #444;
+            line-height: 1.6;
+            margin-bottom: 20px;
+        }
+
+        .story-callout {
+            background: rgba(184, 146, 42, 0.1);
+            border-left: 4px solid var(--gold);
+            padding: 15px;
+            font-style: italic;
+            font-family: 'Playfair Display', serif;
+            color: var(--navy);
+            font-size: 1rem;
+        }
+
         @media (max-width: 900px) {
             .preview-wrapper { flex-direction: column; }
             .left-col, .right-col { padding: 40px 30px; }
@@ -779,6 +967,136 @@
             .book-img { width: 200px; }
             .sticker-img { width: 140px; left: 140px; top: 100px; }
             .right-col .row { flex-direction: column; gap: 0; }
+            .marquee-track img { width: 200px; margin: 0 10px; }
+            
+            /* Mobile Book Spread */
+            .book-spread { flex-direction: column; }
+            .book-spread::after { display: none; }
+            .spread-left, .spread-right { padding: 2rem; }
+        }
+
+        /* Hero Bundle Stack */
+        .hero-bundle-stack {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-top: 4rem;
+            position: relative;
+            height: 450px;
+            perspective: 1000px;
+            max-width: 1000px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .bundle-item {
+            position: absolute;
+        }
+
+        .bundle-cap {
+            width: 250px;
+            left: 50%;
+            transform: translateX(-140%) translateY(40px) rotate(-12deg);
+            z-index: 1;
+            background: #fff;
+            padding: 10px;
+            border-radius: 8px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.4);
+        }
+        .bundle-cap img { width: 100%; border-radius: 4px; }
+
+        .bundle-tee {
+            width: 250px;
+            right: 50%;
+            transform: translateX(140%) translateY(40px) rotate(12deg);
+            z-index: 1;
+            background: #fff;
+            padding: 10px;
+            border-radius: 8px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.4);
+        }
+        .bundle-tee img { width: 100%; border-radius: 4px; }
+
+        .bundle-book {
+            width: 340px;
+            left: 50%;
+            transform: translateX(-50%) translateY(-20px);
+            z-index: 2;
+        }
+        .bundle-book img {
+            width: 100%;
+            filter: drop-shadow(0 30px 50px rgba(0,0,0,0.7));
+        }
+
+        @media (max-width: 900px) {
+            .hero-bundle-stack { height: 280px; margin-top: 2rem; }
+            .bundle-cap { width: 150px; transform: translateX(-100%) translateY(30px) rotate(-12deg); }
+            .bundle-tee { width: 150px; transform: translateX(100%) translateY(30px) rotate(12deg); }
+            .bundle-book { width: 220px; transform: translateX(-50%) translateY(0); }
+        }
+
+        /* Shop Now Button styles */
+        .mockups-section h2 {
+            margin-bottom: 1.5rem;
+        }
+
+        .shop-now-container {
+            margin-bottom: 2rem;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .btn-shop-now {
+            display: inline-block;
+            padding: 1.1rem 3rem;
+            background: linear-gradient(135deg, var(--red-bright) 0%, var(--red) 100%);
+            color: var(--white) !important;
+            font-family: 'Outfit', sans-serif;
+            font-size: 1.25rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            text-decoration: none;
+            border-radius: 8px;
+            letter-spacing: 2px;
+            box-shadow: 0 10px 20px rgba(179, 25, 66, 0.3);
+            transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+            position: relative;
+            overflow: hidden;
+            z-index: 1;
+        }
+
+        .btn-shop-now::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(
+                90deg,
+                transparent,
+                rgba(255, 255, 255, 0.2),
+                transparent
+            );
+            transition: all 0.6s ease;
+            z-index: -1;
+        }
+
+        .btn-shop-now:hover::before {
+            left: 100%;
+        }
+
+        .btn-shop-now:hover {
+            transform: translateY(-3px) scale(1.03);
+            box-shadow: 0 15px 30px rgba(179, 25, 66, 0.5);
+            background: linear-gradient(135deg, var(--red) 0%, #901625 100%);
+            color: var(--white) !important;
+        }
+
+        .btn-shop-now:active {
+            transform: translateY(-1px) scale(1.01);
+            box-shadow: 0 5px 15px rgba(179, 25, 66, 0.4);
         }
     </style>
 </head>
@@ -790,9 +1108,9 @@
             <img src="nc_assets/img/logo.svg" alt="250PROUD™ Official Logo">
         </div>
         <div style="display: flex; align-items: center; gap: 1.5rem;">
-            <a href="b2b-configurator.html" style="color: var(--navy); text-decoration: none; font-weight: 700; font-family: 'Oswald', sans-serif; text-transform: uppercase; font-size: 1.1rem; transition: color 0.2s ease;">B2B Program</a>
+            <a href="b2b-configurator.html" style="color: var(--navy); text-decoration: none; font-weight: 700; font-family: 'Oswald', sans-serif; text-transform: uppercase; font-size: 1.1rem; transition: color 0.2s ease;">DIGITAL MARKETING TOOL</a>
             <div class="header-badge">
-                <span class="badge">CREATED FOR PATRIOTIC PEOPLE EVERYWHERE</span>
+                <span class="badge">A UNIQUE WAY TO CELEBRATE AMERICA 250</span>
             </div>
         </div>
     </header>
@@ -800,7 +1118,20 @@
     <section class="hero">
         <span class="coming-soon-ribbon">Site Launching Soon</span>
         <h1>THE OFFICIAL <span>250PROUD™</span> COLLECTION</h1>
-        <p class="urgency-text">Limited edition 250PROUD™ merchandise drops soon. VIP list members get a free gift, first access, access to free merch promotions and exclusive pricing.</p>
+        <p class="urgency-text">Celebrate America's Semiquincentennial with the official 250PROUD™ Coloring Book and Apparel Collection. Sign up for our VIP list to receive a free digital coloring book today. Don't miss out on your opportunity to customize it for your digital marketing. The White Label program comes with free access to a full digital marketing center that includes scripts, graphics and much more!</p>
+        
+        <!-- CSS Tilted Bundle Stack -->
+        <div class="hero-bundle-stack">
+            <div class="bundle-item bundle-cap" style="transform: translateX(-140%) translateY(40px) rotate(-12deg);">
+                <img src="nc_assets/img/eagle_claw_cap_live.jpg" alt="Eagle Claw Cap">
+            </div>
+            <div class="bundle-item bundle-tee" style="transform: translateX(140%) translateY(40px) rotate(12deg);">
+                <img src="nc_assets/img/eagle_blueprint_tee_live.jpg" alt="Blueprint T-Shirt">
+            </div>
+            <div class="bundle-item bundle-book" style="transform: translateX(-50%) translateY(-20px);">
+                <img src="nc_assets/img/generated_true_cover.png" alt="250PROUD Coloring Book">
+            </div>
+        </div>
     </section>
 
     <!-- NEW CTA SECTION — Replace existing sticker CTA block -->
@@ -888,8 +1219,93 @@
         </div>
     </section>
 
+    <!-- DIGITAL USE CASES & MARQUEE SECTION -->
+    <section class="marquee-container">
+        <div class="marquee-track">
+            <!-- Set 1 -->
+            <img src="coloring_book/illustrations/page_03.png" alt="Page 3" loading="lazy">
+            <img src="coloring_book/illustrations/page_04.png" alt="Page 4" loading="lazy">
+            <img src="coloring_book/illustrations/page_05.png" alt="Page 5" loading="lazy">
+            <img src="coloring_book/illustrations/page_06.png" alt="Page 6" loading="lazy">
+            <img src="coloring_book/illustrations/page_07.png" alt="Page 7" loading="lazy">
+            <img src="coloring_book/illustrations/page_08.png" alt="Page 8" loading="lazy">
+            <img src="coloring_book/illustrations/page_09.png" alt="Page 9" loading="lazy">
+            <img src="coloring_book/illustrations/page_10.png" alt="Page 10" loading="lazy">
+            <img src="coloring_book/illustrations/page_11.png" alt="Page 11" loading="lazy">
+            <img src="coloring_book/illustrations/page_12.png" alt="Page 12" loading="lazy">
+            <!-- Duplicate Set 1 for Infinite Loop (Required for -50% translation) -->
+            <img src="coloring_book/illustrations/page_03.png" alt="Page 3" loading="lazy">
+            <img src="coloring_book/illustrations/page_04.png" alt="Page 4" loading="lazy">
+            <img src="coloring_book/illustrations/page_05.png" alt="Page 5" loading="lazy">
+            <img src="coloring_book/illustrations/page_06.png" alt="Page 6" loading="lazy">
+            <img src="coloring_book/illustrations/page_07.png" alt="Page 7" loading="lazy">
+            <img src="coloring_book/illustrations/page_08.png" alt="Page 8" loading="lazy">
+            <img src="coloring_book/illustrations/page_09.png" alt="Page 9" loading="lazy">
+            <img src="coloring_book/illustrations/page_10.png" alt="Page 10" loading="lazy">
+            <img src="coloring_book/illustrations/page_11.png" alt="Page 11" loading="lazy">
+            <img src="coloring_book/illustrations/page_12.png" alt="Page 12" loading="lazy">
+        </div>
+    </section>
+
+    <section class="look-inside-section">
+        <h2 style="font-size: 2.5rem; color: var(--navy-dark); font-family: 'Oswald', sans-serif; text-transform: uppercase;">Look Inside The Book</h2>
+        <p style="max-width: 800px; margin: 1rem auto; font-size: 1.15rem; color: #555; font-family: 'Inter', sans-serif;">24 pages of meticulously researched and verified history of little known historical facts.</p>
+        
+        <!-- Spread 1 -->
+        <div class="book-spread">
+            <div class="spread-left">
+                <div class="story-era">1776–1800 · The Founding Era</div>
+                <div class="story-headline">The Declaration Almost Wasn't Signed on July 4th</div>
+                <div class="story-fact">Most of the 56 men who signed the Declaration of Independence didn't actually sign it on July 4, 1776. Congress voted for independence on July 2nd, approved the text on the 4th, but most signatures weren't added until August 2, 1776. John Adams thought July 2nd would be the holiday Americans celebrated forever. He was wrong by two days.</div>
+                <div class="story-callout">Little-Known Fact: Two signers — Richard Henry Lee and Thomas McKean — didn't sign until 1776 was nearly over.</div>
+            </div>
+            <div class="spread-right">
+                <img src="coloring_book/illustrations/page_03.png" alt="Declaration of Independence Illustration" loading="lazy">
+            </div>
+        </div>
+
+        <!-- Spread 2 -->
+        <div class="book-spread" style="margin-top: 4rem;">
+            <div class="spread-left">
+                <div class="story-era">1776–1800 · The Founding Era</div>
+                <div class="story-headline">George Washington Lost More Battles Than He Won</div>
+                <div class="story-fact">George Washington lost roughly twice as many battles as he won during the Revolutionary War. What he was brilliant at was keeping an army together and alive — retreating when he had to, striking when the odds shifted. His crossing of the Delaware River on Christmas night 1776 to surprise Hessian troops at Trenton is considered one of the boldest military moves in American history.</div>
+                <div class="story-callout">Little-Known Fact: Washington's army was so desperate for boots that winter that soldiers left bloody footprints in the snow at Valley Forge.</div>
+            </div>
+            <div class="spread-right">
+                <img src="coloring_book/illustrations/page_04.png" alt="George Washington Illustration" loading="lazy">
+            </div>
+        </div>
+    </section>
+
+    <section class="usecases-section">
+        <h2 style="font-size: 2.5rem; color: var(--navy-dark); font-family: 'Oswald', sans-serif; text-transform: uppercase;">The Ultimate Digital Lead Magnet</h2>
+        <p style="max-width: 800px; margin: 1rem auto; font-size: 1.15rem; color: #555; font-family: 'Inter', sans-serif;">Turn the 250PROUD™ coloring book into a lead generation machine for your business. White-label the digital PDF and distribute it instantly to your audience to drive massive engagement.</p>
+        
+        <div class="usecases-grid">
+            <div class="usecase-card">
+                <h3>📧 Email Marketing Campaigns</h3>
+                <p>Send a custom-branded digital gift to your entire email list. Re-engage cold leads with a high-quality, patriotic asset that your clients will love to print for their kids or grandkids.</p>
+            </div>
+            <div class="usecase-card">
+                <h3>🎯 High-Converting Opt-Ins</h3>
+                <p>Add a pop-up or landing page offering a "Free America 250 Coloring Book". Watch your opt-in rates skyrocket as you capture new leads and generate engagement from current clients.</p>
+            </div>
+            <div class="usecase-card">
+                <h3>🤝 VIP Client Appreciation</h3>
+                <p>Strengthen business relationships by sending a co-branded digital book to your top clients. Every time they print a page, they see your logo, headshot, and custom message on the back cover.</p>
+            </div>
+        </div>
+
+        <a href="configurator.html" class="btn-sample">TEST DRIVE THE BOOK CREATOR</a>
+    </section>
+
     <section class="mockups-section">
-        <h2>SNEAK PEEK: PREMIUM QUALITY MERCH</h2>
+        <h2>THE OFFICIAL 250PROUD MERCH COLLECTION</h2>
+        <div class="shop-now-container">
+            <a href="https://www.lauralai-one.myshopify.com" target="_blank" rel="noopener noreferrer" class="btn-shop-now">SHOP NOW</a>
+        </div>
+        <p style="max-width: 800px; margin: 0 auto 3rem; font-size: 1.15rem; color: #555; font-family: 'Inter', sans-serif;">Premium quality, official 250PROUD™ merchandise dropping soon.</p>
         <div class="grid">
             <!-- Mockup 1 -->
             <div class="mockup-card">
@@ -921,14 +1337,15 @@
     </section>
 
     <footer>
-        <img src="nc_assets/img/logo.svg" alt="250PROUD™ White Logo" class="footer-logo">
+        <a href="index.html"><img src="nc_assets/img/logo.svg" alt="250PROUD™ White Logo" class="footer-logo"></a>
         <p>&copy; 2026 Lauralai LLC. All rights reserved. 250PROUD™ is a trademark of Lauralai LLC. Celebrating USA 1776 - 2026.</p>
         <p style="font-size: 0.8rem; margin-top: 1rem; color: #888;">Lauralai LLC | 515 Cypress Dr, Long Beach MS, 39560</p>
         <div style="margin-top: 1rem; font-size: 0.9rem;">
             <a href="terms.html" style="color: var(--white); text-decoration: none; margin: 0 10px;">Terms of
                 Service</a> |
             <a href="privacy.html" style="color: var(--white); text-decoration: none; margin: 0 10px;">Privacy
-                Policy</a>
+                Policy</a> |
+            <a href="contact.html" style="color: var(--white); text-decoration: none; margin: 0 10px;">Contact Us</a>
         </div>
     </footer>
 

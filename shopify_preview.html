@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>250PROUD - Shopify Section Previews</title>
+    <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@500;700&family=Inter:wght@400;500;600;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-color: #020617;
+            --surface-color: rgba(255, 255, 255, 0.03);
+            --surface-border: rgba(255, 255, 255, 0.08);
+            --accent-gold: #D4AF37;
+            --accent-gold-hover: #F2D265;
+            --text-main: #FFFFFF;
+            --text-muted: #94A3B8;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            font-family: 'Inter', sans-serif;
+            margin: 0;
+            padding: 0;
+            overflow-x: hidden;
+            background-image: 
+                radial-gradient(circle at 15% 50%, rgba(212, 175, 55, 0.05), transparent 25%),
+                radial-gradient(circle at 85% 30%, rgba(255, 255, 255, 0.02), transparent 25%);
+        }
+
+        .section-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 4rem 2rem;
+        }
+
+        h2.section-title {
+            font-family: 'Oswald', sans-serif;
+            text-transform: uppercase;
+            font-size: 2.5rem;
+            letter-spacing: 2px;
+            color: var(--accent-gold);
+            margin-bottom: 0.5rem;
+            text-align: center;
+        }
+
+        p.section-subtitle {
+            text-align: center;
+            color: var(--text-muted);
+            font-size: 1.1rem;
+            max-width: 600px;
+            margin: 0 auto 3rem auto;
+            line-height: 1.6;
+        }
+
+        .btn-gold {
+            display: inline-block;
+            background: var(--accent-gold);
+            color: #000;
+            font-family: 'Inter', sans-serif;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            padding: 1rem 2.5rem;
+            border-radius: 4px;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            border: none;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(212, 175, 55, 0.2);
+        }
+
+        .btn-gold:hover {
+            background: var(--accent-gold-hover);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(212, 175, 55, 0.3);
+        }
+
+        .btn-outline {
+            display: inline-block;
+            background: transparent;
+            color: var(--text-main);
+            font-family: 'Inter', sans-serif;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            padding: 1rem 2.5rem;
+            border-radius: 4px;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            border: 1px solid var(--surface-border);
+            cursor: pointer;
+        }
+
+        .btn-outline:hover {
+            border-color: var(--text-main);
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        /* --- TODAY IN HISTORY WIDGET --- */
+        .history-widget {
+            background: var(--surface-color);
+            border: 1px solid var(--surface-border);
+            border-radius: 16px;
+            padding: 3rem;
+            position: relative;
+            overflow: hidden;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 4rem;
+            align-items: center;
+            backdrop-filter: blur(10px);
+        }
+
+        .history-widget::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 4px;
+            height: 100%;
+            background: var(--accent-gold);
+        }
+
+        .history-date {
+            font-family: 'Oswald', sans-serif;
+            font-size: 6rem;
+            line-height: 1;
+            color: rgba(255,255,255,0.05);
+            position: absolute;
+            top: -10px;
+            right: 20px;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .history-content {
+            position: relative;
+            z-index: 1;
+        }
+
+        .history-label {
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            color: var(--accent-gold);
+            margin-bottom: 1rem;
+            display: block;
+            font-weight: 600;
+        }
+
+        .history-fact {
+            font-size: 1.5rem;
+            line-height: 1.5;
+            margin-bottom: 2rem;
+            font-weight: 400;
+        }
+
+        .history-visual {
+            position: relative;
+            z-index: 1;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+        }
+
+        .history-visual img {
+            width: 100%;
+            height: auto;
+            display: block;
+            filter: grayscale(100%) contrast(1.2);
+            transition: filter 0.5s ease;
+        }
+
+        .history-visual:hover img {
+            filter: grayscale(0%) contrast(1.1);
+        }
+
+        /* --- COUNTDOWN & MANIFESTO --- */
+        .manifesto-section {
+            text-align: center;
+            padding: 6rem 2rem;
+            background: linear-gradient(180deg, var(--bg-color) 0%, rgba(15, 23, 42, 0.8) 100%);
+            border-top: 1px solid var(--surface-border);
+            border-bottom: 1px solid var(--surface-border);
+        }
+
+        .countdown-wrapper {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            margin: 3rem 0;
+        }
+
+        .countdown-block {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .countdown-number {
+            font-family: 'Oswald', sans-serif;
+            font-size: 4.5rem;
+            font-weight: 700;
+            color: var(--text-main);
+            line-height: 1;
+            text-shadow: 0 0 20px rgba(255,255,255,0.1);
+        }
+
+        .countdown-label {
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            color: var(--accent-gold);
+            margin-top: 0.5rem;
+        }
+
+        .manifesto-text {
+            font-size: 1.2rem;
+            line-height: 1.8;
+            color: var(--text-muted);
+            max-width: 800px;
+            margin: 0 auto 3rem auto;
+        }
+
+        .cta-group {
+            display: flex;
+            gap: 1.5rem;
+            justify-content: center;
+        }
+
+        @media (max-width: 900px) {
+            .history-widget {
+                grid-template-columns: 1fr;
+                gap: 2rem;
+                padding: 2rem;
+            }
+            .countdown-wrapper {
+                gap: 1rem;
+            }
+            .countdown-number {
+                font-size: 3rem;
+            }
+            .cta-group {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- TODAY IN HISTORY PREVIEW -->
+    <section class="section-container">
+        <h2 class="section-title">The American Story</h2>
+        <p class="section-subtitle">250 years of quiet hands, bold ideas, and the moments that built us. Discover what happened on this day.</p>
+        
+        <div class="history-widget">
+            <div class="history-date" id="bgDate">MAY 17</div>
+            <div class="history-content">
+                <span class="history-label" id="factYear">On this day in 1792</span>
+                <p class="history-fact" id="factText">Twenty-four stockbrokers gathered outside 68 Wall Street under a buttonwood tree to sign an agreement that established the New York Stock Exchange, laying the foundation for modern American finance.</p>
+                <div style="margin-top: 2rem;">
+                    <a href="#" class="btn-outline" style="padding: 0.75rem 1.5rem; font-size: 0.9rem;">Explore the 250PROUD Collection</a>
+                </div>
+            </div>
+            <div class="history-visual">
+                <!-- Using a placeholder but stylized to look agency quality -->
+                <img src="https://images.unsplash.com/photo-1555899434-94d1368aa7af?auto=format&fit=crop&w=800&q=80" alt="Historical Event">
+            </div>
+        </div>
+    </section>
+
+    <!-- MANIFESTO & COUNTDOWN PREVIEW -->
+    <section class="manifesto-section">
+        <h2 class="section-title">The Countdown Begins</h2>
+        <p class="section-subtitle">On July 4, 2026, the United States turns 250. We are building the tools to mark it properly.</p>
+        
+        <div class="countdown-wrapper" id="countdown">
+            <div class="countdown-block">
+                <span class="countdown-number" id="cd-days">778</span>
+                <span class="countdown-label">Days</span>
+            </div>
+            <div class="countdown-block">
+                <span class="countdown-number" id="cd-hours">14</span>
+                <span class="countdown-label">Hours</span>
+            </div>
+            <div class="countdown-block">
+                <span class="countdown-number" id="cd-minutes">32</span>
+                <span class="countdown-label">Minutes</span>
+            </div>
+            <div class="countdown-block">
+                <span class="countdown-number" id="cd-seconds">09</span>
+                <span class="countdown-label">Seconds</span>
+            </div>
+        </div>
+
+        <p class="manifesto-text">
+            This isn't just about merchandise. It's a movement to remember the ambitious experiment started in 1776. 
+            Whether you're a real estate agent sharing our digital book with your community, or wearing the mark yourself, 
+            you are part of the story. 
+        </p>
+
+        <div class="cta-group">
+            <a href="#" class="btn-gold">Shop the Merch Collection</a>
+            <a href="#" class="btn-outline">Claim Your Free Digital Book</a>
+        </div>
+    </section>
+
+    <script>
+        // Dummy Countdown Logic for Preview
+        function updateCountdown() {
+            const targetDate = new Date('July 4, 2026 00:00:00').getTime();
+            const now = new Date().getTime();
+            const distance = targetDate - now;
+
+            if (distance < 0) return;
+
+            document.getElementById('cd-days').innerText = Math.floor(distance / (1000 * 60 * 60 * 24)).toString().padStart(3, '0');
+            document.getElementById('cd-hours').innerText = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)).toString().padStart(2, '0');
+            document.getElementById('cd-minutes').innerText = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60)).toString().padStart(2, '0');
+            document.getElementById('cd-seconds').innerText = Math.floor((distance % (1000 * 60)) / 1000).toString().padStart(2, '0');
+        }
+
+        setInterval(updateCountdown, 1000);
+        updateCountdown();
+
+        // Dummy Date logic for preview
+        const months = ["JAN", "FEB", "MAR", "APR", "MAY", "JUN", "JUL", "AUG", "SEP", "OCT", "NOV", "DEC"];
+        const today = new Date();
+        document.getElementById('bgDate').innerText = months[today.getMonth()] + ' ' + today.getDate();
+    </script>
+</body>
+</html>

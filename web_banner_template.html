@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=1200, initial-scale=1.0">
+    <title>Web / Email Banner Template</title>
+    <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@500;700&family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        
+        
+        body {
+            background: #1e293b;
+            font-family: 'Inter', sans-serif;
+            color: white;
+            margin: 0;
+            padding: 40px 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+            overflow-y: auto; /* Enable scrolling */
+            overflow-x: auto;
+        }
+
+        .controls {
+            margin-bottom: 30px;
+            text-align: center;
+            z-index: 9999;
+        }
+
+        .download-btn {
+            background: #D4AF37;
+            color: #020617;
+            padding: 16px 32px;
+            border-radius: 8px;
+            font-family: 'Oswald', sans-serif;
+            font-size: 20px;
+            font-weight: 700;
+            text-transform: uppercase;
+            cursor: pointer;
+            border: none;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+            transition: all 0.2s;
+        }
+        
+        .download-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(212, 175, 55, 0.4);
+        }
+
+        .graphic-wrapper {
+            
+            width: 1200px;
+            height: 630px;
+            background: linear-gradient(135deg, #020617 0%, #0A3161 100%);
+            font-family: 'Inter', sans-serif;
+            color: white;
+            position: relative;
+            overflow: hidden;
+            display: flex;
+        
+            box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+            /* Ensure it is exactly the right size */
+            width: 1200px !important;
+            height: 630px !important;
+            min-width: 1200px;
+            min-height: 630px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+
+        /* Abstract Flag Graphic Background */
+        .flag-bg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0.05;
+            background-image: repeating-linear-gradient(
+                45deg,
+                transparent,
+                transparent 20px,
+                #ffffff 20px,
+                #ffffff 40px
+            );
+            z-index: 1;
+        }
+
+        .gold-accent {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 8px;
+            background: #D4AF37;
+            z-index: 5;
+        }
+
+        .content-left {
+            width: 60%;
+            padding: 80px 60px;
+            z-index: 10;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .content-right {
+            width: 40%;
+            position: relative;
+            z-index: 10;
+        }
+
+        .book-mockup {
+            position: absolute;
+            top: -20px;
+            right: -60px;
+            height: 680px;
+            transform: rotate(-5deg);
+            filter: drop-shadow(-20px 20px 30px rgba(0,0,0,0.5));
+        }
+
+        .pill {
+            background: rgba(212, 175, 55, 0.15);
+            border: 1px solid #D4AF37;
+            color: #D4AF37;
+            padding: 8px 16px;
+            border-radius: 50px;
+            font-family: 'Oswald', sans-serif;
+            text-transform: uppercase;
+            font-size: 16px;
+            letter-spacing: 2px;
+            display: inline-block;
+            margin-bottom: 30px;
+            width: max-content;
+        }
+
+        h1 {
+            font-family: 'Oswald', sans-serif;
+            font-size: 72px;
+            line-height: 1.1;
+            text-transform: uppercase;
+            margin-bottom: 25px;
+            text-wrap: balance;
+        }
+
+        .headline-partner {
+            color: #D4AF37;
+        }
+
+        p {
+            font-size: 24px;
+            color: #cbd5e1;
+            line-height: 1.5;
+            margin-bottom: 50px;
+            max-width: 90%;
+        }
+
+        .cta-box {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .cta-btn {
+            background: #D4AF37;
+            color: #020617;
+            padding: 16px 32px;
+            border-radius: 8px;
+            font-family: 'Oswald', sans-serif;
+            font-size: 20px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-weight: 700;
+        }
+
+        .partner-logo-container {
+            display: flex;
+            align-items: center;
+            margin-left: 20px;
+        }
+
+        .partner-logo {
+            max-height: 200px;
+            max-width: 400px;
+            object-fit: contain;
+            /* Remove invert if we want the actual brand colors, or keep invert if it needs to be white.
+               Since we want the "client logo", we should keep it colored or white depending on the background. 
+               Let's remove invert so their actual logo shows up properly. */
+        }
+
+    </style>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html-to-image/1.11.11/html-to-image.min.js"></script>
+</head>
+<body>
+    <div class="controls">
+        <button id="downloadBtn" class="download-btn" onclick="downloadGraphic()">Download Graphic</button>
+        <p style="text-align: center; margin-top: 1rem; color: #555;">Close this window to return to the Resource Center.</p>
+        <p style="margin-top: 10px; color: #94a3b8; font-size: 14px;">You can alternatively right click the graphic and save it to your device.</p>
+    </div>
+    <div id="graphic-wrapper" class="graphic-wrapper">
+        
+    <div class="flag-bg"></div>
+    <div class="gold-accent"></div>
+    
+
+
+    <div class="content-left">
+        <div class="pill">Free Digital Download</div>
+        <h1>GET YOUR FREE COPY OF <br><span class="headline-partner">UNIQUE AMERICAN HISTORY</span></h1>
+        <p>Honor our history with this exclusive printable coloring book. Proudly supported by <strong id="companyNameText">Us</strong>.</p>
+        
+        <div class="cta-box">
+            <div class="cta-btn">Download Your Copy</div>
+            <div class="partner-logo-container">
+                <img src="nc_assets/img/logo.svg" alt="Logo" class="partner-logo" id="logoImage">
+            </div>
+        </div>
+    </div>
+
+    <div class="content-right">
+        <!-- The user's custom book cover will be injected here -->
+        <img src="nc_assets/img/generated_true_cover.png" alt="Book Mockup" class="book-mockup" id="coverImage">
+    </div>
+
+    
+    </div>
+    <script>
+        const urlParams = new URLSearchParams(window.location.search);
+        
+        const logoUrl = urlParams.get('logo');
+        const logoImg = document.getElementById('logoImage');
+        if(logoUrl && logoUrl !== '' && logoUrl !== 'null') {
+            logoImg.crossOrigin = "anonymous";
+            logoImg.src = logoUrl;
+        } else {
+            logoImg.style.display = 'none';
+        }
+        
+        const coverUrl = urlParams.get('cover');
+        if(coverUrl && coverUrl !== '' && coverUrl !== 'null') {
+            const coverImg = document.getElementById('coverImage');
+            coverImg.crossOrigin = "anonymous";
+            coverImg.src = coverUrl;
+        }
+    
+        if(urlParams.has('company') && urlParams.get('company') !== 'null' && urlParams.get('company') !== '') {
+            const el = document.getElementById('companyNameText');
+            if(el) el.innerText = urlParams.get('company');
+        }
+
+        function downloadGraphic() {
+            const node = document.getElementById('graphic-wrapper');
+            const btn = document.getElementById('downloadBtn');
+            btn.innerText = 'Generating PNG...';
+            
+            htmlToImage.toPng(node, { quality: 1.0, pixelRatio: 2, cacheBust: true })
+                .then(function (dataUrl) {
+                    var link = document.createElement('a');
+                    link.download = 'web_banner_template.png';
+                    link.href = dataUrl;
+                    link.click();
+                    btn.innerText = 'Download Graphic';
+                })
+                .catch(function (error) {
+                    console.error('oops, something went wrong!', error);
+                    btn.innerText = 'Download Failed - Take Screenshot';
+                    alert('There was an issue generating the image (likely a CORS security block on the logos). You can alternatively right click the graphic and save it to your device.');
+                });
+        }
+    
+    </script>
+</body>
+</html>

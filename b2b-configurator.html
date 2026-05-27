@@ -57,8 +57,14 @@
         }
 
         .logo-container img {
-            height: 100px;
+            height: 180px;
             width: auto;
+        }
+
+        @media (max-width: 768px) {
+            .logo-container img {
+                height: 120px;
+            }
         }
 
         .badge {
@@ -272,6 +278,39 @@
             padding: 3rem 5%;
         }
 
+        /* Animated Marquee */
+        .marquee-container {
+            width: 100%;
+            overflow: hidden;
+            background: var(--navy-dark);
+            padding: 4rem 0;
+            position: relative;
+            box-shadow: inset 0 0 30px rgba(0,0,0,0.8);
+        }
+
+        .marquee-track {
+            display: flex;
+            width: max-content;
+            animation: scroll 40s linear infinite;
+        }
+
+        .marquee-track:hover {
+            animation-play-state: paused;
+        }
+
+        .marquee-track img {
+            width: 280px;
+            height: auto;
+            margin: 0 15px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.4);
+            border-radius: 4px;
+        }
+
+        @keyframes scroll {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(-50%); }
+        }
+
         @media (max-width: 768px) {
             header {
                 flex-direction: column;
@@ -283,6 +322,7 @@
             .price-box {
                 padding: 2rem;
             }
+            .marquee-track img { width: 200px; margin: 0 10px; }
         }
     </style>
 </head>
@@ -291,17 +331,60 @@
 
     <header>
         <div class="logo-container">
-            <img src="nc_assets/img/logo.svg" alt="250PROUD™ Official Logo">
+            <a href="index.html">
+                <img src="nc_assets/img/logo.svg" alt="250PROUD™ Official Logo">
+            </a>
         </div>
         <div class="header-badge">
-            <span class="badge">B2B PARTNERSHIP PROGRAM</span>
+            <span class="badge">PATRIOTIC DIGITAL MARKETING</span>
         </div>
     </header>
 
     <section class="hero">
         <h1>BRAND THE <span>250PROUD™</span> COLORING BOOK AS YOUR OWN</h1>
-        <p class="lead-text">The perfect digital closing gift, email blast, or community outreach tool. Upload your logo, add your headshot, and instantly generate a custom-branded digital PDF to email to your clients or print yourself.</p>
+        <p class="lead-text" style="margin-bottom: 2rem;">Your closing gift, email blast, community outreach tool, and lead magnet — all in one.<br>
+        Upload your hero image, secondary image, logo, and headshot. Generate a custom-branded digital PDF in minutes. Nothing else like it on the market.</p>
+        
+        <div style="background: rgba(0,0,0,0.2); padding: 2rem; border-radius: 8px; margin: 0 auto 3rem; max-width: 800px; text-align: left; border: 1px solid rgba(255,255,255,0.1);">
+            <p style="font-size: 1.15rem; margin-bottom: 1rem; color: var(--gold); font-weight: 600;">Early adopters lock in founding-member pricing and lifetime access to the 250Proud Marketing Resource Center:</p>
+            <ul style="list-style: none; margin-bottom: 1.5rem; padding-left: 0; color: rgba(255,255,255,0.9); font-size: 1.1rem;">
+                <li style="margin-bottom: 0.5rem; display: flex; align-items: flex-start; gap: 10px;"><span style="color: var(--gold);">•</span> A 4x6 Marketing Card with your own QR download code</li>
+                <li style="margin-bottom: 0.5rem; display: flex; align-items: flex-start; gap: 10px;"><span style="color: var(--gold);">•</span> Social media graphics, scripts, and ready-to-edit assets</li>
+                <li style="margin-bottom: 0.5rem; display: flex; align-items: flex-start; gap: 10px;"><span style="color: var(--gold);">•</span> AI-powered social and email script editor</li>
+                <li style="margin-bottom: 0.5rem; display: flex; align-items: flex-start; gap: 10px;"><span style="color: var(--gold);">•</span> Embeddable lead magnet capture form for your site</li>
+            </ul>
+            <p style="font-size: 1.25rem; font-weight: 700; color: #ff6b6b; text-transform: uppercase; margin: 0; text-align: center; line-height: 1.4; letter-spacing: 1px;">Founding-member pricing closes June 15<br>Get in while it's open.</p>
+        </div>
+
         <a href="configurator.html" class="cta-btn">Try The Live Configurator</a>
+    </section>
+
+    <!-- DIGITAL USE CASES & MARQUEE SECTION -->
+    <section class="marquee-container">
+        <div class="marquee-track">
+            <!-- Set 1 -->
+            <img src="coloring_book/illustrations/page_03.png" alt="Page 3" loading="lazy">
+            <img src="coloring_book/illustrations/page_04.png" alt="Page 4" loading="lazy">
+            <img src="coloring_book/illustrations/page_05.png" alt="Page 5" loading="lazy">
+            <img src="coloring_book/illustrations/page_06.png" alt="Page 6" loading="lazy">
+            <img src="coloring_book/illustrations/page_07.png" alt="Page 7" loading="lazy">
+            <img src="coloring_book/illustrations/page_08.png" alt="Page 8" loading="lazy">
+            <img src="coloring_book/illustrations/page_09.png" alt="Page 9" loading="lazy">
+            <img src="coloring_book/illustrations/page_10.png" alt="Page 10" loading="lazy">
+            <img src="coloring_book/illustrations/page_11.png" alt="Page 11" loading="lazy">
+            <img src="coloring_book/illustrations/page_12.png" alt="Page 12" loading="lazy">
+            <!-- Duplicate Set 1 for Infinite Loop (Required for -50% translation) -->
+            <img src="coloring_book/illustrations/page_03.png" alt="Page 3" loading="lazy">
+            <img src="coloring_book/illustrations/page_04.png" alt="Page 4" loading="lazy">
+            <img src="coloring_book/illustrations/page_05.png" alt="Page 5" loading="lazy">
+            <img src="coloring_book/illustrations/page_06.png" alt="Page 6" loading="lazy">
+            <img src="coloring_book/illustrations/page_07.png" alt="Page 7" loading="lazy">
+            <img src="coloring_book/illustrations/page_08.png" alt="Page 8" loading="lazy">
+            <img src="coloring_book/illustrations/page_09.png" alt="Page 9" loading="lazy">
+            <img src="coloring_book/illustrations/page_10.png" alt="Page 10" loading="lazy">
+            <img src="coloring_book/illustrations/page_11.png" alt="Page 11" loading="lazy">
+            <img src="coloring_book/illustrations/page_12.png" alt="Page 12" loading="lazy">
+        </div>
     </section>
 
     <section class="features">
@@ -312,7 +395,7 @@
                     <svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-5 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z"/></svg>
                 </div>
                 <h3>100% Custom Back Cover</h3>
-                <p>Upload your company logo, an optional headshot, and a hero graphic. Our system automatically perfectly formats your assets onto the back cover.</p>
+                <p>Upload your company logo, an optional headshot, a hero graphic and secondary graphic. Our system automatically formats your assets onto the back cover.</p>
             </div>
             <div class="feature-card">
                 <div class="icon-circle">
@@ -333,18 +416,19 @@
 
     <section class="pricing-section">
         <div class="price-box">
-            <h2>UNLIMITED PRINT LICENSE</h2>
+            <h2>UNLIMITED DIGITAL DISTRIBUTION LICENSE</h2>
             <div class="price">
-                $19.99 <span>/ ONE-TIME</span>
+                <span style="text-decoration: line-through; color: #888; font-size: 2.5rem; margin-right: 10px;">$49</span>
+                $29 <span>/ EARLY ADOPTER</span>
             </div>
-            <p style="color: var(--gray-dark); margin-bottom: 1.5rem;">No subscriptions. No hidden fees. Own it forever.</p>
+            <p style="color: var(--gray-dark); margin-bottom: 1.5rem;">Free Marketing Resource Subscription. No hidden fees. Own it forever.</p>
             
             <ul class="price-features">
                 <li>High-resolution 8.5" x 11" printable PDF</li>
                 <li>Full 24-page 250PROUD™ coloring book interior</li>
                 <li>Your custom-branded back cover</li>
-                <li>Unlimited printing rights for your business</li>
                 <li>Instant delivery upon checkout</li>
+                <li>Complete set of marketing tools at no additional cost.</li>
             </ul>
 
             <a href="configurator.html" class="cta-btn" style="width: 100%; margin-top: 1rem;">Build Yours Now</a>
@@ -352,7 +436,14 @@
     </section>
 
     <footer>
-        <p>© 2026 250PROUD™ | A Lauralai LLC Brand</p>
+        <a href="index.html"><img src="nc_assets/img/logo.svg" alt="250PROUD™ White Logo" style="height: 180px; width: auto; filter: brightness(0) invert(1); margin-bottom: 1rem;"></a>
+        <p>&copy; 2026 Lauralai LLC. All rights reserved. 250PROUD™ is a trademark of Lauralai LLC. Celebrating USA 1776 - 2026.</p>
+        <p style="font-size: 0.8rem; margin-top: 1rem; color: #888;">Lauralai LLC | 515 Cypress Dr, Long Beach MS, 39560</p>
+        <div style="margin-top: 1rem; font-size: 0.9rem;">
+            <a href="terms.html" style="color: var(--white); text-decoration: none; margin: 0 10px;">Terms of Service</a> |
+            <a href="privacy.html" style="color: var(--white); text-decoration: none; margin: 0 10px;">Privacy Policy</a> |
+            <a href="contact.html" style="color: var(--white); text-decoration: none; margin: 0 10px;">Contact Us</a>
+        </div>
     </footer>
 
 </body>

@@ -1,0 +1,956 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Marketing Resource Center | 250PROUD™</title>
+    <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <style>
+        :root {
+            --bg-color: #050b14;
+            --surface-color: rgba(255, 255, 255, 0.05);
+            --glass-border: rgba(255, 255, 255, 0.1);
+            --accent-gold: #D4AF37;
+            --accent-blue: #3B82F6;
+            --text-main: #F9FAFB;
+            --text-muted: #9CA3AF;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            min-height: 100vh;
+            background-image: 
+                radial-gradient(circle at 15% 50%, rgba(59, 130, 246, 0.08) 0%, transparent 50%),
+                radial-gradient(circle at 85% 30%, rgba(212, 175, 55, 0.05) 0%, transparent 50%);
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* --- Auth View --- */
+        #authView {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            flex-grow: 1;
+            padding: 2rem;
+        }
+
+        .auth-card {
+            background: rgba(10, 25, 47, 0.6);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            border-radius: 16px;
+            padding: 3rem 2rem;
+            width: 100%;
+            max-width: 400px;
+            text-align: center;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+        }
+
+        .auth-card img {
+            height: 120px;
+            margin-bottom: 1.5rem;
+            filter: brightness(0) invert(1);
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+            text-align: left;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+
+        .form-group input, .form-group select, .form-group textarea {
+            width: 100%;
+            padding: 0.8rem 1rem;
+            background: rgba(255,255,255,0.08);
+            border: 1px solid rgba(255,255,255,0.2);
+            border-radius: 8px;
+            color: #ffffff;
+            font-family: 'Inter', sans-serif;
+            font-size: 1rem;
+            box-sizing: border-box;
+            transition: all 0.2s;
+        }
+
+        .form-group input::placeholder, .form-group textarea::placeholder {
+            color: rgba(255,255,255,0.4);
+        }
+
+        .form-group input:focus, .form-group select:focus, .form-group textarea:focus {
+            outline: none;
+            border-color: var(--accent-gold);
+            box-shadow: 0 0 0 2px rgba(212, 175, 55, 0.2);
+            background: rgba(255,255,255,0.12);
+        }
+
+        .btn {
+            background: var(--accent-gold);
+            color: #000;
+            border: none;
+            padding: 0.8rem 1.5rem;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            width: 100%;
+            transition: all 0.2s;
+            font-size: 1rem;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 14px 0 rgba(212, 175, 55, 0.39);
+        }
+
+        /* --- Dashboard View --- */
+        #dashboardView {
+            display: none;
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+            box-sizing: border-box;
+        }
+
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-bottom: 1.5rem;
+            margin-bottom: 2rem;
+            border-bottom: 1px solid var(--glass-border);
+        }
+
+        header img {
+            height: 80px;
+            filter: brightness(0) invert(1);
+        }
+
+        .welcome-banner {
+            background: linear-gradient(135deg, rgba(10, 49, 97, 0.8) 0%, rgba(5, 11, 20, 0.9) 100%);
+            border: 1px solid var(--glass-border);
+            border-radius: 16px;
+            padding: 2.5rem;
+            margin-bottom: 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        }
+
+        .welcome-text h1 {
+            font-family: 'Oswald', sans-serif;
+            font-size: 2.5rem;
+            margin: 0 0 0.5rem 0;
+            color: var(--accent-gold);
+            text-transform: uppercase;
+        }
+
+        .welcome-text p {
+            margin: 0;
+            font-size: 1.1rem;
+            color: var(--text-muted);
+        }
+
+        .quick-links {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .quick-btn {
+            background: rgba(255,255,255,0.1);
+            color: white;
+            text-decoration: none;
+            padding: 0.6rem 1.2rem;
+            border-radius: 6px;
+            font-size: 0.9rem;
+            font-weight: 500;
+            transition: all 0.2s;
+            border: 1px solid rgba(255,255,255,0.05);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .quick-btn:hover {
+            background: rgba(255,255,255,0.2);
+        }
+
+        .tabs {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            border-bottom: 1px solid var(--glass-border);
+            padding-bottom: 1rem;
+        }
+
+        .tab-btn {
+            background: transparent;
+            color: var(--text-muted);
+            border: none;
+            font-size: 1.1rem;
+            font-family: 'Oswald', sans-serif;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            cursor: pointer;
+            padding: 0.5rem 1rem;
+            position: relative;
+            transition: color 0.2s;
+        }
+
+        .tab-btn.active {
+            color: var(--accent-gold);
+        }
+
+        .tab-btn.active::after {
+            content: '';
+            position: absolute;
+            bottom: -1rem;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background: var(--accent-gold);
+        }
+
+        .tab-content {
+            display: none;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* AI Copilot Panel */
+        .ai-panel {
+            background: var(--surface-color);
+            border: 1px solid var(--glass-border);
+            border-radius: 16px;
+            padding: 2rem;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+        }
+
+        .ai-input textarea {
+            width: 100%;
+            height: 150px;
+            background: rgba(255,255,255,0.08);
+            border: 1px solid rgba(255,255,255,0.2);
+            border-radius: 8px;
+            color: #ffffff;
+            font-size: 1rem;
+            padding: 1rem;
+            font-family: 'Inter', sans-serif;
+            box-sizing: border-box;
+            margin-bottom: 1rem;
+            resize: vertical;
+        }
+
+        .ai-input textarea::placeholder {
+            color: rgba(255,255,255,0.4);
+        }
+        
+        .ai-input textarea:focus, .ai-input select:focus {
+            outline: none;
+            border-color: var(--accent-gold);
+            background: rgba(255,255,255,0.12);
+        }
+
+        .ai-output {
+            background: rgba(0,0,0,0.3);
+            border: 1px solid var(--glass-border);
+            border-radius: 8px;
+            padding: 1.5rem;
+            min-height: 200px;
+            white-space: pre-wrap;
+            position: relative;
+        }
+
+        .copy-btn {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: rgba(255,255,255,0.1);
+            border: none;
+            color: white;
+            padding: 0.4rem 0.8rem;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.8rem;
+        }
+
+        /* Graphics Grid */
+        .graphics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .graphic-card {
+            background: var(--surface-color);
+            border: 1px solid var(--glass-border);
+            border-radius: 12px;
+            overflow: hidden;
+            transition: transform 0.2s;
+        }
+
+        .graphic-card:hover {
+            transform: translateY(-5px);
+            border-color: rgba(255,255,255,0.3);
+        }
+
+        .graphic-preview {
+            height: 200px;
+            background: #111;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-bottom: 1px solid var(--glass-border);
+            position: relative;
+        }
+        
+        .graphic-preview img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            opacity: 0.8;
+        }
+
+        .graphic-info {
+            padding: 1rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .graphic-info h4 {
+            margin: 0;
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+
+        /* Print Quote */
+        .quote-panel {
+            background: var(--surface-color);
+            border: 1px solid var(--glass-border);
+            border-radius: 16px;
+            padding: 2rem;
+            max-width: 600px;
+        }
+
+        /* Shortlink display */
+        .shortlink-box {
+            background: rgba(0,0,0,0.5);
+            border: 1px dashed var(--accent-gold);
+            padding: 1rem;
+            border-radius: 8px;
+            margin-top: 1rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .shortlink-box span {
+            font-family: monospace;
+            color: var(--accent-gold);
+            font-size: 1.1rem;
+        }
+
+    </style>
+</head>
+<body>
+
+    <!-- AUTHENTICATION VIEW -->
+    <div id="authView">
+        <div class="auth-card">
+            <img src="nc_assets/img/logo.svg" alt="250PROUD" style="height: 160px; margin-bottom: 1.5rem;">
+            <h2 style="font-family: 'Oswald', sans-serif; text-transform: uppercase; margin-bottom: 0.5rem; color: var(--accent-gold);">Resource Center</h2>
+            <p style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 2rem;">Log in to access your dashboard.</p>
+            
+            <form id="loginForm">
+                <div class="form-group">
+                    <label>Email Address</label>
+                    <input type="email" id="loginEmail" required>
+                </div>
+                <div class="form-group">
+                    <label>Password</label>
+                    <input type="password" id="loginPassword" required>
+                </div>
+                <button type="submit" class="btn" id="loginBtn">Log In</button>
+                <div style="text-align: center; margin-top: 1rem;">
+                    <a href="#" onclick="forgotPassword(event)" style="color: var(--accent-blue); text-decoration: none; font-size: 0.85rem;">Forgot Password?</a>
+                </div>
+                <div id="loginError" style="color: #EF4444; font-size: 0.85rem; margin-top: 1rem; display: none;"></div>
+            </form>
+        </div>
+    </div>
+
+    <!-- DASHBOARD VIEW -->
+    <div id="dashboardView">
+        <header style="display: flex; justify-content: space-between; align-items: center; padding: 1rem 0; margin-bottom: 2rem;">
+            <img src="nc_assets/img/logo.svg" alt="250PROUD" style="height: 120px;">
+            <button onclick="logout()" style="background: transparent; border: 1px solid rgba(255,255,255,0.2); color: white; padding: 0.5rem 1rem; border-radius: 6px; cursor: pointer;">Sign Out</button>
+        </header>
+
+        <div class="welcome-banner">
+            <div class="welcome-text">
+                <h1 id="userGreeting">Free Marketing Resource Center</h1>
+                <p>Your personalized marketing engine is ready.</p>
+                
+                <div class="shortlink-box">
+                    <div>
+                        <span style="display: block; font-size: 0.8rem; color: var(--text-muted); font-family: 'Inter', sans-serif; margin-bottom: 4px;">YOUR DIGITAL BOOK LINK</span>
+                        <span id="shortlinkDisplay">https://250proud.net/book/...</span>
+                    </div>
+                    <button onclick="copyShortlink()" class="btn" style="width: auto; padding: 0.5rem 1rem; font-size: 0.8rem;">Copy Link</button>
+                </div>
+            </div>
+            
+            <div style="display: flex; flex-direction: column; align-items: flex-end;">
+                <div class="quick-links">
+                    <a href="#" id="linkPdf" target="_blank" class="quick-btn">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+                        Master PDF
+                    </a>
+                    <a href="#" id="linkCard" target="_blank" class="quick-btn">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="16" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+                        4x6 Postcard
+                    </a>
+                    <a href="#" id="linkQr" target="_blank" class="quick-btn">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><rect x="7" y="7" width="3" height="3"></rect><rect x="14" y="7" width="3" height="3"></rect><rect x="7" y="14" width="3" height="3"></rect><rect x="14" y="14" width="3" height="3"></rect></svg>
+                        QR Code PNG
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <div class="tabs">
+            <button class="tab-btn active" onclick="switchTab('ai')">Campaign Architect</button>
+            <button class="tab-btn" onclick="switchTab('graphics')">Graphics Library</button>
+            <button class="tab-btn" onclick="switchTab('magnet')">Lead Magnet Setup</button>
+            <button class="tab-btn" onclick="switchTab('print')">Bulk Print Order</button>
+        </div>
+
+        <!-- TAB: Campaign Architect -->
+        <div id="tab-ai" class="tab-content active">
+            <div class="ai-panel">
+                <div class="ai-input">
+                    <h3 style="margin-top: 0;">Generate Marketing Copy</h3>
+                    <p style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 1.5rem;">Use our fine-tuned Gemini model to write high-converting copy specifically tailored to your white-labeled book.</p>
+                    
+                    <div class="form-group">
+                        <label>Platform / Format</label>
+                        <select id="aiFormat" style="width: 100%; padding: 0.8rem; background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.2); color: white; border-radius: 8px; font-size: 1rem;">
+                            <option value="Email" style="background: #050b14;">Email Blast</option>
+                            <option value="SMS / Text Message" style="background: #050b14;">SMS Text Message</option>
+                            <option value="Facebook" style="background: #050b14;">Facebook Post</option>
+                            <option value="Instagram" style="background: #050b14;">Instagram Caption</option>
+                            <option value="X (Twitter)" style="background: #050b14;">X (Twitter) Thread</option>
+                            <option value="LinkedIn" style="background: #050b14;">LinkedIn Post</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Content Example - Edit and regenerate</label>
+                        <textarea id="aiContext" placeholder="Select a format to see example copy."></textarea>
+                    </div>
+
+                    <button class="btn" id="btnGenerateCopy" onclick="generateCopy()">Generate Copy</button>
+                </div>
+
+                <div class="ai-output" id="aiOutputText">
+                    <span style="color: var(--text-muted); font-style: italic;">Your generated copy will appear here...</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- TAB: Graphics Library -->
+        <div id="tab-graphics" class="tab-content">
+            <div class="graphics-grid">
+                <!-- New HTML Templates -->
+                <div class="graphic-card">
+                    <div class="graphic-preview" style="background: linear-gradient(135deg, #020617 0%, #0A3161 100%); display: flex; align-items: center; justify-content: center;">
+                        <span style="font-family: 'Oswald', sans-serif; color: #D4AF37;">WEB BANNER</span>
+                    </div>
+                    <div class="graphic-info">
+                        <h4>Web / Email Banner (1200x630)</h4>
+                        <a href="#" id="btnBanner" target="_blank" class="quick-btn" style="padding: 0.4rem 0.8rem;">Preview</a>
+                    </div>
+                </div>
+
+                <div class="graphic-card">
+                    <div class="graphic-preview" style="background: radial-gradient(circle, rgba(10, 49, 97, 0.8) 0%, rgba(2, 6, 23, 0) 70%); background-color: #020617; display: flex; align-items: center; justify-content: center;">
+                        <span style="font-family: 'Oswald', sans-serif; color: #D4AF37;">SOCIAL SQUARE</span>
+                    </div>
+                    <div class="graphic-info">
+                        <h4>IG/FB Square (1080x1080)</h4>
+                        <a href="#" id="btnSquare" target="_blank" class="quick-btn" style="padding: 0.4rem 0.8rem;">Preview</a>
+                    </div>
+                </div>
+
+                <div class="graphic-card">
+                    <div class="graphic-preview" style="background: linear-gradient(180deg, #020617 0%, #0A3161 100%); display: flex; align-items: center; justify-content: center;">
+                        <span style="font-family: 'Oswald', sans-serif; color: #D4AF37;">IG STORY</span>
+                    </div>
+                    <div class="graphic-info">
+                        <h4>IG/FB Story (1080x1920)</h4>
+                        <a href="#" id="btnStory" target="_blank" class="quick-btn" style="padding: 0.4rem 0.8rem;">Preview</a>
+                    </div>
+                </div>
+
+                <div class="graphic-card">
+                    <div class="graphic-preview" style="background: linear-gradient(90deg, #020617 40%, #0A3161 100%); display: flex; align-items: center; justify-content: center;">
+                        <span style="font-family: 'Oswald', sans-serif; color: #D4AF37;">X POST</span>
+                    </div>
+                    <div class="graphic-info">
+                        <h4>X / Twitter Post (1200x675)</h4>
+                        <a href="#" id="btnX" target="_blank" class="quick-btn" style="padding: 0.4rem 0.8rem;">Preview</a>
+                    </div>
+                </div>
+
+                <div class="graphic-card">
+                    <div class="graphic-preview" style="background: linear-gradient(135deg, #020617 0%, #0A3161 100%); display: flex; align-items: center; justify-content: center; text-align: center;">
+                        <span style="font-family: 'Oswald', sans-serif; color: #D4AF37; line-height: 1.2;">LEAD CAPTURE<br>GRAPHIC</span>
+                    </div>
+                    <div class="graphic-info">
+                        <h4>Lead Magnet Graphic (1200x630)</h4>
+                        <a href="#" id="btnLead" target="_blank" class="quick-btn" style="padding: 0.4rem 0.8rem;">Preview</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- TAB: Lead Magnet Setup -->
+        <div id="tab-magnet" class="tab-content">
+            <div class="quote-panel">
+                <h3 style="margin-top: 0; color: var(--accent-gold);">Lead Magnet Embed Code</h3>
+                <p style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 1.5rem;">Copy and paste this HTML snippet into your website to embed a simple lead capture form. When visitors enter their email, they will be automatically redirected to your Custom Coloring Book.</p>
+                
+                <div style="background: rgba(0,0,0,0.5); padding: 1.5rem; border-radius: 8px; border: 1px solid var(--glass-border); position: relative;">
+                    <button class="btn" style="position: absolute; top: 1rem; right: 1rem; width: auto; padding: 0.4rem 0.8rem; font-size: 0.8rem;" onclick="copyEmbedCode()">Copy Code</button>
+                    <pre id="embedCode" style="margin: 0; color: #a5b4fc; font-family: monospace; white-space: pre-wrap; font-size: 0.85rem;"></pre>
+                </div>
+            </div>
+        </div>
+
+        <!-- TAB: Print Quote -->
+        <div id="tab-print" class="tab-content">
+            <div class="quote-panel">
+                <h3 style="margin-top: 0;">Request Bulk Printing</h3>
+                <p style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 1.5rem;">Need physical copies of your customized book? We handle premium offset printing and drop-shipping directly to your office or event.</p>
+                
+                <form id="printForm">
+                    <div class="form-row" style="display: flex; gap: 1rem;">
+                        <div class="form-group" style="flex: 1;">
+                            <label>Quantity Needed</label>
+                            <input type="number" id="printQty" placeholder="e.g. 500" min="50" style="width: 100%; padding: 0.8rem; background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.2); color: white; border-radius: 8px; font-size: 1rem;" required>
+                        </div>
+                        <div class="form-group" style="flex: 1;">
+                            <label>Shipping Zip Code</label>
+                            <input type="text" id="printZip" placeholder="e.g. 90210" required>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Additional Notes / Event Date</label>
+                        <textarea id="printNotes" style="width: 100%; height: 80px; background: rgba(0,0,0,0.3); border: 1px solid var(--glass-border); border-radius: 8px; color: white; padding: 1rem; font-family: 'Inter', sans-serif;" placeholder="When do you need these by?"></textarea>
+                    </div>
+                    <button type="submit" class="btn">Request Official Quote</button>
+                </form>
+            </div>
+        </div>
+
+        <!-- DASHBOARD FOOTER -->
+        <footer style="margin-top: 4rem; padding-top: 2rem; border-top: 1px solid var(--glass-border); display: flex; flex-direction: column; align-items: center; gap: 1rem; color: var(--text-muted); font-size: 0.9rem;">
+            <a href="index.html"><img src="nc_assets/img/logo.svg" alt="250PROUD" style="height: 180px; filter: brightness(0) invert(1); margin-bottom: 0.5rem; opacity: 0.8;"></a>
+            <div style="display: flex; gap: 2rem; align-items: center;">
+                <a href="https://250proud.com" target="_blank" style="color: var(--text-muted); text-decoration: none;">250PROUD Home</a>
+                <a href="#" onclick="window.scrollTo(0,0); return false;" style="color: var(--text-muted); text-decoration: none;">Back to Top</a>
+                <a href="/tos" style="color: var(--text-muted); text-decoration: none;">Terms of Service</a>
+                <a href="/privacy" style="color: var(--text-muted); text-decoration: none;">Privacy Policy</a>
+                <a href="contact.html" style="color: var(--text-muted); text-decoration: none;">Contact Us</a>
+            </div>
+            <p style="margin-top: 1rem; font-size: 0.8rem; opacity: 0.6;">&copy; 2026 LauralAI LLC. All rights reserved.</p>
+        </footer>
+
+    </div>
+
+    <script>
+        let supabaseClient;
+        let currentUser = null;
+        let currentProfile = null;
+
+        // Initialize App
+        async function init() {
+            try {
+                // Fetch config from serverless function
+                const res = await fetch('/api/config');
+                const config = await res.json();
+                
+                supabaseClient = window.supabase.createClient(config.SUPABASE_URL, config.SUPABASE_ANON_KEY);
+                
+                checkSession();
+                
+                // Set up auth listener
+                supabaseClient.auth.onAuthStateChange((event, session) => {
+                    if (event === 'SIGNED_IN') {
+                        checkSession();
+                    } else if (event === 'SIGNED_OUT') {
+                        showAuth();
+                    }
+                });
+            } catch (err) {
+                console.error("Failed to load config:", err);
+            }
+        }
+
+        async function checkSession() {
+            const { data: { session } } = await supabaseClient.auth.getSession();
+            if (session) {
+                currentUser = session.user;
+                loadDashboardData();
+            } else {
+                showAuth();
+            }
+        }
+
+        function showAuth() {
+            document.getElementById('authView').style.display = 'flex';
+            document.getElementById('dashboardView').style.display = 'none';
+        }
+
+        function showDashboard() {
+            document.getElementById('authView').style.display = 'none';
+            document.getElementById('dashboardView').style.display = 'block';
+        }
+
+        async function loadDashboardData() {
+            const { data, error } = await supabaseClient
+                .from('users')
+                .select('*')
+                .eq('id', currentUser.id)
+                .single();
+
+            if (error || !data) {
+                console.error("Error loading profile:", error);
+                return;
+            }
+
+            currentProfile = data;
+
+            // Populate UI
+            // document.getElementById('userGreeting').innerText = `Welcome back, ${data.company_name || data.username}`;
+            
+            const shortlink = `https://250proud.net/book/${data.book_slug}`;
+            document.getElementById('shortlinkDisplay').innerText = shortlink;
+
+            const embedHtml = `<!-- 250PROUD Lead Magnet -->
+<form action="${shortlink}" method="GET" target="_blank" style="max-width: 400px; margin: 0 auto; font-family: sans-serif;">
+  <h3 style="margin-bottom: 15px;">Download our Free Coloring Book</h3>
+  <input type="email" name="email" placeholder="Enter your email" required style="width: 100%; padding: 10px; margin-bottom: 10px; border: 1px solid #ccc; border-radius: 4px;">
+  <button type="submit" style="width: 100%; padding: 10px; background-color: #0A3161; color: white; border: none; border-radius: 4px; cursor: pointer; font-weight: bold;">Download Now</button>
+</form>`;
+            document.getElementById('embedCode').innerText = embedHtml;
+
+            // Update Quick Links
+            const setupLink = (id, url) => {
+                const el = document.getElementById(id);
+                if (url) {
+                    el.href = url;
+                    el.classList.remove('disabled');
+                    el.removeAttribute('onclick');
+                } else {
+                    el.href = '#';
+                    el.classList.add('disabled');
+                    el.setAttribute('onclick', 'event.preventDefault(); alert("Asset is still generating or not available yet. Please check back later.");');
+                }
+            };
+
+            setupLink('linkPdf', data.book_download_url);
+            setupLink('linkCard', data.postcard_download_url);
+            setupLink('linkQr', data.qr_code_url ? `/qr/${data.book_slug}` : '');
+
+            // Graphics Library Previews
+            const params = new URLSearchParams();
+            if (data.logo_path) params.append('logo', data.logo_path);
+            if (data.company_name) params.append('company', data.company_name);
+            const query = params.toString() ? `?${params.toString()}` : '';
+
+            document.getElementById('btnBanner').href = `web_banner_template.html${query}`;
+            document.getElementById('btnSquare').href = `social_square_template.html${query}`;
+            document.getElementById('btnStory').href = `story_template.html${query}`;
+            document.getElementById('btnX').href = `x_post_template.html${query}`;
+            document.getElementById('btnLead').href = `lead_capture_graphic.html${query}`;
+
+            showDashboard();
+        }
+
+        // --- AUTH FORMS ---
+        document.getElementById('loginForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const email = document.getElementById('loginEmail').value;
+            const password = document.getElementById('loginPassword').value;
+            const btn = document.getElementById('loginBtn');
+            const errDiv = document.getElementById('loginError');
+
+            btn.innerText = 'Logging in...';
+            errDiv.style.display = 'none';
+
+            const { error } = await supabaseClient.auth.signInWithPassword({ email, password });
+            
+            if (error) {
+                btn.innerText = 'Log In';
+                errDiv.innerText = error.message;
+                errDiv.style.display = 'block';
+            }
+        });
+
+        async function logout() {
+            await supabaseClient.auth.signOut();
+        }
+
+        // --- TABS ---
+        function switchTab(tabId) {
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+            document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+            
+            document.querySelector(`.tab-btn[onclick="switchTab('${tabId}')"]`).classList.add('active');
+            document.getElementById(`tab-${tabId}`).classList.add('active');
+        }
+
+        // --- UTILS ---        async function forgotPassword(e) {
+            e.preventDefault();
+            const email = document.getElementById('loginEmail').value;
+            if (!email) {
+                alert('Please enter your email address above first.');
+                return;
+            }
+            const { error } = await supabase.auth.resetPasswordForEmail(email, {
+                redirectTo: window.location.origin + '/resources.html',
+            });
+            if (error) {
+                alert('Error sending reset link: ' + error.message);
+            } else {
+                alert('Password reset link sent to your email.');
+            }
+        }
+
+        function copyShortlink() {
+            if(!currentProfile) return;
+            const link = `https://250proud.net/book/${currentProfile.book_slug}`;
+            navigator.clipboard.writeText(link);
+            alert("Link copied to clipboard!");
+        }
+
+        function copyAIOutput() {
+            const text = document.getElementById('aiOutputText').innerText.replace('Copy Text', '').trim();
+            navigator.clipboard.writeText(text);
+            alert("Copy saved to clipboard!");
+        }
+
+        function copyEmbedCode() {
+            const text = document.getElementById('embedCode').innerText;
+            navigator.clipboard.writeText(text);
+            alert("Embed code copied to clipboard!");
+        }
+
+        // --- AI GENERATION ---
+        async function generateCopy() {
+            const format = document.getElementById('aiFormat').value;
+            const context = document.getElementById('aiContext').value;
+            const btn = document.getElementById('btnGenerateCopy');
+            const output = document.getElementById('aiOutputText');
+
+            if (!context) return alert("Please provide some context for the AI.");
+
+            btn.innerText = 'Generating...';
+            btn.disabled = true;
+            output.innerHTML = '<span style="color: var(--accent-gold);">Thinking...</span>';
+
+            try {
+                const res = await fetch('/api/generate-marketing-copy', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        format: format,
+                        context: context,
+                        userId: currentUser.id
+                    })
+                });
+
+                const data = await res.json();
+                
+                if (!data.success) throw new Error(data.error);
+
+                let finalText = data.text;
+                const bookUrl = `https://250proud.net/book/${currentProfile.book_slug}`;
+                finalText = finalText.replace(/\[download link\]/gi, bookUrl).replace(/\[link\]/gi, bookUrl);
+
+                output.innerHTML = `<button class="copy-btn" onclick="copyAIOutput()">Copy Text</button>${finalText}`;
+            } catch (err) {
+                output.innerHTML = `<span style="color: #EF4444;">Error: ${err.message}</span>`;
+            }
+
+            btn.innerText = 'Generate Copy';
+            btn.disabled = false;
+        }
+
+        // --- PRINT QUOTE ---
+        document.getElementById('printForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const btn = e.target.querySelector('button');
+            btn.innerText = 'Sending Request...';
+            btn.disabled = true;
+
+            try {
+                const res = await fetch('/api/request-print-quote', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        quantity: document.getElementById('printQty').value,
+                        zipCode: document.getElementById('printZip').value,
+                        notes: document.getElementById('printNotes').value,
+                        email: currentProfile.email,
+                        companyName: currentProfile.company_name
+                    })
+                });
+
+                const data = await res.json();
+                if (!data.success) throw new Error(data.error);
+
+                alert("Quote request sent! Check your email for confirmation.");
+                e.target.reset();
+            } catch (err) {
+                alert("Error sending request: " + err.message);
+            }
+
+            btn.innerText = 'Request Official Quote';
+            btn.disabled = false;
+        });
+
+        const templateCopy = {
+            "Email": `SUBJECT LINE OPTIONS
+--------------------
+1. A small gift for the 250th
+2. Something for your kitchen table this summer
+3. 250 years feels worth marking
+
+BODY
+----
+Hi [First Name],
+
+This year the country turns 250. That's a number worth pausing on, and we wanted to do something to mark it that wasn't a yard sign or a postcard.
+
+The country feels like it's in a complicated stretch right now. People are tired. Families don't always agree at the dinner table the way they used to. But we keep coming back to this: no matter where any of us land politically, what was started in 1776 is still one of the strangest, most ambitious experiments in human history. A country built on the idea that ordinary people could govern themselves. That's worth a moment. Maybe especially now.
+
+So here's the gift. We partnered with the team behind 250 Strong, Built by Hand to share it with all of our friends and contacts. Every story and every illustration is completely original and built for this project. Twenty-four pages, each one a little-known piece of American history — Sequoyah inventing an entire written language for the Cherokee people on his own, Harriet Tubman making thirteen missions into the South and never losing a single person she guided to freedom, Rick Rescorla leading 2,700 employees down the South Tower stairs on 9/11 singing through a bullhorn to keep them calm. The stories most of us never got in school.
+
+It's free. It's printable. It's made for kids and grown-ups both, and it holds up at a kitchen table on a Saturday morning. [download link]
+
+Here's to the next chapter, and to the quiet hands still building it.`,
+            
+            "SMS / Text Message": `VARIANT 1 — WARM SPHERE (close contacts, past clients)
+Hey it's [First Name]. The country turns 250 this year and we made a free coloring/history book to mark it. 24 pages, professionally curated illustrations. Yours: [link]
+
+VARIANT 2 — BROADER LIST (general contacts)
+America turns 250 this year. We helped make a free coloring + history book for it — 24 pages of professionally curated illustrations of little-known American stories. Free download: [link]
+
+VARIANT 3 — ULTRA-SHORT (mass send, cost-conscious)
+America turns 250. Free coloring + history book, 24 pages, professionally curated illustrations. Yours: [link]`,
+
+            "Facebook": `The country turns 250 this year. That felt worth doing something about.
+
+So we partnered with the team behind 250 Strong, Built by Hand — a coloring and educational book made by hand, page by page, for this anniversary. Every story and every illustration is completely original and built for this project. Twenty-four pages of little-known American history: Sequoyah inventing an entire written language for the Cherokee people on his own, Harriet Tubman making thirteen missions into the South and never losing a single person she guided to freedom, Rick Rescorla leading 2,700 employees down the South Tower stairs on 9/11 singing through a bullhorn to keep them calm. The stories most of us never got in school.
+
+No matter where any of us land politically right now, what was started in 1776 is still one of the strangest, most ambitious experiments in human history. A country built on the idea that ordinary people could govern themselves. That's worth a moment.
+
+Free download. Printable. Good for a kitchen table on a Saturday morning. Link below.
+
+[download link]
+
+#250Proud  #BuiltByHand  #1776to2026`,
+
+            "Instagram": `250 years. One country. A million quiet hands that built it.
+
+We partnered with the team behind 250 Strong, Built by Hand to share something for the anniversary that isn't a slogan or a sale. It's a coloring and educational book — every story and every illustration completely original and built for this project. Twenty-four pages of little-known American history. Sequoyah, who invented an entire written language for the Cherokee people on his own. Harriet Tubman, who made thirteen missions into the South and never lost a single person she guided to freedom. Rick Rescorla, who led 2,700 employees down the South Tower stairs on 9/11, singing through a bullhorn to keep them calm. The people you weren't taught about in school but probably should have been.
+
+No matter where you land politically, what started in 1776 is still one of the strangest, most ambitious experiments in human history. Worth a moment. Maybe especially now.
+
+Free at the link in bio.
+
+1776 — 2026
+
+.
+.
+.
+#250Proud #BuiltByHand #AmericanHistory #250thAnniversary #1776 #Semiquincentennial #ColoringBook #HistoryForKids #HomeschoolHistory #PatrioticDesign #MadeInAmerica #FamilyTime #LittleKnownHistory #ForgottenHistory #AmericanStory`,
+
+            "X (Twitter)": `POST 1
+The country turns 250 this year.
+We made something for it. Free. Printable. Built by hand.
+A coloring and educational book — 24 pages of little-known American history. Every story and illustration completely original.
+🧵👇
+
+POST 2
+Sequoyah, who invented an entire written language for the Cherokee people on his own.
+Harriet Tubman, who made thirteen missions into the South and never lost a single person she guided to freedom.
+Rick Rescorla, who led 2,700 people down the South Tower stairs on 9/11, singing through a bullhorn to keep them calm.
+The stories most of us never got in school. The quiet hands that built the place.
+
+POST 3
+No matter where any of us land politically, what started in 1776 is still one of the strangest, most ambitious experiments in human history.
+A country built on the idea that ordinary people could govern themselves.
+Worth a moment. Maybe especially now.
+[download link]`,
+
+            "LinkedIn": `A note for the 250th.
+
+This year the country turns 250, and we wanted to mark it with something that wasn't a campaign or a logo refresh. So we partnered with the team behind 250 Strong, Built by Hand, a coloring and educational book made specifically for this anniversary. Every story and every illustration is completely original and built for this project. Twenty-four pages, each one a little-known piece of American history. Sequoyah, who invented an entire written language for the Cherokee people on his own. Harriet Tubman, who made thirteen missions into the South and never lost a single person she guided to freedom. Rick Rescorla, who led 2,700 employees down the South Tower stairs on 9/11, singing through a bullhorn to keep them calm.
+
+The stories most of us never got in school.
+
+The country is in a complicated stretch right now. That's worth saying plainly. But no matter where any of us land politically, what was started in 1776 is still one of the strangest, most ambitious experiments in human history — a country built on the idea that ordinary people could govern themselves. That's worth pausing on.
+
+The book is free and printable, made for kids and grown-ups both. If you've got family, students, neighbors, or a Saturday morning kitchen table, it'll find a use.
+
+1776 — 2026
+
+[download link]
+
+#250Proud #AmericanHistory #BuiltByHand`
+        };
+
+        document.getElementById('aiFormat').addEventListener('change', (e) => {
+            const format = e.target.value;
+            if (templateCopy[format]) {
+                document.getElementById('aiContext').value = templateCopy[format];
+            } else {
+                document.getElementById('aiContext').value = '';
+            }
+        });
+
+        // Initialize with default
+        document.getElementById('aiContext').value = templateCopy["Email"];
+
+        // Start
+        init();
+    </script>
+</body>
+</html>

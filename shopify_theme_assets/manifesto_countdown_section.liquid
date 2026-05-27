@@ -1,0 +1,313 @@
+{% schema %}
+{
+  "name": "Full-Page Countdown",
+  "settings": [
+    {
+      "type": "color",
+      "id": "bg_color",
+      "label": "Background Color",
+      "default": "#020617"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Text Color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "accent_color",
+      "label": "Accent Gold",
+      "default": "#D4AF37"
+    },
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Section Title",
+      "default": "The Countdown Begins"
+    },
+    {
+      "type": "text",
+      "id": "subtitle",
+      "label": "Section Subtitle",
+      "default": "On July 4, 2026, the United States turns 250. We are building the tools to mark it properly."
+    },
+    {
+      "type": "text",
+      "id": "target_date",
+      "label": "Target Date (e.g. 'July 4, 2026 00:00:00')",
+      "default": "July 4, 2026 00:00:00"
+    },
+    {
+      "type": "textarea",
+      "id": "manifesto_text",
+      "label": "Manifesto Text",
+      "default": "This isn't just about merchandise. It's a movement to remember the ambitious experiment started in 1776. Whether you're a real estate agent sharing our digital book with your community, or wearing the mark yourself, you are part of the story."
+    },
+    {
+      "type": "text",
+      "id": "primary_cta_text",
+      "label": "Primary CTA Text",
+      "default": "Shop the Merch Collection"
+    },
+    {
+      "type": "url",
+      "id": "primary_cta_link",
+      "label": "Primary CTA Link"
+    },
+    {
+      "type": "text",
+      "id": "secondary_cta_text",
+      "label": "Secondary CTA Text",
+      "default": "Claim Your Free Digital Book"
+    },
+    {
+      "type": "url",
+      "id": "secondary_cta_link",
+      "label": "Secondary CTA Link"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Full-Page Countdown",
+      "category": "Custom Content"
+    }
+  ]
+}
+{% endschema %}
+
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;800&family=Oswald:wght@500;700&family=Inter:wght@400;500;600;800&display=swap');
+
+  #fpc-{{ section.id }} {
+    --bg-color: {{ section.settings.bg_color }};
+    --text-color: {{ section.settings.text_color }};
+    --accent-color: {{ section.settings.accent_color }};
+    --accent-hover: #F2D265;
+    --border-color: rgba(255, 255, 255, 0.08);
+
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    font-family: 'Inter', sans-serif;
+    text-align: center;
+    padding: 6rem 2rem;
+    background-image: 
+        radial-gradient(circle at 50% 50%, rgba(212, 175, 55, 0.05), transparent 40%),
+        radial-gradient(circle at 10% 20%, rgba(255, 255, 255, 0.02), transparent 30%);
+    border-top: 1px solid var(--border-color);
+    border-bottom: 1px solid var(--border-color);
+    position: relative;
+    overflow: hidden;
+  }
+
+  #fpc-{{ section.id }} .fpc-title {
+    font-family: 'Oswald', sans-serif;
+    text-transform: uppercase;
+    font-size: 2.5rem;
+    letter-spacing: 2px;
+    color: var(--accent-color);
+    margin-bottom: 0.5rem;
+    margin-top: 0;
+  }
+
+  #fpc-{{ section.id }} .fpc-subtitle {
+    color: #94a3b8;
+    font-size: 1.1rem;
+    max-width: 600px;
+    margin: 0 auto 3rem auto;
+    line-height: 1.6;
+  }
+
+  #fpc-{{ section.id }} .fpc-countdown-wrapper {
+    display: flex;
+    justify-content: center;
+    gap: 2rem;
+    margin: 3rem 0;
+  }
+
+  #fpc-{{ section.id }} .fpc-countdown-block {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  #fpc-{{ section.id }} .fpc-countdown-number {
+    font-family: 'Oswald', sans-serif;
+    font-size: 4.5rem;
+    font-weight: 700;
+    color: var(--text-color);
+    line-height: 1;
+    text-shadow: 0 0 20px rgba(255, 255, 255, 0.1);
+  }
+
+  #fpc-{{ section.id }} .fpc-countdown-label {
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    color: var(--accent-color);
+    margin-top: 0.5rem;
+  }
+
+  #fpc-{{ section.id }} .fpc-manifesto-text {
+    font-size: 1.2rem;
+    line-height: 1.8;
+    color: #94a3b8;
+    max-width: 800px;
+    margin: 0 auto 3rem auto;
+  }
+
+  #fpc-{{ section.id }} .fpc-cta-group {
+    display: flex;
+    gap: 1.5rem;
+    justify-content: center;
+  }
+
+  #fpc-{{ section.id }} .fpc-btn {
+    display: inline-block;
+    font-family: 'Inter', sans-serif;
+    font-size: 0.9rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    padding: 1rem 2.5rem;
+    border-radius: 4px;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    cursor: pointer;
+    border: none;
+    text-align: center;
+  }
+
+  #fpc-{{ section.id }} .fpc-btn-primary {
+    background: var(--accent-color);
+    color: #000000;
+    box-shadow: 0 4px 15px rgba(212, 175, 55, 0.2);
+  }
+
+  #fpc-{{ section.id }} .fpc-btn-primary:hover {
+    background: var(--accent-hover);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(212, 175, 55, 0.3);
+  }
+
+  #fpc-{{ section.id }} .fpc-btn-secondary {
+    background: transparent;
+    color: var(--text-color);
+    border: 1px solid var(--border-color);
+  }
+
+  #fpc-{{ section.id }} .fpc-btn-secondary:hover {
+    border-color: var(--text-color);
+    background: rgba(255, 255, 255, 0.05);
+    transform: translateY(-2px);
+  }
+
+  @media (max-width: 768px) {
+    #fpc-{{ section.id }} {
+      padding: 4rem 1.5rem;
+    }
+    #fpc-{{ section.id }} .fpc-title {
+      font-size: 2rem;
+    }
+    #fpc-{{ section.id }} .fpc-countdown-wrapper {
+      gap: 1rem;
+    }
+    #fpc-{{ section.id }} .fpc-countdown-number {
+      font-size: 3rem;
+    }
+    #fpc-{{ section.id }} .fpc-manifesto-text {
+      font-size: 1.1rem;
+    }
+    #fpc-{{ section.id }} .fpc-cta-group {
+      flex-direction: column;
+      gap: 1rem;
+    }
+    #fpc-{{ section.id }} .fpc-btn {
+      width: 100%;
+      box-sizing: border-box;
+    }
+  }
+</style>
+
+<section class="fpc-section" id="fpc-{{ section.id }}">
+  <h2 class="fpc-title">{{ section.settings.title }}</h2>
+  <p class="fpc-subtitle">{{ section.settings.subtitle }}</p>
+  
+  <div class="fpc-countdown-wrapper">
+    <div class="fpc-countdown-block">
+      <span class="fpc-countdown-number" id="fpc-days-{{ section.id }}">000</span>
+      <span class="fpc-countdown-label">Days</span>
+    </div>
+    <div class="fpc-countdown-block">
+      <span class="fpc-countdown-number" id="fpc-hours-{{ section.id }}">00</span>
+      <span class="fpc-countdown-label">Hours</span>
+    </div>
+    <div class="fpc-countdown-block">
+      <span class="fpc-countdown-number" id="fpc-minutes-{{ section.id }}">00</span>
+      <span class="fpc-countdown-label">Minutes</span>
+    </div>
+    <div class="fpc-countdown-block">
+      <span class="fpc-countdown-number" id="fpc-seconds-{{ section.id }}">00</span>
+      <span class="fpc-countdown-label">Seconds</span>
+    </div>
+  </div>
+
+  <p class="fpc-manifesto-text">{{ section.settings.manifesto_text }}</p>
+
+  <div class="fpc-cta-group">
+    {% if section.settings.primary_cta_text != blank %}
+      <a href="{{ section.settings.primary_cta_link | default: '#' }}" class="fpc-btn fpc-btn-primary">
+        {{ section.settings.primary_cta_text }}
+      </a>
+    {% endif %}
+    {% if section.settings.secondary_cta_text != blank %}
+      <a href="{{ section.settings.secondary_cta_link | default: '#' }}" class="fpc-btn fpc-btn-secondary">
+        {{ section.settings.secondary_cta_text }}
+      </a>
+    {% endif %}
+  </div>
+</section>
+
+<script>
+  (function() {
+    function updateCountdown() {
+      const targetDate = new Date('{{ section.settings.target_date | default: "July 4, 2026 00:00:00" }}').getTime();
+      const now = new Date().getTime();
+      const distance = targetDate - now;
+
+      const daysEl = document.getElementById('fpc-days-{{ section.id }}');
+      const hoursEl = document.getElementById('fpc-hours-{{ section.id }}');
+      const minutesEl = document.getElementById('fpc-minutes-{{ section.id }}');
+      const secondsEl = document.getElementById('fpc-seconds-{{ section.id }}');
+
+      if (!daysEl || !hoursEl || !minutesEl || !secondsEl) return;
+
+      if (distance < 0) {
+        daysEl.innerText = "000";
+        hoursEl.innerText = "00";
+        minutesEl.innerText = "00";
+        secondsEl.innerText = "00";
+        return;
+      }
+
+      const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+      const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+      const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+      const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+      daysEl.innerText = days.toString().padStart(3, '0');
+      hoursEl.innerText = hours.toString().padStart(2, '0');
+      minutesEl.innerText = minutes.toString().padStart(2, '0');
+      secondsEl.innerText = seconds.toString().padStart(2, '0');
+    }
+
+    updateCountdown();
+    const interval = setInterval(updateCountdown, 1000);
+
+    document.addEventListener('shopify:section:unload', function(e) {
+      if (e.detail.sectionId === '{{ section.id }}') {
+        clearInterval(interval);
+      }
+    });
+  })();
+</script>

@@ -4,6 +4,7 @@
 const { createClient } = require('@supabase/supabase-js');
 const mailchimp = require('@mailchimp/mailchimp_marketing');
 const crypto = require('crypto');
+const { Resend } = require('resend');
 
 module.exports = async function handler(req, res) {
   try {
@@ -117,6 +118,28 @@ module.exports = async function handler(req, res) {
       } else {
         console.error('Supabase error:', dbError);
         return res.status(500).json({ error: `Database error: ${dbError.message || JSON.stringify(dbError)}` });
+      }
+    }
+
+    // 3. Send Internal Notification via Resend
+    if (process.env.RESEND_API_KEY) {
+      const resend = new Resend(process.env.RESEND_API_KEY);
+      try {
+        await resend.emails.send({
+          from: '250PROUD Notifications <notifications@send.250proud.net>',
+          to: 'info@250proud.net',
+          subject: `🎉 New Sign Up: ${full_name || email}`,
+          html: `
+            <h2>New Lead Captured!</h2>
+            <p><strong>Name:</strong> ${full_name || 'Not provided'}</p>
+            <p><strong>Email:</strong> ${email || 'Not provided'}</p>
+            <p><strong>Phone:</strong> ${phone || 'Not provided'}</p>
+            <p><strong>Source:</strong> ${source || 'Website Form'}</p>
+          `
+        });
+        console.log("Internal notification email sent successfully.");
+      } catch (emailError) {
+        console.error("Failed to send internal notification email:", emailError);
       }
     }
 

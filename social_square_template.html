@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=1080, initial-scale=1.0">
+    <title>Social Square Template</title>
+    <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@500;700&family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        
+        
+        body {
+            background: #1e293b;
+            font-family: 'Inter', sans-serif;
+            color: white;
+            margin: 0;
+            padding: 40px 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+            overflow-y: auto; /* Enable scrolling */
+            overflow-x: auto;
+        }
+
+        .controls {
+            margin-bottom: 30px;
+            text-align: center;
+            z-index: 9999;
+        }
+
+        .download-btn {
+            background: #D4AF37;
+            color: #020617;
+            padding: 16px 32px;
+            border-radius: 8px;
+            font-family: 'Oswald', sans-serif;
+            font-size: 20px;
+            font-weight: 700;
+            text-transform: uppercase;
+            cursor: pointer;
+            border: none;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+            transition: all 0.2s;
+        }
+        
+        .download-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(212, 175, 55, 0.4);
+        }
+
+        .graphic-wrapper {
+            
+            width: 1080px;
+            height: 1080px;
+            background: #020617;
+            font-family: 'Inter', sans-serif;
+            color: white;
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        
+            box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+            /* Ensure it is exactly the right size */
+            width: 1080px !important;
+            height: 1080px !important;
+            min-width: 1080px;
+            min-height: 1080px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+
+        .bg-glow {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 800px;
+            height: 800px;
+            background: radial-gradient(circle, rgba(10, 49, 97, 0.8) 0%, rgba(2, 6, 23, 0) 70%);
+            z-index: 1;
+        }
+
+        .book-container {
+            position: relative;
+            z-index: 10;
+            margin-bottom: 40px;
+        }
+
+        .book-mockup {
+            height: 600px;
+            filter: drop-shadow(0 30px 40px rgba(0,0,0,0.6));
+        }
+
+        h1 {
+            font-family: 'Oswald', sans-serif;
+            font-size: 64px;
+            line-height: 1.1;
+            text-transform: uppercase;
+            text-align: center;
+            z-index: 10;
+            max-width: 900px;
+            margin-bottom: 20px;
+        }
+
+        .headline-partner {
+            color: #D4AF37;
+        }
+
+        .cta-pill {
+            background: #D4AF37;
+            color: #020617;
+            padding: 12px 32px;
+            border-radius: 50px;
+            font-family: 'Oswald', sans-serif;
+            text-transform: uppercase;
+            font-size: 24px;
+            letter-spacing: 2px;
+            font-weight: 700;
+            z-index: 10;
+        }
+
+        .partner-logo-container {
+            position: absolute;
+            top: 50px;
+            left: 50px;
+            z-index: 20;
+        }
+
+        .partner-logo {
+            max-height: 150px;
+            max-width: 400px;
+            object-fit: contain;
+            
+        }
+
+        .frame-border {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            right: 20px;
+            bottom: 20px;
+            border: 2px solid rgba(212, 175, 55, 0.3);
+            z-index: 5;
+            pointer-events: none;
+        }
+    </style>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html-to-image/1.11.11/html-to-image.min.js"></script>
+</head>
+<body>
+    <div class="controls">
+        <button id="downloadBtn" class="download-btn" onclick="downloadGraphic()">Download Graphic</button>
+        <p style="text-align: center; margin-top: 1rem; color: #555;">Close this window to return to the Resource Center.</p>
+        <p style="color: var(--text-muted); font-size: 0.8rem; text-align: center; margin-top: 15px;">
+            Click <strong>Download Graphic</strong>, or right-click the image above and select <strong>Save Image As...</strong> to save it to your device.
+        </p>
+    </div>
+    <div id="graphic-wrapper" class="graphic-wrapper">
+        
+    <div class="bg-glow"></div>
+    <div class="frame-border"></div>
+
+    <div class="partner-logo-container">
+        <!-- Replaced dynamically by Puppeteer -->
+        <img src="nc_assets/img/logo.svg" alt="Logo" class="partner-logo" id="logoImage">
+    </div>
+
+    <div class="book-container">
+        <!-- The user's custom book cover will be injected here -->
+        <img src="nc_assets/img/generated_true_cover.png" alt="Book Mockup" class="book-mockup" id="coverImage">
+    </div>
+
+    <h1>GET YOUR FREE COPY OF <span class="headline-partner">UNIQUE AMERICAN HISTORY</span></h1>
+    <p style="font-size: 24px; color: #94a3b8; text-transform: uppercase; margin-top: 10px; font-weight: 600; text-align: center; z-index: 10; position: relative;">Proudly supported by <span id="companyNameText" style="color: #D4AF37;">Us</span></p>
+    
+    <div class="cta-pill" style="margin-top: 25px;">Link in Comments</div>
+
+    
+    </div>
+    <script>
+        const urlParams = new URLSearchParams(window.location.search);
+        
+        const logoUrl = urlParams.get('logo');
+        const logoImg = document.getElementById('logoImage');
+        if(logoUrl && logoUrl !== '' && logoUrl !== 'null') {
+            logoImg.crossOrigin = "anonymous";
+            logoImg.src = logoUrl;
+        } else {
+            logoImg.style.display = 'none';
+        }
+        
+        const coverUrl = urlParams.get('cover');
+        if(coverUrl && coverUrl !== '' && coverUrl !== 'null') {
+            const coverImg = document.getElementById('coverImage');
+            coverImg.crossOrigin = "anonymous";
+            coverImg.src = coverUrl;
+        }
+    
+        if(urlParams.has('company') && urlParams.get('company') !== 'null' && urlParams.get('company') !== '') {
+            const el = document.getElementById('companyNameText');
+            if(el) el.innerText = urlParams.get('company');
+        }
+
+        function downloadGraphic() {
+            const node = document.getElementById('graphic-wrapper');
+            const btn = document.getElementById('downloadBtn');
+            btn.innerText = 'Generating PNG...';
+            
+            htmlToImage.toPng(node, { quality: 1.0, pixelRatio: 2, cacheBust: true })
+                .then(function (dataUrl) {
+                    var link = document.createElement('a');
+                    link.download = '250PROUD_Social_Square.png';
+                    link.href = dataUrl;
+                    link.click();
+                    btn.innerText = 'Download Graphic';
+                })
+                .catch(function (error) {
+                    console.error('oops, something went wrong!', error);
+                    btn.innerText = 'Download Failed - Take Screenshot';
+                    alert('There was an issue generating the image (likely a CORS security block on the logos). You can alternatively right click the graphic and save it to your device.');
+                });
+        }
+    
+    </script>
+</body>
+</html>

@@ -1,0 +1,538 @@
+{% schema %}
+{
+  "name": "Today in American History",
+  "settings": [
+    {
+      "type": "color",
+      "id": "bg_color",
+      "label": "Background Color",
+      "default": "#020617"
+    },
+    {
+      "type": "color",
+      "id": "accent_color",
+      "label": "Accent Gold",
+      "default": "#D4AF37"
+    },
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Section Title",
+      "default": "The American Story"
+    },
+    {
+      "type": "textarea",
+      "id": "subtitle",
+      "label": "Section Subtitle",
+      "default": "250 years of quiet hands, bold ideas, and the moments that built us.\nDiscover what happened on this day."
+    },
+    {
+      "type": "image_picker",
+      "id": "default_image",
+      "label": "Default Background Image"
+    },
+    {
+      "type": "url",
+      "id": "cta_link",
+      "label": "CTA Link"
+    },
+    {
+      "type": "text",
+      "id": "cta_text",
+      "label": "CTA Text",
+      "default": "Explore the Collection"
+    },
+    {
+      "type": "url",
+      "id": "secondary_cta_link",
+      "label": "Secondary CTA Link"
+    },
+    {
+      "type": "text",
+      "id": "secondary_cta_text",
+      "label": "Secondary CTA Text",
+      "default": "Digital Marketing Tool"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Today in American History",
+      "category": "Custom Content"
+    }
+  ]
+}
+{% endschema %}
+
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Oswald:wght@500;700&family=Inter:wght@400;500;600;800&display=swap');
+
+  .tih-section {
+    background-color: {{ section.settings.bg_color }};
+    padding: 40px 20px 80px 20px;
+    font-family: 'Inter', sans-serif;
+    color: #ffffff;
+    background-image: 
+        radial-gradient(circle at 15% 50%, rgba(212, 175, 55, 0.05), transparent 25%),
+        radial-gradient(circle at 85% 30%, rgba(255, 255, 255, 0.02), transparent 25%);
+  }
+
+  .tih-container {
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  .tih-header {
+    text-align: center;
+    margin-bottom: 30px;
+  }
+
+  .tih-title {
+    font-family: 'Oswald', sans-serif;
+    font-size: 2.5rem;
+    text-transform: uppercase;
+    color: {{ section.settings.accent_color }};
+    letter-spacing: 2px;
+    margin: 0 0 10px 0;
+  }
+
+  .tih-subtitle {
+    color: #94a3b8;
+    font-size: 1.35rem;
+    max-width: 800px;
+    margin: 0 auto;
+    line-height: 1.6;
+    white-space: pre-line;
+  }
+
+  .tih-widget {
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 16px;
+    padding: 3rem;
+    position: relative;
+    overflow: hidden;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 4rem;
+    align-items: center;
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+  }
+
+  .tih-widget::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 4px;
+    height: 100%;
+    background: {{ section.settings.accent_color }};
+  }
+
+  .tih-bg-date {
+    font-family: 'Oswald', sans-serif;
+    font-size: 6rem;
+    line-height: 1;
+    color: rgba(255,255,255,0.05);
+    position: absolute;
+    top: -10px;
+    right: 20px;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .tih-content {
+    position: relative;
+    z-index: 1;
+  }
+
+  .tih-label {
+    font-family: 'Oswald', sans-serif;
+    font-size: 1.85rem;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    color: {{ section.settings.accent_color }};
+    margin-bottom: 1rem;
+    display: block;
+    font-weight: 700;
+  }
+
+  .tih-fact {
+    font-size: 1.5rem;
+    line-height: 1.5;
+    margin-bottom: 2rem;
+    font-weight: 400;
+  }
+
+  .tih-visual {
+    position: relative;
+    z-index: 1;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+    align-self: stretch;
+    height: 100%;
+    min-height: 380px;
+    display: flex;
+  }
+
+  .tih-visual img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    filter: grayscale(100%) contrast(1.2);
+    transition: filter 0.6s cubic-bezier(0.16, 1, 0.3, 1), transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  .tih-widget:hover .tih-visual img {
+    filter: grayscale(0%) contrast(1.1);
+    transform: scale(1.05);
+  }
+
+  .tih-btn {
+    display: inline-block;
+    font-family: 'Inter', sans-serif;
+    font-size: 0.9rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    padding: 0.85rem 2rem;
+    border-radius: 4px;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    cursor: pointer;
+    border: none;
+    text-align: center;
+  }
+
+  .tih-btn-primary {
+    background: {{ section.settings.accent_color }};
+    color: #000000;
+    box-shadow: 0 4px 15px rgba(212, 175, 55, 0.2);
+  }
+
+  .tih-btn-primary:hover {
+    background: #F2D265;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(212, 175, 55, 0.3);
+  }
+
+  .tih-btn-secondary {
+    background: transparent;
+    color: #ffffff;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+  }
+
+  .tih-btn-secondary:hover {
+    border-color: #ffffff;
+    background: rgba(255, 255, 255, 0.05);
+    transform: translateY(-2px);
+  }
+
+  @media (max-width: 900px) {
+    .tih-widget {
+      grid-template-columns: 1fr;
+      gap: 2rem;
+      padding: 2rem;
+    }
+    .tih-title {
+      font-size: 2rem;
+    }
+    .tih-subtitle {
+      font-size: 1.1rem;
+    }
+    .tih-label {
+      font-size: 1.35rem;
+    }
+    .tih-fact {
+      font-size: 1.25rem;
+    }
+    .tih-visual {
+      min-height: 280px;
+      height: 280px;
+    }
+  }
+</style>
+
+<section class="tih-section">
+  <div class="tih-container">
+    <div class="tih-header">
+      <h2 class="tih-title">{{ section.settings.title }}</h2>
+      <p class="tih-subtitle">{{ section.settings.subtitle }}</p>
+    </div>
+    
+    <div class="tih-widget">
+      <div class="tih-bg-date" id="tih-bg-date">TODAY</div>
+      
+      <div class="tih-content">
+        <span class="tih-label" id="tih-year-label">On this day in History</span>
+        <p class="tih-fact" id="tih-fact-text">Loading...</p>
+        
+        <div style="display: flex; gap: 15px; flex-wrap: wrap; margin-top: 2rem;">
+          {% if section.settings.cta_text != blank %}
+            <a href="{{ section.settings.cta_link | default: '#' }}" class="tih-btn tih-btn-secondary">
+              {{ section.settings.cta_text }}
+            </a>
+          {% endif %}
+          {% if section.settings.secondary_cta_text != blank %}
+            <a href="{{ section.settings.secondary_cta_link | default: '#' }}" class="tih-btn tih-btn-primary">
+              {{ section.settings.secondary_cta_text }}
+            </a>
+          {% endif %}
+        </div>
+      </div>
+      
+      <div class="tih-visual">
+        {% if section.settings.default_image %}
+          <img id="tih-fact-image" src="{{ section.settings.default_image | image_url: width: 800 }}" alt="Historical Event" data-fallback="{{ section.settings.default_image | image_url: width: 800 }}">
+        {% else %}
+          <!-- Premium fallback image if none selected in Shopify (Statue of Liberty) -->
+          <img id="tih-fact-image" src="https://upload.wikimedia.org/wikipedia/commons/d/d3/Statue_of_Liberty%2C_NY.jpg" alt="Historical Event Placeholder" data-fallback="https://upload.wikimedia.org/wikipedia/commons/d/d3/Statue_of_Liberty%2C_NY.jpg">
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    const historyFacts = {
+      "1-1": {
+        "year": "1863",
+        "text": "President Abraham Lincoln issued the Emancipation Proclamation, declaring that all persons held as slaves within the rebellious states are, and henceforward shall be free."
+      },
+      "5-19": {
+        "year": "1780",
+        "text": "The sky over New England went dark by mid-morning. Candles burned at noon, roosters returned to roost, and many believed Judgment Day had arrived. Modern science traces it to massive wildfires in Ontario combined with thick fog — but the awe stuck with a generation.",
+        "image": "{{ '1780-05-19_dark-day.jpg' | file_url }}",
+        "asset_image": "{{ '1780-05-19_dark-day.jpg' | asset_url }}",
+        "supabase_image": "https://iohdigyivypgyphcliuo.supabase.co/storage/v1/object/public/daily_cards/1780-05-19_dark-day.png"
+      },
+      "5-20": {
+        "year": "1862",
+        "text": "Lincoln signed the Homestead Act, opening 160 acres of public land to any citizen willing to settle and improve it for five years. Between 1863 and 1900, roughly 400,000 claims moved 80 million acres into private hands — and reshaped the American West, for better and worse.",
+        "image": "{{ '1862-05-20_homestead-act.jpg' | file_url }}",
+        "asset_image": "{{ '1862-05-20_homestead-act.jpg' | asset_url }}",
+        "supabase_image": "https://iohdigyivypgyphcliuo.supabase.co/storage/v1/object/public/daily_cards/1862-05-20_homestead-act.png"
+      },
+      "5-21": {
+        "year": "1881",
+        "text": "After watching the Civil War chew through soldiers without organized relief, Clara Barton spent twelve years lobbying for an American chapter of the Red Cross. On May 21, 1881, she founded it in Washington. Today it runs on roughly 300,000 volunteers — the system she built by refusing to be told no.",
+        "image": "{{ '1881-05-21_clara-barton.jpg' | file_url }}",
+        "asset_image": "{{ '1881-05-21_clara-barton.jpg' | asset_url }}",
+        "supabase_image": "https://iohdigyivypgyphcliuo.supabase.co/storage/v1/object/public/daily_cards/1881-05-21_clara-barton.png"
+      },
+      "5-22": {
+        "year": "1872",
+        "text": "Seven years after Appomattox, President Grant signed the Amnesty Act, restoring full civil and political rights to nearly all former Confederates. The intent was to stitch the country back together. The reality was more complicated — but the act marked a deliberate national choice to choose reconciliation over permanent punishment.",
+        "image": "{{ '1872-05-22_amnesty-act.jpg' | file_url }}",
+        "asset_image": "{{ '1872-05-22_amnesty-act.jpg' | asset_url }}",
+        "supabase_image": "https://iohdigyivypgyphcliuo.supabase.co/storage/v1/object/public/daily_cards/1872-05-22_amnesty-act.png?v=1779450245972"
+      },
+      "5-23": {
+        "year": "1788",
+        "text": "South Carolina became the eighth state to ratify the U.S. Constitution, leaving just one more needed to make it the law of the land. The vote came after weeks of hard debate in Charleston — proof that the document survived by argument, not consensus. New Hampshire would push it over the line a month later.",
+        "image": "{{ '1788-05-23_sc-ratification.jpg' | file_url }}",
+        "asset_image": "{{ '1788-05-23_sc-ratification.jpg' | asset_url }}",
+        "supabase_image": "https://iohdigyivypgyphcliuo.supabase.co/storage/v1/object/public/daily_cards/1788-05-23_sc-ratification.png"
+      },
+      "5-24": {
+        "year": "1844",
+        "text": "Samuel Morse sat in the Capitol and tapped out a message in code. Forty miles away in Baltimore, his partner received it: \"What hath God wrought.\" The telegraph turned distance into a non-issue and rewired how America did business, war, and news. The world got smaller that morning.",
+        "image": "{{ '1844-05-24_morse.jpg' | file_url }}",
+        "asset_image": "{{ '1844-05-24_morse.jpg' | asset_url }}",
+        "supabase_image": "https://iohdigyivypgyphcliuo.supabase.co/storage/v1/object/public/daily_cards/1844-05-24_morse.png"
+      },
+      "5-25": {
+        "year": "1868",
+        "text": "Three years after the Civil War ended, General John A. Logan called for a national day to decorate the graves of the Union dead. On the first Decoration Day, May 30, 1868, flowers were laid at Arlington for both Union and Confederate soldiers. The name became Memorial Day. The duty didn't change.",
+        "image": "{{ '1868-05-25_decoration-day.jpg' | file_url }}",
+        "asset_image": "{{ '1868-05-25_decoration-day.jpg' | asset_url }}",
+        "supabase_image": "https://iohdigyivypgyphcliuo.supabase.co/storage/v1/object/public/daily_cards/1868-05-25_decoration-day.png"
+      },
+      "5-26": {
+        "year": "1927",
+        "text": "Henry Ford and his son Edsel drove the 15 millionth Model T off the assembly line in Dearborn, Michigan, marking the end of the car that put America on wheels. The \"Tin Lizzie\" had revolutionized manufacturing, slashed prices, and reshaped the physical landscape of the nation.",
+        "image": "{{ '1927-05-26_model-t-ends.jpg' | file_url }}",
+        "asset_image": "{{ '1927-05-26_model-t-ends.jpg' | asset_url }}",
+        "supabase_image": "https://iohdigyivypgyphcliuo.supabase.co/storage/v1/object/public/daily_cards/1927-05-26_model-t-ends.png"
+      },
+      "5-27": {
+        "year": "1937",
+        "text": "San Francisco's Golden Gate Bridge opened to pedestrian traffic, drawing 200,000 people who walked, ran, and roller-skated across the span. Completed ahead of schedule during the Great Depression, the engineering marvel stood as a soaring symbol of American ambition, resilience, and industrial capacity.",
+        "image": "{{ '1937-05-27_golden-gate-pedestrians.jpg' | file_url }}",
+        "asset_image": "{{ '1937-05-27_golden-gate-pedestrians.jpg' | asset_url }}",
+        "supabase_image": "https://iohdigyivypgyphcliuo.supabase.co/storage/v1/object/public/daily_cards/1937-05-27_golden-gate-pedestrians.png"
+      },
+      "5-28": {
+        "year": "1863",
+        "text": "The 54th Massachusetts Volunteer Infantry, the first regiment of free Black soldiers raised in the North, marched through the streets of Boston to board transport ships for the Southern front. Led by Colonel Robert Gould Shaw, the men stepped off to cheers from a crowd of twenty thousand, carrying the hopes of a nation.",
+        "image": "{{ '1863-05-28_54th-massachusetts.jpg' | file_url }}",
+        "asset_image": "{{ '1863-05-28_54th-massachusetts.jpg' | asset_url }}",
+        "supabase_image": "https://iohdigyivypgyphcliuo.supabase.co/storage/v1/object/public/daily_cards/1863-05-28_54th-massachusetts.png"
+      },
+      "5-29": {
+        "year": "1790",
+        "text": "Rhode Island became the thirteenth and final of the original colonies to ratify the U.S. Constitution. Fearing a strong central government, the state held out for more than a year until Congress formally drafted the Bill of Rights, demonstrating early on the power of dissent in American democracy.",
+        "image": "{{ '1790-05-29_ri-ratification.jpg' | file_url }}",
+        "asset_image": "{{ '1790-05-29_ri-ratification.jpg' | asset_url }}",
+        "supabase_image": "https://iohdigyivypgyphcliuo.supabase.co/storage/v1/object/public/daily_cards/1790-05-29_ri-ratification.png"
+      },
+      "5-30": {
+        "year": "1922",
+        "text": "Before a crowd of fifty thousand, the Lincoln Memorial was dedicated in Washington, D.C. Taft presented the temple-like monument to Harding as a symbol of national reconciliation, though the day's event remained segregated. Over the next century, the monument would become a stage for the civil rights movement.",
+        "image": "{{ '1922-05-30_lincoln-memorial.jpg' | file_url }}",
+        "asset_image": "{{ '1922-05-30_lincoln-memorial.jpg' | asset_url }}",
+        "supabase_image": "https://iohdigyivypgyphcliuo.supabase.co/storage/v1/object/public/daily_cards/1922-05-30_lincoln-memorial.png"
+      },
+      "5-31": {
+        "year": "1889",
+        "text": "A catastrophic dam failure sent twenty million tons of water roaring into Johnstown, Pennsylvania, killing over two thousand people. Clara Barton arrived five days later with the newly formed American Red Cross, mounting their first major peacetime disaster relief effort and cementing the organization's role in national emergencies.",
+        "image": "{{ '1889-05-31_johnstown-relief.jpg' | file_url }}",
+        "asset_image": "{{ '1889-05-31_johnstown-relief.jpg' | asset_url }}",
+        "supabase_image": "https://iohdigyivypgyphcliuo.supabase.co/storage/v1/object/public/daily_cards/1889-05-31_johnstown-relief.png"
+      },
+      "6-1": {
+        "year": "1796",
+        "text": "Tennessee was admitted to the Union as the sixteenth state. Led by frontiersman John Sevier, the former Southwest Territory became the first state created out of a federal territory, establishing a path for future western expansion and bringing a distinct Appalachian voice into the halls of Congress.",
+        "image": "{{ '1796-06-01_tennessee-statehood.jpg' | file_url }}",
+        "asset_image": "{{ '1796-06-01_tennessee-statehood.jpg' | asset_url }}",
+        "supabase_image": "https://iohdigyivypgyphcliuo.supabase.co/storage/v1/object/public/daily_cards/1796-06-01_tennessee-statehood.png"
+      },
+      "6-2": {
+        "year": "1924",
+        "text": "President Calvin Coolidge signed the Indian Citizenship Act, granting citizenship to all Native Americans born in the United States. While the measure did not immediately guarantee voting rights in every state, it marked a historic, formal recognition of Native peoples as full citizens of the republic.",
+        "image": "{{ '1924-06-02_indian-citizenship.jpg' | file_url }}",
+        "asset_image": "{{ '1924-06-02_indian-citizenship.jpg' | asset_url }}",
+        "supabase_image": "https://iohdigyivypgyphcliuo.supabase.co/storage/v1/object/public/daily_cards/1924-06-02_indian-citizenship.png"
+      },
+      "6-3": {
+        "year": "1965",
+        "text": "During the Gemini 4 mission, astronaut Edward White stepped out of his spacecraft and became the first American to walk in space. Tethered to the capsule, he floated 100 miles above Earth for twenty-three minutes, demonstrating the technology that made the moon landings possible.",
+        "image": "{{ '1965-06-03_first-spacewalk.jpg' | file_url }}",
+        "asset_image": "{{ '1965-06-03_first-spacewalk.jpg' | asset_url }}",
+        "supabase_image": "https://iohdigyivypgyphcliuo.supabase.co/storage/v1/object/public/daily_cards/1965-06-03_first-spacewalk.png"
+      },
+      "6-4": {
+        "year": "1896",
+        "text": "In the early morning hours, Henry Ford wheeled his first experimental automobile, the Quadricycle, onto the streets of Detroit. Tapping on a carriage bell for warning, he successfully drove the light, gasoline-powered vehicle through the damp dawn, launching a lifetime of automotive innovation.",
+        "image": "{{ '1896-06-04_ford-quadricycle.jpg' | file_url }}",
+        "asset_image": "{{ '1896-06-04_ford-quadricycle.jpg' | asset_url }}",
+        "supabase_image": "https://iohdigyivypgyphcliuo.supabase.co/storage/v1/object/public/daily_cards/1896-06-04_ford-quadricycle.png"
+      },
+      "6-5": {
+        "year": "1851",
+        "text": "The first installment of Harriet Beecher Stowe's anti-slavery novel, \"Uncle Tom's Cabin,\" was published in the abolitionist newspaper The National Era. The story quickly captured the public imagination, selling hundreds of thousands of copies and intensifying the national debate over the morality of slavery.",
+        "image": "{{ '1851-06-05_uncle-toms-cabin.jpg' | file_url }}",
+        "asset_image": "{{ '1851-06-05_uncle-toms-cabin.jpg' | asset_url }}",
+        "supabase_image": "https://iohdigyivypgyphcliuo.supabase.co/storage/v1/object/public/daily_cards/1851-06-05_uncle-toms-cabin.png"
+      },
+      "6-6": {
+        "year": "1944",
+        "text": "Under the command of General Dwight D. Eisenhower, Allied forces launched the largest amphibious invasion in history on the beaches of Normandy. Thousands of American soldiers waded through heavy gunfire to secure the coast, beginning the liberation of Western Europe and marking a decisive turning point in World War II.",
+        "image": "{{ '1944-06-06_dday-landings.jpg' | file_url }}",
+        "asset_image": "{{ '1944-06-06_dday-landings.jpg' | asset_url }}",
+        "supabase_image": "https://iohdigyivypgyphcliuo.supabase.co/storage/v1/object/public/daily_cards/1944-06-06_dday-landings.png"
+      },
+      "6-7": {
+        "year": "1776",
+        "text": "Virginia delegate Richard Henry Lee introduced a resolution to the Second Continental Congress declaring that the United Colonies were, and of right ought to be, free and independent states. The proposal set off intense debates in Philadelphia, leading directly to the drafting of the Declaration of Independence.",
+        "image": "{{ '1776-06-07_lee-resolution.jpg' | file_url }}",
+        "asset_image": "{{ '1776-06-07_lee-resolution.jpg' | asset_url }}",
+        "supabase_image": "https://iohdigyivypgyphcliuo.supabase.co/storage/v1/object/public/daily_cards/1776-06-07_lee-resolution.png"
+      },
+      "6-8": {
+        "year": "1789",
+        "text": "Representative James Madison introduced twelve proposed amendments to the U.S. Constitution before the House of Representatives. Designed to protect individual liberties and limit government power, ten of these articles were later ratified by the states, becoming the foundational cornerstone of American civil liberties.",
+        "image": "{{ '1789-06-08_bill-of-rights.jpg' | file_url }}",
+        "asset_image": "{{ '1789-06-08_bill-of-rights.jpg' | asset_url }}",
+        "supabase_image": "https://iohdigyivypgyphcliuo.supabase.co/storage/v1/object/public/daily_cards/1789-06-08_bill-of-rights.png"
+      },
+      "7-4": {
+        "year": "1776",
+        "text": "The Continental Congress officially adopted the Declaration of Independence, proclaiming the American colonies' separation from Great Britain."
+      },
+      "12-25": {
+        "year": "1776",
+        "text": "George Washington and the Continental Army crossed the icy Delaware River in a daring nighttime maneuver to attack Hessian forces at Trenton."
+      }
+    };
+
+    const months = ["JAN", "FEB", "MAR", "APR", "MAY", "JUN", "JUL", "AUG", "SEP", "OCT", "NOV", "DEC"];
+    const today = new Date();
+    const m = today.getMonth() + 1;
+    const d = today.getDate();
+    const dateKey = m + "-" + d;
+    
+    document.getElementById('tih-bg-date').innerText = months[today.getMonth()] + ' ' + d;
+
+    const factData = historyFacts[dateKey] || { 
+      "year": "1776", 
+      "text": "The American experiment began—a country built on the radical idea that ordinary people could govern themselves. A story still being written today." 
+    };
+
+    document.getElementById('tih-year-label').innerText = "On this day in " + factData.year;
+    document.getElementById('tih-fact-text').innerText = factData.text;
+    
+    // Setup and trigger dynamic image loading with asset fallback
+    function setImageSource(factData) {
+      const factImage = document.getElementById('tih-fact-image');
+      if (!factImage) return;
+
+      const fileSrc = factData.image || '';
+      const assetSrc = factData.asset_image || '';
+      const supabaseSrc = factData.supabase_image || '';
+      const fallbackSrc = factImage.getAttribute('data-fallback');
+
+      // Track source URLs for the error handler
+      factImage.setAttribute('data-file-src', fileSrc);
+      factImage.setAttribute('data-asset-src', assetSrc);
+      factImage.setAttribute('data-supabase-src', supabaseSrc);
+
+      // Error handler to try fallback locations
+      factImage.onerror = function() {
+        console.warn("Failed to load image: " + factImage.src);
+        if (supabaseSrc && factImage.src.includes(supabaseSrc)) {
+          console.log("Supabase image failed. Trying Shopify Files: " + fileSrc);
+          if (fileSrc) {
+            factImage.src = fileSrc;
+          } else if (assetSrc) {
+            factImage.src = assetSrc;
+          } else {
+            factImage.src = fallbackSrc;
+          }
+        } else if (fileSrc && factImage.src.includes(fileSrc)) {
+          console.log("Shopify Files image failed. Trying Shopify Assets: " + assetSrc);
+          if (assetSrc) {
+            factImage.src = assetSrc;
+          } else {
+            factImage.src = fallbackSrc;
+          }
+        } else if (assetSrc && factImage.src.includes(assetSrc)) {
+          console.log("Shopify Assets image failed. Trying general placeholder: " + fallbackSrc);
+          factImage.src = fallbackSrc;
+          factImage.onerror = null;
+        } else if (factImage.src !== fallbackSrc) {
+          factImage.src = fallbackSrc;
+          factImage.onerror = null;
+        } else {
+          factImage.onerror = null;
+        }
+      };
+
+      // Start initial load attempt: Prioritize public Supabase Storage CDN to ensure custom illustration loads instantly
+      if (supabaseSrc) {
+        factImage.src = supabaseSrc;
+      } else if (fileSrc) {
+        factImage.src = fileSrc;
+      } else if (assetSrc) {
+        factImage.src = assetSrc;
+      } else {
+        factImage.src = fallbackSrc;
+      }
+    }
+
+    setImageSource(factData);
+  });
+</script>

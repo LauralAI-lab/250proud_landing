@@ -1,0 +1,268 @@
+{% schema %}
+{
+  "name": "Sticky Countdown Bar",
+  "settings": [
+    {
+      "type": "color",
+      "id": "bg_color",
+      "label": "Background Color",
+      "default": "#020617"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Text Color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "accent_color",
+      "label": "Accent Color",
+      "default": "#D4AF37"
+    },
+    {
+      "type": "text",
+      "id": "bar_message",
+      "label": "Bar Message",
+      "default": "CELEBRATE 250 YEARS OF FREEDOM"
+    },
+    {
+      "type": "url",
+      "id": "cta_link",
+      "label": "CTA Link"
+    },
+    {
+      "type": "text",
+      "id": "cta_text",
+      "label": "CTA Text",
+      "default": "Shop Now"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Sticky Countdown Bar",
+      "category": "Announcement"
+    }
+  ]
+}
+{% endschema %}
+
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Oswald:wght@500;600;700&family=Inter:wght@400;500;600;700;800&display=swap');
+
+  #mcsb-{{ section.id }}.mc-sticky-bar {
+    position: sticky;
+    top: 0;
+    z-index: 99999;
+    background-color: {{ section.settings.bg_color }} !important;
+    border-bottom: 1px solid rgba(255,255,255,0.1) !important;
+    padding: 12px 24px !important;
+    font-family: 'Inter', sans-serif !important;
+    color: {{ section.settings.text_color }} !important;
+  }
+
+  #mcsb-{{ section.id }} .mc-sticky-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+    flex-wrap: wrap;
+  }
+
+  #mcsb-{{ section.id }} .mc-message {
+    font-family: 'Oswald', sans-serif !important;
+    text-transform: uppercase !important;
+    font-size: 24px !important;
+    letter-spacing: 1.5px !important;
+    font-weight: 700 !important;
+    margin: 0 !important;
+    color: {{ section.settings.text_color }} !important;
+    line-height: 1.2 !important;
+  }
+
+  #mcsb-{{ section.id }} .mc-countdown-wrapper {
+    display: flex !important;
+    align-items: center !important;
+    gap: 20px !important;
+  }
+
+  #mcsb-{{ section.id }} .mc-countdown-block {
+    display: flex !important;
+    align-items: baseline !important;
+    gap: 4px !important;
+  }
+
+  #mcsb-{{ section.id }} .mc-number {
+    font-family: 'Oswald', sans-serif !important;
+    font-size: 32px !important;
+    font-weight: 700 !important;
+    color: {{ section.settings.accent_color }} !important;
+    line-height: 1 !important;
+  }
+
+  #mcsb-{{ section.id }} .mc-label {
+    font-family: 'Oswald', sans-serif !important;
+    font-size: 14px !important;
+    text-transform: uppercase !important;
+    letter-spacing: 1px !important;
+    color: rgba(255, 255, 255, 0.7) !important;
+  }
+
+  #mcsb-{{ section.id }} .mc-btn-small {
+    background: {{ section.settings.accent_color }} !important;
+    color: #000 !important;
+    font-family: 'Inter', sans-serif !important;
+    font-size: 14px !important;
+    font-weight: 800 !important;
+    text-transform: uppercase !important;
+    letter-spacing: 1.5px !important;
+    padding: 10px 20px !important;
+    border-radius: 4px !important;
+    text-decoration: none !important;
+    transition: all 0.2s ease !important;
+    white-space: nowrap !important;
+    display: inline-block !important;
+  }
+
+  #mcsb-{{ section.id }} .mc-btn-small:hover {
+    background: #F2D265 !important;
+    transform: translateY(-1px) !important;
+  }
+
+  @media (max-width: 768px) {
+    #mcsb-{{ section.id }}.mc-sticky-bar {
+      padding: 12px 12px !important;
+    }
+    #mcsb-{{ section.id }} .mc-sticky-container {
+      justify-content: center !important;
+      flex-direction: column !important;
+      gap: 12px !important;
+    }
+    #mcsb-{{ section.id }} .mc-message {
+      font-size: 18px !important;
+      text-align: center !important;
+    }
+    #mcsb-{{ section.id }} .mc-countdown-wrapper {
+      gap: 12px !important;
+    }
+    #mcsb-{{ section.id }} .mc-number {
+      font-size: 24px !important;
+    }
+    #mcsb-{{ section.id }} .mc-label {
+      font-size: 12px !important;
+    }
+    #mcsb-{{ section.id }} .mc-btn-small {
+      font-size: 14px !important;
+      padding: 8px 16px !important;
+      width: auto !important;
+    }
+  }
+
+  /* --- FIX SHOPIFY HERO BANNER ASPECT RATIO --- */
+  .banner {
+    height: auto !important;
+    min-height: auto !important;
+    aspect-ratio: 2.56 !important;
+  }
+  .banner::before,
+  .banner__media::before,
+  .banner__content {
+    display: none !important;
+  }
+  .banner__media {
+    position: absolute !important;
+    height: 100% !important;
+    width: 100% !important;
+  }
+</style>
+
+<div class="mc-sticky-bar" id="mcsb-{{ section.id }}">
+  <div class="mc-sticky-container">
+    <div class="mc-message">{{ section.settings.bar_message }}</div>
+    
+    <div class="mc-countdown-wrapper">
+      <div class="mc-countdown-block">
+        <span class="mc-number" id="mc-days-{{ section.id }}">000</span>
+        <span class="mc-label">d</span>
+      </div>
+      <div class="mc-countdown-block">
+        <span class="mc-number" id="mc-hours-{{ section.id }}">00</span>
+        <span class="mc-label">h</span>
+      </div>
+      <div class="mc-countdown-block">
+        <span class="mc-number" id="mc-minutes-{{ section.id }}">00</span>
+        <span class="mc-label">m</span>
+      </div>
+      <div class="mc-countdown-block">
+        <span class="mc-number" id="mc-seconds-{{ section.id }}">00</span>
+        <span class="mc-label">s</span>
+      </div>
+    </div>
+
+    {% if section.settings.cta_text != blank %}
+      <a href="{{ section.settings.cta_link | default: '#' }}" class="mc-btn-small">
+        {{ section.settings.cta_text }}
+      </a>
+    {% endif %}
+  </div>
+</div>
+
+<script>
+  (function() {
+    function initCountdown() {
+      const daysEl = document.getElementById('mc-days-{{ section.id }}');
+      const hoursEl = document.getElementById('mc-hours-{{ section.id }}');
+      const minutesEl = document.getElementById('mc-minutes-{{ section.id }}');
+      const secondsEl = document.getElementById('mc-seconds-{{ section.id }}');
+
+      if (!daysEl || !hoursEl || !minutesEl || !secondsEl) return;
+
+      function updateCountdown() {
+        const targetDate = new Date('July 4, 2026 00:00:00').getTime();
+        const now = new Date().getTime();
+        const distance = targetDate - now;
+
+        if (distance < 0) {
+          daysEl.innerText = "000";
+          hoursEl.innerText = "00";
+          minutesEl.innerText = "00";
+          secondsEl.innerText = "00";
+          clearInterval(interval);
+          return;
+        }
+
+        const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+        const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+        const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+        const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+        daysEl.innerText = days.toString().padStart(3, '0');
+        hoursEl.innerText = hours.toString().padStart(2, '0');
+        minutesEl.innerText = minutes.toString().padStart(2, '0');
+        secondsEl.innerText = seconds.toString().padStart(2, '0');
+      }
+
+      updateCountdown();
+      const interval = setInterval(updateCountdown, 1000);
+
+      // Clean up the interval when Shopify theme editor reloads the section
+      document.addEventListener('shopify:section:unload', function(e) {
+        if (e.detail.sectionId === '{{ section.id }}') {
+          clearInterval(interval);
+        }
+      });
+    }
+
+    // Run immediately when parsed
+    initCountdown();
+
+    // Re-run in Shopify theme editor when section settings are modified
+    document.addEventListener('shopify:section:load', function(e) {
+      if (e.detail.sectionId === '{{ section.id }}') {
+        initCountdown();
+      }
+    });
+  })();
+</script>

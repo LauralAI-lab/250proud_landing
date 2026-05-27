@@ -1,15 +1,68 @@
 {
   "version": 2,
+  "cleanUrls": true,
   "builds": [
     {
       "src": "server.js",
+      "use": "@vercel/node",
+      "config": {
+        "maxDuration": 60,
+        "includeFiles": [
+          "250Proud_ColoringBook_B2B_Base_Final.pdf",
+          "back_cover_template.html",
+          "marketing_card_template.html"
+        ]
+      }
+    },
+    {
+      "src": "api/subscribe.js",
       "use": "@vercel/node"
+    },
+    {
+      "src": "api/contact.js",
+      "use": "@vercel/node"
+    },
+    {
+      "src": "*.html",
+      "use": "@vercel/static"
+    },
+    {
+      "src": "**/*.png",
+      "use": "@vercel/static"
+    },
+    {
+      "src": "**/*.jpg",
+      "use": "@vercel/static"
+    },
+    {
+      "src": "**/*.svg",
+      "use": "@vercel/static"
     }
   ],
   "routes": [
     {
+      "src": "/api/subscribe",
+      "dest": "api/subscribe.js"
+    },
+    {
+      "src": "/api/contact",
+      "dest": "api/contact.js"
+    },
+    {
+      "src": "/book/(?<slug>[^/]+)",
+      "dest": "server.js"
+    },
+    {
+      "src": "/qr/(?<slug>[^/]+)",
+      "dest": "server.js"
+    },
+    {
       "src": "/api/(.*)",
       "dest": "server.js"
+    },
+    {
+      "src": "/(.*)",
+      "dest": "/$1"
     }
   ]
 }

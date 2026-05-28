@@ -606,31 +606,44 @@
                 
                 supabaseClient = window.supabase.createClient(config.SUPABASE_URL, config.SUPABASE_ANON_KEY);
                 
-                checkSession();
-                
-                // Set up auth listener
+                // 1. Set up auth listener first to capture initial events
                 supabaseClient.auth.onAuthStateChange((event, session) => {
                     if (event === 'SIGNED_IN') {
                         checkSession();
                     } else if (event === 'SIGNED_OUT') {
                         showAuth();
                     } else if (event === 'PASSWORD_RECOVERY') {
-                        const newPassword = prompt("Please enter your new password:");
-                        if (newPassword) {
-                            supabaseClient.auth.updateUser({ password: newPassword }).then(({ error }) => {
-                                if (error) {
-                                    alert("Error updating password: " + error.message);
-                                } else {
-                                    alert("Password updated successfully!");
-                                    checkSession();
-                                }
-                            });
-                        }
+                        handlePasswordRecovery();
                     }
                 });
+
+                // 2. Direct url hash check for password recovery flows (failsafe)
+                const hash = window.location.hash;
+                if (hash && (hash.includes('type=recovery') || hash.includes('access_token='))) {
+                    handlePasswordRecovery();
+                } else {
+                    checkSession();
+                }
             } catch (err) {
                 console.error("Failed to load config:", err);
             }
+        }
+
+        async function handlePasswordRecovery() {
+            // Short timeout to guarantee auth client parsing is fully complete
+            setTimeout(async () => {
+                const newPassword = prompt("Please enter your new password:");
+                if (newPassword) {
+                    const { error } = await supabaseClient.auth.updateUser({ password: newPassword });
+                    if (error) {
+                        alert("Error updating password: " + error.message);
+                    } else {
+                        alert("Password updated successfully! You can now log in with your new password.");
+                        window.location.hash = '';
+                        window.location.href = window.location.origin + window.location.pathname;
+                    }
+                }
+            }, 500);
         }
 
         async function checkSession() {
@@ -662,6 +675,15 @@
 
             if (error || !data) {
                 console.error("Error loading profile:", error);
+                // Create a basic fallback profile to prevent the dashboard from hanging on a blank screen
+                currentProfile = {
+                    id: currentUser.id,
+                    username: currentUser.email.split('@')[0],
+                    email: currentUser.email,
+                    company_name: 'Premium Member',
+                    book_slug: 'default'
+                };
+                showDashboard();
                 return;
             }
 

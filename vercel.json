@@ -57,6 +57,10 @@
       "dest": "server.js"
     },
     {
+      "src": "/resource",
+      "dest": "/resources.html"
+    },
+    {
       "src": "/api/(.*)",
       "dest": "server.js"
     },

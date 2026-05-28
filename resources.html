@@ -769,7 +769,8 @@
             document.getElementById(`tab-${tabId}`).classList.add('active');
         }
 
-        // --- UTILS ---        async function forgotPassword(e) {
+        // --- UTILS ---
+        async function forgotPassword(e) {
             e.preventDefault();
             const email = document.getElementById('loginEmail').value;
             if (!email) {

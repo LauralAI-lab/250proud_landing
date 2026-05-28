@@ -58,7 +58,12 @@
     },
     {
       "src": "/resource",
-      "dest": "/resources.html"
+      "status": 301,
+      "headers": { "Location": "/resources" }
+    },
+    {
+      "src": "/today-in-history",
+      "dest": "/today-in-history.html"
     },
     {
       "src": "/api/(.*)",

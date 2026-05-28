@@ -67,7 +67,7 @@ module.exports = async function handler(req, res) {
         } catch (mcError2) {
           console.error('Mailchimp Pass 2 error:', mcError2);
           let errMsg = mcError2.response?.body?.detail || mcError2.message;
-          return res.status(400).json({ error: `MAILCHIMP REJECTED: ${errMsg}` });
+          mcDebugInfo = { status: 'failed', error: errMsg };
         }
       }
 

@@ -1090,9 +1090,10 @@
         }
 
         btnGenerate.addEventListener('click', async () => {
-            const emailField = document.getElementById('email').value;
-            if (!emailField || !emailField.includes('@') || !emailField.includes('.')) {
-                alert("Please enter a valid email address with an '@' symbol to proceed to checkout.");
+            const emailField = document.getElementById('email').value.trim();
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (!emailRegex.test(emailField)) {
+                alert("Please enter a valid email address (e.g., name@domain.com) to proceed to checkout.");
                 return;
             }
 

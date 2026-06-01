@@ -9,7 +9,8 @@ const BUCKET_NAME = 'daily_cards';
 
 const directories = [
   './250Proud_Daily_Cards/2026-05/Batch_2026-05-19_to_2026-05-25/Images',
-  './250Proud_Daily_Cards/2026-05/Batch_2026-05-26_to_2026-06-01/Images'
+  './250Proud_Daily_Cards/2026-05/Batch_2026-05-26_to_2026-06-01/Images',
+  './250Proud_Daily_Cards/2026-06/Batch_2026-06-02_to_2026-06-08/Images'
 ];
 
 async function run() {

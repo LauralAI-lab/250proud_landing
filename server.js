@@ -18,6 +18,7 @@ app.use(cors());
 // IMPORTANT: Keep raw body for webhook verification if needed in the future
 app.use('/api/shopify/webhook', express.json());
 app.use(express.json());
+app.use(express.static(__dirname, { extensions: ['html'] }));
 
 // Init Supabase (Use Service Role Key to bypass RLS in the serverless environment)
 const supabaseUrl = process.env.SUPABASE_URL;
@@ -877,6 +878,418 @@ app.post('/api/request-print-quote', async (req, res) => {
     }
 });
 
+// ---------------------------------------------------------
+// LAURALAI SCHEDULER API ENDPOINTS
+// ---------------------------------------------------------
+const BOOKINGS_FILE = path.join(__dirname, 'bookings.json');
+
+function getLocalBookings() {
+    try {
+        if (!fs.existsSync(BOOKINGS_FILE)) {
+            fs.writeFileSync(BOOKINGS_FILE, JSON.stringify([]));
+        }
+        const data = fs.readFileSync(BOOKINGS_FILE, 'utf8');
+        return JSON.parse(data);
+    } catch (err) {
+        console.error("Error reading local bookings:", err);
+        return [];
+    }
+}
+
+function saveLocalBooking(booking) {
+    try {
+        const bookings = getLocalBookings();
+        bookings.push(booking);
+        fs.writeFileSync(BOOKINGS_FILE, JSON.stringify(bookings, null, 2));
+    } catch (err) {
+        console.error("Error saving local booking:", err);
+    }
+}
+
+// Zoom API helpers (Server-to-Server OAuth)
+async function getZoomAccessToken() {
+    const accountId = process.env.ZOOM_ACCOUNT_ID;
+    const clientId = process.env.ZOOM_CLIENT_ID;
+    const clientSecret = process.env.ZOOM_CLIENT_SECRET;
+
+    if (!accountId || !clientId || !clientSecret) {
+        console.warn("⚠️ Zoom API credentials are not fully configured in .env");
+        return null;
+    }
+
+    try {
+        const authHeader = Buffer.from(`${clientId}:${clientSecret}`).toString('base64');
+        const response = await fetch(`https://zoom.us/oauth/token?grant_type=account_credentials&account_id=${accountId}`, {
+            method: 'POST',
+            headers: {
+                'Authorization': `Basic ${authHeader}`,
+                'Content-Type': 'application/x-www-form-urlencoded'
+            }
+        });
+
+        const data = await response.json();
+        if (!response.ok) {
+            throw new Error(data.reason || data.error || 'OAuth Request Failed');
+        }
+
+        return data.access_token;
+    } catch (err) {
+        console.error("Zoom OAuth error:", err.message);
+        return null;
+    }
+}
+
+async function createZoomMeeting(token, hostEmail, topic, startTimeISO, duration) {
+    if (!token) return null;
+
+    // Try hostEmail first, fallback to 'me'
+    const usersToTry = [hostEmail, 'me'];
+    for (const user of usersToTry) {
+        try {
+            const response = await fetch(`https://api.zoom.us/v2/users/${user}/meetings`, {
+                method: 'POST',
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    topic: topic || 'LauralAI Scheduled Meeting',
+                    type: 2, // Scheduled meeting
+                    start_time: startTimeISO,
+                    duration: duration || 30,
+                    timezone: 'America/Chicago',
+                    settings: {
+                        host_video: true,
+                        participant_video: true,
+                        join_before_host: true,
+                        jbh_time: 0,
+                        mute_upon_entry: true,
+                        waiting_room: false
+                    }
+                })
+            });
+
+            const data = await response.json();
+            if (response.ok && data.join_url) {
+                return data.join_url;
+            }
+            console.warn(`Zoom meeting creation failed for user ${user}:`, data.message || 'Unknown Error');
+        } catch (err) {
+            console.error(`Zoom meeting creation error for user ${user}:`, err.message);
+        }
+    }
+    return null;
+}
+
+
+// 1. Fetch Available Time Slots
+app.get('/api/bookings/slots', async (req, res) => {
+    try {
+        const { host, date } = req.query; // host: 'mike' or 'laurie', date: 'YYYY-MM-DD'
+        if (!host || !date) {
+            return res.status(400).json({ error: "Missing host or date parameters." });
+        }
+
+        // Standard time slots (30-minute intervals)
+        const allSlots = [
+            "09:00", "09:30", "10:00", "10:30", "11:00", "11:30",
+            "12:00", "12:30", "13:00", "13:30", "14:00", "14:30",
+            "15:00", "15:30", "16:00", "16:30"
+        ];
+
+        // Fetch existing bookings for this host and date
+        let bookedTimes = [];
+        try {
+            const { data, error } = await supabase
+                .from('bookings')
+                .select('meeting_time')
+                .eq('host', host.toLowerCase())
+                .eq('meeting_date', date);
+
+            if (error) throw error;
+            bookedTimes = (data || []).map(b => b.meeting_time.substring(0, 5));
+        } catch (dbError) {
+            console.warn("Supabase fetch failed, falling back to local storage:", dbError.message);
+            // Fallback to local bookings.json
+            const localBookings = getLocalBookings();
+            bookedTimes = localBookings
+                .filter(b => b.host.toLowerCase() === host.toLowerCase() && b.date === date)
+                .map(b => b.time);
+        }
+
+        // Determine if selected date is today in Central Time
+        const nowInCT = new Date(new Date().toLocaleString("en-US", { timeZone: "America/Chicago" }));
+        const currentYear = nowInCT.getFullYear();
+        const currentMonth = String(nowInCT.getMonth() + 1).padStart(2, '0');
+        const currentDate = String(nowInCT.getDate()).padStart(2, '0');
+        const todayStr = `${currentYear}-${currentMonth}-${currentDate}`;
+
+        // Filter out booked slots and past slots (if today)
+        const availableSlots = allSlots.filter(slot => {
+            // Check if already booked
+            if (bookedTimes.includes(slot)) return false;
+
+            // If today, filter out past slots
+            if (date === todayStr) {
+                const [slotHour, slotMinute] = slot.split(':').map(Number);
+                const currentHour = nowInCT.getHours();
+                const currentMinute = nowInCT.getMinutes();
+
+                if (slotHour < currentHour) return false;
+                if (slotHour === currentHour && slotMinute <= currentMinute) return false;
+            }
+
+            return true;
+        });
+
+        res.json({ success: true, host, date, slots: availableSlots });
+    } catch (e) {
+        console.error("Error fetching slots:", e);
+        res.status(500).json({ error: e.message });
+    }
+});
+
+// 2. Submit a New Booking
+app.post('/api/bookings', async (req, res) => {
+    try {
+        const {
+            host,
+            date,
+            time,
+            guest_name,
+            guest_email,
+            guest_phone,
+            guest_company,
+            topic,
+            meeting_type = 'gmeet', // 'phone', 'gmeet', or 'zoom'
+            duration = 30
+        } = req.body;
+
+        if (!host || !date || !time || !guest_name || !guest_email) {
+            return res.status(400).json({ error: "Missing required booking details." });
+        }
+
+        const cleanHost = host.toLowerCase();
+        const hostName = cleanHost === 'mike' ? 'Mike Price' : 'Laurie Price';
+        const hostEmail = cleanHost === 'mike' ? 'mike@lauralai.llc' : 'laurie@lauralai.llc';
+        const notificationEmails = [hostEmail, '360podcast@gmail.com'];
+
+        // Determine format/location and create Zoom meeting if chosen
+        let finalLocation = 'Google Meet';
+        if (meeting_type === 'zoom') {
+            try {
+                const zoomToken = await getZoomAccessToken();
+                if (zoomToken) {
+                    const localStartStr = `${date}T${time}:00`;
+                    const zoomLink = await createZoomMeeting(zoomToken, hostEmail, topic, localStartStr, duration);
+                    if (zoomLink) {
+                        finalLocation = zoomLink;
+                    } else {
+                        console.warn("⚠️ Zoom meeting creation returned null. Falling back to Google Meet.");
+                        finalLocation = 'Google Meet (Zoom creation failed)';
+                    }
+                } else {
+                    console.warn("⚠️ Zoom token could not be retrieved. Falling back to Google Meet.");
+                    finalLocation = 'Google Meet (Zoom authentication failed)';
+                }
+            } catch (zoomErr) {
+                console.error("Error creating Zoom meeting:", zoomErr);
+                finalLocation = 'Google Meet (Zoom creation error)';
+            }
+        } else if (meeting_type === 'phone') {
+            finalLocation = `Phone Call (${guest_phone || 'Number not provided'})`;
+        }
+
+        // Prep Supabase topic to include meeting format information without schema changes
+        let supabaseTopic = topic || '';
+        if (finalLocation) {
+            supabaseTopic = `[Format: ${meeting_type.toUpperCase()} | Loc: ${finalLocation}] ${supabaseTopic}`.trim();
+        }
+
+        // Save booking data object
+        const bookingRecord = {
+            host: cleanHost,
+            meeting_date: date,
+            meeting_time: time,
+            guest_name,
+            guest_email,
+            guest_phone: guest_phone || null,
+            guest_company: guest_company || null,
+            topic: supabaseTopic || null,
+            duration
+        };
+
+        // Try inserting into Supabase
+        let bookingId = crypto.randomUUID();
+        let savedToDB = false;
+        try {
+            const { data, error } = await supabase
+                .from('bookings')
+                .insert([{
+                    id: bookingId,
+                    ...bookingRecord
+                }])
+                .select();
+
+            if (error) throw error;
+            savedToDB = true;
+            console.log(`💾 Supabase: Saved booking in DB with ID: ${bookingId}`);
+        } catch (dbError) {
+            console.warn("Supabase insert failed, falling back to local JSON:", dbError.message);
+            // Save to local JSON fallback
+            saveLocalBooking({
+                id: bookingId,
+                host: cleanHost,
+                date,
+                time,
+                guest_name,
+                guest_email,
+                guest_phone,
+                guest_company,
+                topic,
+                meeting_type,
+                location: finalLocation,
+                duration,
+                created_at: new Date().toISOString()
+            });
+        }
+
+        // Calculate UTC ISO times for Google Calendar link & ICS
+        // Central Daylight Time (CDT) is UTC-5
+        const startDate = new Date(`${date}T${time}:00-05:00`);
+        const endDate = new Date(startDate.getTime() + duration * 60 * 1000);
+        const startUTC = startDate.toISOString().replace(/[-:]/g, '').split('.')[0] + 'Z';
+        const endUTC = endDate.toISOString().replace(/[-:]/g, '').split('.')[0] + 'Z';
+        const nowUTC = new Date().toISOString().replace(/[-:]/g, '').split('.')[0] + 'Z';
+
+        // Google Calendar Add Link
+        const gCalSummary = encodeURIComponent(`Meeting with ${guest_name} (LauralAI)`);
+        const gCalDetails = encodeURIComponent(`Guest: ${guest_name}\nEmail: ${guest_email}\nPhone: ${guest_phone || 'N/A'}\nCompany: ${guest_company || 'N/A'}\nTopic: ${topic || 'N/A'}\nFormat/Location: ${finalLocation}\n\nScheduled via LauralAI Meetings.`);
+        const gCalLink = `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${gCalSummary}&dates=${startUTC}/${endUTC}&details=${gCalDetails}&location=${encodeURIComponent(finalLocation)}`;
+
+        // Generate ICS file string
+        const icsContent = [
+            'BEGIN:VCALENDAR',
+            'VERSION:2.0',
+            'PRODID:-//LauralAI//Booking App//EN',
+            'CALSCALE:GREGORIAN',
+            'METHOD:REQUEST',
+            'BEGIN:VEVENT',
+            `UID:${bookingId}`,
+            `DTSTAMP:${nowUTC}`,
+            `DTSTART:${startUTC}`,
+            `DTEND:${endUTC}`,
+            `SUMMARY:Meeting: ${guest_name} <> ${hostName}`,
+            `DESCRIPTION:Meeting booked via LauralAI Scheduler.\\n\\nGuest: ${guest_name}\\nEmail: ${guest_email}\\nPhone: ${guest_phone || 'N/A'}\\nCompany: ${guest_company || 'N/A'}\\nTopic: ${topic || 'N/A'}\\nFormat/Location: ${finalLocation}`,
+            `LOCATION:${finalLocation}`,
+            `ORGANIZER;CN="${hostName}":mailto:${hostEmail}`,
+            `ATTENDEE;CUTYPE=INDIVIDUAL;ROLE=REQ-PARTICIPANT;PARTSTAT=NEEDS-ACTION;RSVP=TRUE;CN="${guest_name}":mailto:${guest_email}`,
+            'STATUS:CONFIRMED',
+            'SEQUENCE:0',
+            'END:VEVENT',
+            'END:VCALENDAR'
+        ].join('\r\n');
+
+        const icsBase64 = Buffer.from(icsContent).toString('base64');
+
+        // Send Email Notifications via Resend
+        if (process.env.RESEND_API_KEY) {
+            const resend = new Resend(process.env.RESEND_API_KEY);
+
+            try {
+                // 1. Send confirmation to Guest
+                await resend.emails.send({
+                    from: 'LauralAI Meetings <meetings@250proud.net>',
+                    to: guest_email,
+                    subject: `Confirmed: Meeting with ${hostName} (LauralAI) 🇺🇸`,
+                    html: `
+                        <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #eaeaea; border-radius: 8px;">
+                            <h2 style="color: #0A3161; border-bottom: 2px solid #D4AF37; padding-bottom: 10px;">Meeting Confirmed</h2>
+                            <p>Hi <strong>${guest_name}</strong>,</p>
+                            <p>Your meeting with <strong>${hostName}</strong> has been successfully scheduled.</p>
+                            
+                            <table style="width: 100%; border-collapse: collapse; margin: 20px 0;">
+                                <tr style="background: #f8f9fa;"><td style="padding: 10px; font-weight: bold; width: 120px;">Host:</td><td style="padding: 10px;">${hostName}</td></tr>
+                                <tr><td style="padding: 10px; font-weight: bold;">Date:</td><td style="padding: 10px;">${date}</td></tr>
+                                <tr style="background: #f8f9fa;"><td style="padding: 10px; font-weight: bold;">Time:</td><td style="padding: 10px;">${time} (Central Time)</td></tr>
+                                <tr><td style="padding: 10px; font-weight: bold;">Duration:</td><td style="padding: 10px;">${duration} minutes</td></tr>
+                                <tr style="background: #f8f9fa;"><td style="padding: 10px; font-weight: bold;">Format / Link:</td><td style="padding: 10px;">${finalLocation.startsWith('http') ? `<a href="${finalLocation}">${finalLocation}</a>` : finalLocation}</td></tr>
+                                <tr><td style="padding: 10px; font-weight: bold;">Topic:</td><td style="padding: 10px;">${topic || 'General Catch Up'}</td></tr>
+                            </table>
+
+                            <p>We've attached a calendar invitation (.ics) to this email to add it directly to your agenda.</p>
+                            
+                            <div style="text-align: center; margin-top: 30px;">
+                                <a href="${gCalLink}" style="background-color: #D4AF37; color: black; padding: 12px 24px; text-decoration: none; font-weight: bold; border-radius: 6px; display: inline-block;">Add to Google Calendar</a>
+                            </div>
+                            
+                            <p style="font-size: 12px; color: #888; margin-top: 40px; border-top: 1px solid #eaeaea; padding-top: 20px; text-align: center;">
+                                Sent by LauralAI LLC. If you need to reschedule, please reply directly to this email.
+                            </p>
+                        </div>
+                    `,
+                    attachments: [
+                        {
+                            filename: 'meeting.ics',
+                            content: icsBase64
+                        }
+                    ]
+                });
+
+                // 2. Send notification to Host (Mike/Laurie & 360podcast)
+                await resend.emails.send({
+                    from: 'LauralAI Meetings <meetings@250proud.net>',
+                    to: notificationEmails,
+                    subject: `[New Booking] ${guest_name} - ${date} @ ${time} CT`,
+                    html: `
+                        <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #eaeaea; border-radius: 8px;">
+                            <h2 style="color: #B31942; border-bottom: 2px solid #0A3161; padding-bottom: 10px;">New Meeting Booked</h2>
+                            <p>A new meeting has been scheduled on your LauralAI calendar.</p>
+                            
+                            <table style="width: 100%; border-collapse: collapse; margin: 20px 0;">
+                                <tr style="background: #f8f9fa;"><td style="padding: 10px; font-weight: bold; width: 120px;">Guest Name:</td><td style="padding: 10px;">${guest_name}</td></tr>
+                                <tr><td style="padding: 10px; font-weight: bold;">Guest Email:</td><td style="padding: 10px;"><a href="mailto:${guest_email}">${guest_email}</a></td></tr>
+                                <tr style="background: #f8f9fa;"><td style="padding: 10px; font-weight: bold;">Phone:</td><td style="padding: 10px;">${guest_phone || 'N/A'}</td></tr>
+                                <tr><td style="padding: 10px; font-weight: bold;">Company:</td><td style="padding: 10px;">${guest_company || 'N/A'}</td></tr>
+                                <tr style="background: #f8f9fa;"><td style="padding: 10px; font-weight: bold;">Date:</td><td style="padding: 10px;">${date}</td></tr>
+                                <tr><td style="padding: 10px; font-weight: bold;">Time:</td><td style="padding: 10px;">${time} (Central Time)</td></tr>
+                                <tr style="background: #f8f9fa;"><td style="padding: 10px; font-weight: bold;">Format / Link:</td><td style="padding: 10px;">${finalLocation.startsWith('http') ? `<a href="${finalLocation}">${finalLocation}</a>` : finalLocation}</td></tr>
+                                <tr><td style="padding: 10px; font-weight: bold;">Topic:</td><td style="padding: 10px;">${topic || 'N/A'}</td></tr>
+                            </table>
+
+                            <div style="text-align: center; margin-top: 30px;">
+                                <a href="${gCalLink}" style="background-color: #0A3161; color: white; padding: 12px 24px; text-decoration: none; font-weight: bold; border-radius: 6px; display: inline-block;">Add to Google Calendar</a>
+                            </div>
+                        </div>
+                    `,
+                    attachments: [
+                        {
+                            filename: 'invite.ics',
+                            content: icsBase64
+                        }
+                    ]
+                });
+                
+                console.log("📧 Resend: Booking emails sent successfully.");
+            } catch (emailErr) {
+                console.error("Resend booking notification failure:", emailErr);
+            }
+        }
+
+        res.json({
+            success: true,
+            booking_id: bookingId,
+            gcal_link: gCalLink,
+            location: finalLocation,
+            message: "Meeting scheduled successfully."
+        });
+
+    } catch (e) {
+        console.error("Booking error:", e);
+        res.status(500).json({ error: e.message });
+    }
+});
+
 // Vercel requires exporting the app
 module.exports = app;
 
@@ -887,3 +1300,4 @@ if (require.main === module) {
         console.log(`B2B Configurator API listening on port ${PORT}`);
     });
 }
+

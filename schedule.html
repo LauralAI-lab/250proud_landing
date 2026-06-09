@@ -1,0 +1,1229 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LauralAI Scheduler | Book a Meeting</title>
+
+    <!-- SEO Optimization -->
+    <meta name="description" content="Schedule a time to meet with the LauralAI team. Quick, simple, and direct calendar scheduling.">
+    <link rel="canonical" href="https://250proud.net/schedule">
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;600;800&family=Playfair+Display:ital,wght@0,700;1,600&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --bg-dark: #070B14;
+            --bg-gradient: linear-gradient(135deg, #050a14 0%, #0c152b 100%);
+            --navy: #0A3161;
+            --navy-glow: rgba(10, 49, 97, 0.4);
+            --gold: #D4AF37;
+            --gold-hover: #F2D265;
+            --red: #B31942;
+            --white: #FFFFFF;
+            --text-main: #F8FAFC;
+            --text-muted: #94A3B8;
+            --glass-bg: rgba(255, 255, 255, 0.03);
+            --glass-border: rgba(255, 255, 255, 0.08);
+            --glass-highlight: rgba(255, 255, 255, 0.15);
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-dark);
+            background-image: var(--bg-gradient);
+            color: var(--text-main);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        /* Ambient background glow */
+        .ambient-glow {
+            position: absolute;
+            width: 700px;
+            height: 700px;
+            background: radial-gradient(circle, var(--navy-glow) 0%, rgba(0, 0, 0, 0) 70%);
+            top: -200px;
+            left: -200px;
+            z-index: 0;
+            opacity: 0.5;
+            filter: blur(80px);
+            pointer-events: none;
+        }
+
+        .ambient-glow.right {
+            top: auto;
+            bottom: -200px;
+            left: auto;
+            right: -200px;
+            background: radial-gradient(circle, rgba(212, 175, 55, 0.1) 0%, rgba(0, 0, 0, 0) 70%);
+        }
+
+        /* Header Navigation */
+        header {
+            width: 100%;
+            padding: 1.5rem 5%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid var(--glass-border);
+            background: rgba(2, 6, 23, 0.5);
+            backdrop-filter: blur(10px);
+            position: relative;
+            z-index: 10;
+        }
+
+        .logo-container img {
+            height: 60px;
+            width: auto;
+            filter: brightness(0) invert(1);
+        }
+
+        .logo-text {
+            font-family: 'Outfit', sans-serif;
+            font-size: 1.5rem;
+            font-weight: 800;
+            letter-spacing: 2px;
+            color: var(--white);
+            text-decoration: none;
+            text-transform: uppercase;
+        }
+
+        .logo-text span {
+            color: var(--gold);
+        }
+
+        /* Main Container */
+        main {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 3rem 2rem;
+            position: relative;
+            z-index: 5;
+        }
+
+        .scheduler-card {
+            width: 100%;
+            max-width: 950px;
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            border-radius: 24px;
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            box-shadow: 0 30px 60px rgba(0, 0, 0, 0.6);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            min-height: 550px;
+            transition: var(--transition);
+        }
+
+        /* Screen 1: Host Selector */
+        .screen-hosts {
+            padding: 4rem 3rem;
+            text-align: center;
+        }
+
+        .screen-hosts h1 {
+            font-family: 'Outfit', sans-serif;
+            font-size: 2.8rem;
+            font-weight: 800;
+            margin-bottom: 0.75rem;
+            background: linear-gradient(to right, #fff, #a5b4fc);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .screen-hosts p.subtitle {
+            color: var(--text-muted);
+            font-size: 1.15rem;
+            margin-bottom: 3rem;
+        }
+
+        .hosts-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2.5rem;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .host-option-card {
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid var(--glass-border);
+            border-radius: 20px;
+            padding: 3rem 2rem;
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-decoration: none;
+            color: inherit;
+        }
+
+        .host-option-card:hover {
+            transform: translateY(-5px);
+            border-color: var(--gold);
+            background: rgba(212, 175, 55, 0.03);
+            box-shadow: 0 15px 35px rgba(212, 175, 55, 0.08);
+        }
+
+        .host-avatar {
+            width: 90px;
+            height: 90px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--navy) 0%, var(--bg-dark) 100%);
+            border: 3px solid var(--gold);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Outfit', sans-serif;
+            font-size: 2.2rem;
+            font-weight: 800;
+            color: var(--gold);
+            margin-bottom: 1.5rem;
+            text-shadow: 0 2px 5px rgba(0,0,0,0.5);
+            transition: var(--transition);
+        }
+
+        .host-option-card:hover .host-avatar {
+            transform: scale(1.05);
+            box-shadow: 0 0 20px rgba(212, 175, 55, 0.3);
+        }
+
+        .host-name {
+            font-family: 'Outfit', sans-serif;
+            font-size: 1.6rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            color: var(--white);
+        }
+
+        .host-title {
+            color: var(--text-muted);
+            font-size: 0.95rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .host-focus {
+            font-size: 0.9rem;
+            line-height: 1.6;
+            color: var(--text-muted);
+            border-top: 1px solid var(--glass-border);
+            padding-top: 1.25rem;
+            width: 100%;
+        }
+
+        /* Scheduling Grid (Split Screen) */
+        .booking-layout {
+            display: grid;
+            grid-template-columns: 320px 1fr;
+            min-height: 550px;
+        }
+
+        /* Left Panel: Sidebar Info */
+        .sidebar-info {
+            border-right: 1px solid var(--glass-border);
+            padding: 3rem 2rem;
+            background: rgba(0, 0, 0, 0.15);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .btn-back {
+            color: var(--text-muted);
+            text-decoration: none;
+            font-size: 0.9rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 2rem;
+            transition: var(--transition);
+            background: none;
+            border: none;
+            cursor: pointer;
+        }
+
+        .btn-back:hover {
+            color: var(--white);
+        }
+
+        .sidebar-host-avatar {
+            width: 70px;
+            height: 70px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--navy) 0%, var(--bg-dark) 100%);
+            border: 2px solid var(--gold);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Outfit', sans-serif;
+            font-size: 1.6rem;
+            font-weight: 800;
+            color: var(--gold);
+            margin-bottom: 1rem;
+        }
+
+        .sidebar-title {
+            font-family: 'Outfit', sans-serif;
+            font-size: 1.6rem;
+            font-weight: 800;
+            margin-bottom: 0.5rem;
+        }
+
+        .meeting-duration {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--text-muted);
+            font-size: 0.95rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .meeting-duration svg {
+            width: 16px;
+            height: 16px;
+            fill: currentColor;
+        }
+
+        .meeting-details-summary {
+            font-size: 0.95rem;
+            color: var(--text-muted);
+            line-height: 1.6;
+            margin-bottom: 2rem;
+        }
+
+        .meeting-time-selected-badge {
+            background: rgba(212, 175, 55, 0.1);
+            border: 1px solid rgba(212, 175, 55, 0.3);
+            border-radius: 8px;
+            padding: 1rem;
+            margin-top: auto;
+            display: none;
+            animation: fadeIn 0.3s ease-out forwards;
+        }
+
+        .meeting-time-selected-badge strong {
+            color: var(--gold);
+            display: block;
+            margin-bottom: 0.25rem;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .meeting-time-selected-badge span {
+            font-size: 0.95rem;
+            color: var(--white);
+            font-weight: 600;
+        }
+
+        /* Right Panel: Calendar & Slots Container */
+        .calendar-slots-panel {
+            display: grid;
+            grid-template-columns: 1.2fr 1fr;
+            padding: 2.5rem;
+            gap: 2rem;
+            transition: var(--transition);
+        }
+
+        .calendar-section h2, .slots-section h2, .form-section h2 {
+            font-family: 'Outfit', sans-serif;
+            font-size: 1.3rem;
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+        }
+
+        /* Custom Calendar Widget */
+        .calendar-wrapper {
+            background: rgba(0,0,0,0.1);
+            border: 1px solid var(--glass-border);
+            border-radius: 16px;
+            padding: 1.25rem;
+        }
+
+        .calendar-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.25rem;
+        }
+
+        .calendar-header h3 {
+            font-family: 'Outfit', sans-serif;
+            font-size: 1.1rem;
+            font-weight: 600;
+        }
+
+        .calendar-nav-btn {
+            background: none;
+            border: 1px solid var(--glass-border);
+            color: var(--text-muted);
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: var(--transition);
+        }
+
+        .calendar-nav-btn:hover {
+            color: var(--white);
+            border-color: var(--white);
+            background: var(--glass-highlight);
+        }
+
+        .calendar-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 6px;
+            text-align: center;
+        }
+
+        .calendar-day-label {
+            font-size: 0.75rem;
+            font-weight: 700;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            padding-bottom: 8px;
+        }
+
+        .calendar-day {
+            aspect-ratio: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.9rem;
+            font-weight: 500;
+            border-radius: 50%;
+            cursor: pointer;
+            transition: var(--transition);
+            border: 1px solid transparent;
+            color: var(--text-muted);
+            pointer-events: none;
+        }
+
+        .calendar-day.clickable {
+            color: var(--white);
+            pointer-events: auto;
+        }
+
+        .calendar-day.clickable:hover {
+            background: rgba(255, 255, 255, 0.05);
+            border-color: var(--glass-border);
+        }
+
+        .calendar-day.active {
+            background: var(--gold) !important;
+            color: black !important;
+            font-weight: 700;
+            box-shadow: 0 0 15px rgba(212, 175, 55, 0.3);
+        }
+
+        .calendar-day.today {
+            border: 1px solid var(--gold);
+            color: var(--gold);
+        }
+
+        .calendar-day.empty {
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        /* Slots List */
+        .slots-wrapper {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            max-height: 380px;
+            overflow-y: auto;
+            padding-right: 5px;
+        }
+
+        .slots-wrapper::-webkit-scrollbar {
+            width: 4px;
+        }
+
+        .slots-wrapper::-webkit-scrollbar-thumb {
+            background: var(--glass-border);
+            border-radius: 4px;
+        }
+
+        .slot-btn {
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid var(--glass-border);
+            border-radius: 10px;
+            padding: 0.85rem 1rem;
+            color: var(--white);
+            font-weight: 600;
+            font-size: 0.95rem;
+            cursor: pointer;
+            transition: var(--transition);
+            font-family: inherit;
+        }
+
+        .slot-btn:hover {
+            border-color: var(--gold);
+            background: rgba(212, 175, 55, 0.05);
+        }
+
+        .slot-btn.active {
+            background: var(--navy);
+            border-color: var(--gold);
+            box-shadow: 0 0 10px var(--navy-glow);
+        }
+
+        .no-slots-msg {
+            color: var(--text-muted);
+            font-size: 0.95rem;
+            text-align: center;
+            padding: 2rem 0;
+        }
+
+        /* Form / Screen 3 Layout */
+        .form-section {
+            padding: 2.5rem;
+            display: none;
+            animation: fadeIn 0.4s ease-out forwards;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group.full-width {
+            grid-column: span 2;
+        }
+
+        label {
+            display: block;
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: var(--text-muted);
+            margin-bottom: 0.5rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        input[type="text"],
+        input[type="email"],
+        input[type="tel"],
+        select,
+        textarea {
+            width: 100%;
+            background: rgba(0, 0, 0, 0.2);
+            border: 1px solid var(--glass-border);
+            color: white;
+            padding: 0.9rem 1.1rem;
+            border-radius: 10px;
+            font-family: inherit;
+            font-size: 0.95rem;
+            transition: var(--transition);
+        }
+
+        select option {
+            background-color: var(--bg-dark);
+            color: var(--text-main);
+        }
+
+        input:focus,
+        select:focus,
+        textarea:focus {
+            outline: none;
+            border-color: var(--gold);
+            box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.1);
+        }
+
+        textarea {
+            min-height: 100px;
+            resize: vertical;
+        }
+
+        .btn-submit {
+            background: var(--gold);
+            color: black;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            padding: 1rem 2rem;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: var(--transition);
+            width: 100%;
+            margin-top: 1rem;
+            box-shadow: 0 10px 20px rgba(212, 175, 55, 0.2);
+        }
+
+        .btn-submit:hover {
+            background: var(--gold-hover);
+            transform: translateY(-2px);
+            box-shadow: 0 15px 25px rgba(212, 175, 55, 0.3);
+        }
+
+        /* Screen 4: Success View */
+        .screen-success {
+            padding: 4rem 3rem;
+            text-align: center;
+            display: none;
+            animation: fadeIn 0.4s ease-out forwards;
+        }
+
+        .success-icon {
+            width: 80px;
+            height: 80px;
+            background: rgba(16, 185, 129, 0.1);
+            border: 2px solid #10B981;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 2rem;
+            color: #10B981;
+        }
+
+        .success-icon svg {
+            width: 40px;
+            height: 40px;
+            fill: currentColor;
+        }
+
+        .screen-success h2 {
+            font-family: 'Outfit', sans-serif;
+            font-size: 2.2rem;
+            font-weight: 800;
+            margin-bottom: 1rem;
+        }
+
+        .success-details {
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid var(--glass-border);
+            border-radius: 16px;
+            padding: 1.5rem;
+            max-width: 500px;
+            margin: 2rem auto;
+            text-align: left;
+        }
+
+        .success-details p {
+            margin-bottom: 0.5rem;
+            font-size: 0.95rem;
+        }
+
+        .success-details p strong {
+            color: var(--gold);
+        }
+
+        .btn-gcal {
+            display: inline-block;
+            background: #D4AF37;
+            color: black;
+            text-decoration: none;
+            font-weight: bold;
+            padding: 1rem 2rem;
+            border-radius: 8px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            transition: var(--transition);
+            box-shadow: 0 4px 15px rgba(212, 175, 55, 0.2);
+        }
+
+        .btn-gcal:hover {
+            background: var(--gold-hover);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(212, 175, 55, 0.3);
+        }
+
+        /* Animations */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Responsive */
+        @media (max-width: 900px) {
+            .booking-layout {
+                grid-template-columns: 1fr;
+            }
+            .sidebar-info {
+                border-right: none;
+                border-bottom: 1px solid var(--glass-border);
+                padding: 2.2rem;
+            }
+            .calendar-slots-panel {
+                grid-template-columns: 1fr;
+                padding: 2rem;
+            }
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+            .form-group.full-width {
+                grid-column: span 1;
+            }
+            .hosts-grid {
+                grid-template-columns: 1fr;
+                gap: 1.5rem;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="ambient-glow"></div>
+    <div class="ambient-glow right"></div>
+
+    <!-- HEADER -->
+    <header>
+        <div class="logo-container">
+            <a href="index.html" class="logo-text">Laural<span>AI</span></a>
+        </div>
+        <div style="font-family: 'Outfit', sans-serif; font-weight: 600; font-size: 0.9rem; letter-spacing: 1px; color: var(--gold); text-transform: uppercase;">
+            Scheduler
+        </div>
+    </header>
+
+    <!-- MAIN BODY -->
+    <main>
+        <div class="scheduler-card">
+
+            <!-- SCREEN 1: Host Selector -->
+            <div class="screen-hosts" id="screenHosts">
+                <h1>Book a Session</h1>
+                <p class="subtitle">Select a calendar below to schedule a time block with us.</p>
+                <div class="hosts-grid">
+                    <a href="?host=mike" class="host-option-card" data-host="mike">
+                        <div class="host-avatar">MP</div>
+                        <div class="host-name">Mike Price</div>
+                        <div class="host-title">Founder / Platform Architect</div>
+                        <p class="host-focus">Schedule a discussion regarding platform architecture, custom coloring book builds, integration steps, or AI agent setups.</p>
+                    </a>
+                    <a href="?host=laurie" class="host-option-card" data-host="laurie">
+                        <div class="host-avatar">LP</div>
+                        <div class="host-name">Laurie Price</div>
+                        <div class="host-title">Co-Founder / Partnerships</div>
+                        <p class="host-focus">Schedule a discussion regarding community outreach, custom corporate partnerships, sponsorships, or brand alignment campaigns.</p>
+                    </a>
+                </div>
+            </div>
+
+            <!-- SCREEN 2 & 3: Calendar & Details Layout -->
+            <div class="booking-layout" id="bookingLayout" style="display: none;">
+                
+                <!-- Sidebar Host Details -->
+                <div class="sidebar-info">
+                    <div>
+                        <button class="btn-back" id="btnBackToHosts">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" style="transform: rotate(180deg);"><path d="M5 13h11.86l-5.43 5.43 1.42 1.42L21.14 12l-8.29-8.29-1.42 1.42 5.43 5.43H5v2z"/></svg>
+                            Back to hosts
+                        </button>
+                        
+                        <div class="sidebar-host-avatar" id="sidebarAvatar">MP</div>
+                        <h2 class="sidebar-title" id="sidebarHostName">Mike Price</h2>
+                        <div id="sidebarHostTitle" style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 1rem;">Founder / Platform Architect</div>
+                        
+                        <div class="meeting-duration">
+                            <svg viewBox="0 0 24 24"><path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm.5-13H11v6l5.25 3.15.75-1.23-4.5-2.67z"/></svg>
+                            <span>30 Minutes</span>
+                        </div>
+                        <p class="meeting-details-summary">A 30-minute Zoom video conference, Google Meet, or phone call session to discuss your requirements, customize your configuration, and coordinate delivery.</p>
+                    </div>
+
+                    <!-- Sticky Selected Slot Badge -->
+                    <div class="meeting-time-selected-badge" id="selectedSlotBadge">
+                        <strong>Selected Time Slot</strong>
+                        <span id="selectedSlotText">Monday, June 15 at 10:30 AM</span>
+                    </div>
+                </div>
+
+                <!-- Right Side Interactive Panels -->
+                <div>
+                    <!-- Calendar & Slots screen (Panel 2) -->
+                    <div class="calendar-slots-panel" id="calendarSlotsPanel">
+                        
+                        <!-- Calendar Widget -->
+                        <div class="calendar-section">
+                            <h2>Select a Date</h2>
+                            <div class="calendar-wrapper">
+                                <div class="calendar-header">
+                                    <h3 id="calendarMonthLabel">June 2026</h3>
+                                    <div style="display: flex; gap: 8px;">
+                                        <button class="calendar-nav-btn" id="prevMonthBtn">
+                                            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" style="transform: rotate(180deg);"><path d="M5 13h11.86l-5.43 5.43 1.42 1.42L21.14 12l-8.29-8.29-1.42 1.42 5.43 5.43H5v2z"/></svg>
+                                        </button>
+                                        <button class="calendar-nav-btn" id="nextMonthBtn">
+                                            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M5 13h11.86l-5.43 5.43 1.42 1.42L21.14 12l-8.29-8.29-1.42 1.42 5.43 5.43H5v2z"/></svg>
+                                        </button>
+                                    </div>
+                                </div>
+                                <div class="calendar-grid" id="calendarGrid">
+                                    <!-- Day names -->
+                                    <span class="calendar-day-label">S</span>
+                                    <span class="calendar-day-label">M</span>
+                                    <span class="calendar-day-label">T</span>
+                                    <span class="calendar-day-label">W</span>
+                                    <span class="calendar-day-label">T</span>
+                                    <span class="calendar-day-label">F</span>
+                                    <span class="calendar-day-label">S</span>
+                                    <!-- Days will be dynamically injected here -->
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Slots Selector -->
+                        <div class="slots-section">
+                            <h2>Available Times</h2>
+                            <div class="slots-wrapper" id="slotsWrapper">
+                                <div class="no-slots-msg">Please select a date on the calendar to see available slots.</div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <!-- Lead Details Form Screen (Panel 3) -->
+                    <div class="form-section" id="formSection">
+                        <h2>Enter Meeting Details</h2>
+                        <form id="bookingForm">
+                            <div class="form-grid">
+                                <div class="form-group">
+                                    <label for="guestName">Your Name *</label>
+                                    <input type="text" id="guestName" placeholder="e.g. Jane Doe" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="guestEmail">Email Address *</label>
+                                    <input type="email" id="guestEmail" placeholder="you@example.com" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="meetingType">Meeting Format *</label>
+                                    <select id="meetingType" required>
+                                        <option value="gmeet" selected>💻 Google Meet / Audio Call</option>
+                                        <option value="zoom">🎥 Zoom Video Call</option>
+                                        <option value="phone">📞 Phone Call</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label for="guestCompany">Company Name</label>
+                                    <input type="text" id="guestCompany" placeholder="e.g. Acme Realty">
+                                </div>
+                                <div class="form-group full-width" id="phoneGroup" style="display: none;">
+                                    <label for="guestPhone">Phone Number *</label>
+                                    <input type="tel" id="guestPhone" placeholder="(555) 123-4567">
+                                </div>
+                                <div class="form-group full-width">
+                                    <label for="meetingTopic">Meeting Topic / Notes</label>
+                                    <textarea id="meetingTopic" placeholder="Briefly describe what you'd like to discuss..."></textarea>
+                                </div>
+                            </div>
+                            <div style="display: flex; gap: 15px; margin-top: 1.5rem;">
+                                <button type="button" class="btn btn-secondary" style="flex: 1; padding: 1rem;" id="btnBackToCalendar">Cancel / Go Back</button>
+                                <button type="submit" class="btn-submit" style="flex: 2; margin-top: 0;" id="submitBtnText">Confirm Appointment</button>
+                            </div>
+                        </form>
+                    </div>
+
+                </div>
+
+            </div>
+
+            <!-- SCREEN 4: Booking Success Screen -->
+            <div class="screen-success" id="screenSuccess">
+                <div class="success-icon">
+                    <svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>
+                </div>
+                <h2>Meeting Scheduled!</h2>
+                <p>A calendar invitation and confirmation email have been sent to you.</p>
+                
+                <div class="success-details">
+                    <p><strong>Host:</strong> <span id="successHostName">Mike Price</span></p>
+                    <p><strong>Date:</strong> <span id="successDate">Monday, June 15, 2026</span></p>
+                    <p><strong>Time:</strong> <span id="successTime">10:30 AM (Central Time)</span></p>
+                    <p><strong>Format / Location:</strong> <span id="successFormat">Google Meet</span></p>
+                </div>
+
+                <div style="margin-top: 2.5rem; display: flex; flex-direction: column; gap: 15px; align-items: center;">
+                    <a href="" id="btnGoogleCalendar" target="_blank" class="btn-gcal">Add to Google Calendar</a>
+                    <button class="btn btn-secondary" style="padding: 0.8rem 2rem; font-size: 0.9rem;" onclick="window.location.search = ''">Book Another Session</button>
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+    <script>
+        // Data and State management
+        const state = {
+            host: null,
+            hostName: '',
+            hostTitle: '',
+            selectedDate: null, // 'YYYY-MM-DD'
+            selectedTime: null, // 'HH:MM'
+            currentYear: new Date().getFullYear(),
+            currentMonth: new Date().getMonth() // 0-indexed
+        };
+
+        const monthNames = [
+            "January", "February", "March", "April", "May", "June",
+            "July", "August", "September", "October", "November", "December"
+        ];
+
+        // DOM elements
+        const screenHosts = document.getElementById('screenHosts');
+        const bookingLayout = document.getElementById('bookingLayout');
+        const calendarSlotsPanel = document.getElementById('calendarSlotsPanel');
+        const formSection = document.getElementById('formSection');
+        const screenSuccess = document.getElementById('screenSuccess');
+        
+        const sidebarAvatar = document.getElementById('sidebarAvatar');
+        const sidebarHostName = document.getElementById('sidebarHostName');
+        const sidebarHostTitle = document.getElementById('sidebarHostTitle');
+        const selectedSlotBadge = document.getElementById('selectedSlotBadge');
+        const selectedSlotText = document.getElementById('selectedSlotText');
+
+        const calendarMonthLabel = document.getElementById('calendarMonthLabel');
+        const calendarGrid = document.getElementById('calendarGrid');
+        const slotsWrapper = document.getElementById('slotsWrapper');
+        
+        const bookingForm = document.getElementById('bookingForm');
+        const btnBackToHosts = document.getElementById('btnBackToHosts');
+        const btnBackToCalendar = document.getElementById('btnBackToCalendar');
+
+        // Init
+        document.addEventListener('DOMContentLoaded', () => {
+            parseQueryString();
+            setupEventListeners();
+        });
+
+        function parseQueryString() {
+            const params = new URLSearchParams(window.location.search);
+            const hostParam = params.get('host');
+            if (hostParam && (hostParam === 'mike' || hostParam === 'laurie')) {
+                selectHost(hostParam);
+            } else {
+                showHostSelector();
+            }
+        }
+
+        function setupEventListeners() {
+            // Calendar navigation
+            document.getElementById('prevMonthBtn').addEventListener('click', () => changeMonth(-1));
+            document.getElementById('nextMonthBtn').addEventListener('click', () => changeMonth(1));
+
+            // Navigation buttons
+            btnBackToHosts.addEventListener('click', () => {
+                window.history.pushState({}, '', window.location.pathname);
+                showHostSelector();
+            });
+
+            btnBackToCalendar.addEventListener('click', () => {
+                formSection.style.display = 'none';
+                calendarSlotsPanel.style.display = 'grid';
+            });
+
+            // Booking Form Submit
+            bookingForm.addEventListener('submit', handleFormSubmit);
+
+            // Toggle Phone field based on format
+            document.getElementById('meetingType').addEventListener('change', updatePhoneVisibility);
+        }
+
+        function updatePhoneVisibility() {
+            const meetingType = document.getElementById('meetingType').value;
+            const phoneGroup = document.getElementById('phoneGroup');
+            const guestPhoneInput = document.getElementById('guestPhone');
+            if (meetingType === 'phone') {
+                phoneGroup.style.display = 'block';
+                guestPhoneInput.required = true;
+            } else {
+                phoneGroup.style.display = 'none';
+                guestPhoneInput.required = false;
+            }
+        }
+
+        function showHostSelector() {
+            state.host = null;
+            state.selectedDate = null;
+            state.selectedTime = null;
+            selectedSlotBadge.style.display = 'none';
+            
+            screenHosts.style.display = 'block';
+            bookingLayout.style.display = 'none';
+            screenSuccess.style.display = 'none';
+            formSection.style.display = 'none';
+            calendarSlotsPanel.style.display = 'grid';
+            bookingForm.reset();
+            updatePhoneVisibility();
+        }
+
+        function selectHost(host) {
+            state.host = host;
+            state.hostName = host === 'mike' ? 'Mike Price' : 'Laurie Price';
+            state.hostTitle = host === 'mike' ? 'Founder / Platform Architect' : 'Co-Founder / Partnerships';
+
+            // Update sidebar info
+            sidebarAvatar.innerText = host === 'mike' ? 'MP' : 'LP';
+            sidebarHostName.innerText = state.hostName;
+            sidebarHostTitle.innerText = state.hostTitle;
+
+            screenHosts.style.display = 'none';
+            bookingLayout.style.display = 'grid';
+            screenSuccess.style.display = 'none';
+
+            // Build calendar
+            renderCalendar();
+            renderSlotsMessage("Please select a date on the calendar to see available slots.");
+        }
+
+        function changeMonth(direction) {
+            state.currentMonth += direction;
+            if (state.currentMonth < 0) {
+                state.currentMonth = 11;
+                state.currentYear--;
+            } else if (state.currentMonth > 11) {
+                state.currentMonth = 0;
+                state.currentYear++;
+            }
+            renderCalendar();
+        }
+
+        function renderCalendar() {
+            calendarMonthLabel.innerText = `${monthNames[state.currentMonth]} ${state.currentYear}`;
+
+            // Remove existing day grids
+            const labels = calendarGrid.querySelectorAll('.calendar-day-label');
+            calendarGrid.innerHTML = '';
+            labels.forEach(l => calendarGrid.appendChild(l));
+
+            const firstDay = new Date(state.currentYear, state.currentMonth, 1).getDay();
+            const totalDays = new Date(state.currentYear, state.currentMonth + 1, 0).getDate();
+
+            // Render empty slots for preceding month days
+            for (let i = 0; i < firstDay; i++) {
+                const emptyCell = document.createElement('div');
+                emptyCell.className = 'calendar-day empty';
+                calendarGrid.appendChild(emptyCell);
+            }
+
+            // Central Time today comparison
+            const todayInCT = new Date(new Date().toLocaleString("en-US", {timeZone: "America/Chicago"}));
+            const todayYear = todayInCT.getFullYear();
+            const todayMonth = todayInCT.getMonth();
+            const todayDate = todayInCT.getDate();
+
+            // Render month days
+            for (let day = 1; day <= totalDays; day++) {
+                const dayBtn = document.createElement('div');
+                dayBtn.className = 'calendar-day';
+                dayBtn.innerText = day;
+
+                const cellDate = new Date(state.currentYear, state.currentMonth, day);
+                const isWeekend = cellDate.getDay() === 0 || cellDate.getDay() === 6;
+                
+                // Compare to today in Central Time
+                const isPast = new Date(state.currentYear, state.currentMonth, day, 23, 59, 59) < todayInCT;
+                const isToday = state.currentYear === todayYear && state.currentMonth === todayMonth && day === todayDate;
+
+                if (isToday) {
+                    dayBtn.classList.add('today');
+                }
+
+                if (!isWeekend && !isPast) {
+                    dayBtn.classList.add('clickable');
+                    dayBtn.addEventListener('click', () => selectDate(day, dayBtn));
+                }
+
+                if (state.selectedDate) {
+                    const [sY, sM, sD] = state.selectedDate.split('-').map(Number);
+                    if (sY === state.currentYear && (sM - 1) === state.currentMonth && sD === day) {
+                        dayBtn.classList.add('active');
+                    }
+                }
+
+                calendarGrid.appendChild(dayBtn);
+            }
+        }
+
+        function selectDate(day, element) {
+            // Clear existing active state
+            calendarGrid.querySelectorAll('.calendar-day.active').forEach(el => el.classList.remove('active'));
+            element.classList.add('active');
+
+            // Format date YYYY-MM-DD
+            const formattedMonth = String(state.currentMonth + 1).padStart(2, '0');
+            const formattedDay = String(day).padStart(2, '0');
+            state.selectedDate = `${state.currentYear}-${formattedMonth}-${formattedDay}`;
+
+            selectedSlotBadge.style.display = 'none';
+            state.selectedTime = null;
+
+            fetchTimeSlots();
+        }
+
+        async function fetchTimeSlots() {
+            renderSlotsMessage("Checking availability...");
+
+            try {
+                const res = await fetch(`/api/bookings/slots?host=${state.host}&date=${state.selectedDate}`);
+                const data = await res.json();
+
+                if (!data.success) {
+                    throw new Error(data.error || "Failed to fetch slots.");
+                }
+
+                renderSlots(data.slots);
+            } catch (err) {
+                console.error("Fetch slots error:", err);
+                renderSlotsMessage("⚠️ Error loading slots. Please try again.");
+            }
+        }
+
+        function renderSlotsMessage(msg) {
+            slotsWrapper.innerHTML = `<div class="no-slots-msg">${msg}</div>`;
+        }
+
+        function renderSlots(slots) {
+            if (!slots || slots.length === 0) {
+                renderSlotsMessage("No slots available for this date. Please select another day.");
+                return;
+            }
+
+            slotsWrapper.innerHTML = '';
+            slots.forEach(slot => {
+                const btn = document.createElement('button');
+                btn.className = 'slot-btn';
+                btn.innerText = format12Hour(slot);
+                btn.addEventListener('click', () => selectSlot(slot, btn));
+                slotsWrapper.appendChild(btn);
+            });
+        }
+
+        function format12Hour(time24) {
+            const [hours, minutes] = time24.split(':').map(Number);
+            const ampm = hours >= 12 ? 'PM' : 'AM';
+            const hours12 = hours % 12 || 12;
+            return `${hours12}:${String(minutes).padStart(2, '0')} ${ampm}`;
+        }
+
+        function selectSlot(timeStr, element) {
+            slotsWrapper.querySelectorAll('.slot-btn.active').forEach(el => el.classList.remove('active'));
+            element.classList.add('active');
+            state.selectedTime = timeStr;
+
+            // Render selected slot info in sidebar
+            const dateObj = new Date(state.selectedDate + 'T00:00:00');
+            const options = { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' };
+            const formattedDateStr = dateObj.toLocaleDateString('en-US', options);
+            
+            selectedSlotText.innerText = `${formattedDateStr} at ${format12Hour(timeStr)}`;
+            selectedSlotBadge.style.display = 'block';
+
+            // Smooth transition to booking details form
+            setTimeout(() => {
+                calendarSlotsPanel.style.display = 'none';
+                formSection.style.display = 'block';
+            }, 300);
+        }
+
+        async function handleFormSubmit(e) {
+            e.preventDefault();
+
+            const submitBtn = document.getElementById('submitBtnText');
+            submitBtn.innerText = "Booking Session...";
+            submitBtn.disabled = true;
+
+            const payload = {
+                host: state.host,
+                date: state.selectedDate,
+                time: state.selectedTime,
+                guest_name: document.getElementById('guestName').value,
+                guest_email: document.getElementById('guestEmail').value,
+                guest_phone: document.getElementById('guestPhone').value,
+                guest_company: document.getElementById('guestCompany').value,
+                meeting_type: document.getElementById('meetingType').value,
+                topic: document.getElementById('meetingTopic').value
+            };
+
+            try {
+                const response = await fetch('/api/bookings', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+                const result = await response.json();
+
+                if (!response.ok || !result.success) {
+                    throw new Error(result.error || "Failed to confirm appointment.");
+                }
+
+                showSuccessScreen(result);
+            } catch (err) {
+                console.error("Booking submission error:", err);
+                alert(`⚠️ Error booking appointment: ${err.message}`);
+                submitBtn.innerText = "Confirm Appointment";
+                submitBtn.disabled = false;
+            }
+        }
+
+        function showSuccessScreen(result) {
+            bookingLayout.style.display = 'none';
+            screenSuccess.style.display = 'block';
+
+            document.getElementById('successHostName').innerText = state.hostName;
+            
+            const dateObj = new Date(state.selectedDate + 'T00:00:00');
+            const options = { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' };
+            document.getElementById('successDate').innerText = dateObj.toLocaleDateString('en-US', options);
+            document.getElementById('successTime').innerText = `${format12Hour(state.selectedTime)} (Central Time)`;
+
+            // Display dynamic format / location info
+            const successFormat = document.getElementById('successFormat');
+            if (successFormat) {
+                if (result.location && result.location.startsWith('http')) {
+                    successFormat.innerHTML = `<a href="${result.location}" target="_blank" style="color: var(--gold); text-decoration: underline;">Zoom Video Meeting</a>`;
+                } else if (result.location) {
+                    successFormat.innerText = result.location;
+                } else {
+                    successFormat.innerText = 'Google Meet';
+                }
+            }
+
+            // Configure Google Calendar Add link
+            const gCalBtn = document.getElementById('btnGoogleCalendar');
+            if (result.gcal_link) {
+                gCalBtn.href = result.gcal_link;
+                gCalBtn.style.display = 'inline-block';
+            } else {
+                gCalBtn.style.display = 'none';
+            }
+        }
+    </script>
+
+</body>
+
+</html>

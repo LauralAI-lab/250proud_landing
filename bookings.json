@@ -1,0 +1,45 @@
+[
+  {
+    "id": "f5770284-20a9-486d-8681-7315a1fa44d9",
+    "host": "mike",
+    "date": "2026-06-17",
+    "time": "10:30",
+    "guest_name": "Mike Priceq",
+    "guest_email": "mike@mikeprice.net",
+    "guest_phone": "8323314846",
+    "guest_company": "lauralai",
+    "topic": "discuss coloring book ",
+    "duration": 30,
+    "created_at": "2026-06-09T20:06:22.736Z"
+  },
+  {
+    "id": "9f79f1a7-3ea9-4e98-ad78-36978d3536d3",
+    "host": "mike",
+    "date": "2026-06-15",
+    "time": "10:30",
+    "guest_name": "Test Guest",
+    "guest_email": "test_guest@example.com",
+    "guest_phone": "555-555-5555",
+    "guest_company": "Test Company",
+    "topic": "Testing Zoom fallback logic",
+    "meeting_type": "zoom",
+    "location": "Google Meet (Zoom authentication failed)",
+    "duration": 30,
+    "created_at": "2026-06-09T20:57:58.895Z"
+  },
+  {
+    "id": "06c3c94e-e6fc-44fb-9eb0-48bc62f5336c",
+    "host": "mike",
+    "date": "2026-06-15",
+    "time": "10:30",
+    "guest_name": "Test Guest",
+    "guest_email": "test_guest@example.com",
+    "guest_phone": "555-555-5555",
+    "guest_company": "Test Company",
+    "topic": "Testing Zoom fallback logic",
+    "meeting_type": "zoom",
+    "location": "Google Meet (Zoom authentication failed)",
+    "duration": 30,
+    "created_at": "2026-06-09T21:16:24.972Z"
+  }
+]

@@ -1,0 +1,1045 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>LauralAI LLC - Presentation Deck</title>
+  <!-- Outfit Font -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-dark: #070B14;
+      --card-bg: rgba(15, 23, 42, 0.45);
+      --border-color: rgba(255, 255, 255, 0.08);
+      --text-main: #F8FAFC;
+      --text-muted: #94A3B8;
+      --primary: #D4AF37; /* Gold */
+      --electric-blue: #00E5FF;
+      --accent-blue: #0A3161;
+      --accent-glow: rgba(212, 175, 55, 0.15);
+      --transition-speed: 0.4s;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Outfit', sans-serif;
+      background-color: var(--bg-dark);
+      color: var(--text-main);
+      overflow: hidden;
+      height: 100vh;
+      width: 100vw;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      position: relative;
+    }
+
+    /* Background Ambient Glows */
+    .glow-1 {
+      position: absolute;
+      top: -10%;
+      right: -10%;
+      width: 50vw;
+      height: 50vw;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(212, 175, 55, 0.08) 0%, rgba(0,0,0,0) 70%);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .glow-2 {
+      position: absolute;
+      bottom: -10%;
+      left: -10%;
+      width: 50vw;
+      height: 50vw;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(10, 49, 97, 0.2) 0%, rgba(0,0,0,0) 70%);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    /* Header */
+    header {
+      width: 100%;
+      padding: 25px 50px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      z-index: 10;
+    }
+
+    .logo-container {
+      display: flex;
+      align-items: center;
+    }
+
+    .meeting-tag {
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      background: rgba(212, 175, 55, 0.1);
+      border: 1px solid rgba(212, 175, 55, 0.2);
+      color: var(--primary);
+      padding: 6px 14px;
+      border-radius: 20px;
+    }
+
+    /* Canvas */
+    .deck-container {
+      flex: 1;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      position: relative;
+      width: 100%;
+      padding: 0 50px;
+      z-index: 5;
+    }
+
+    .slide {
+      position: absolute;
+      width: 100%;
+      max-width: 1200px;
+      opacity: 0;
+      transform: translateY(20px) scale(0.98);
+      pointer-events: none;
+      transition: opacity var(--transition-speed) ease, transform var(--transition-speed) ease;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+
+    .slide.active {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+      pointer-events: auto;
+    }
+
+    /* Glass Slide Card */
+    .slide-card {
+      background: var(--card-bg);
+      backdrop-filter: blur(25px);
+      -webkit-backdrop-filter: blur(25px);
+      border: 1px solid var(--border-color);
+      border-radius: 24px;
+      padding: 45px 55px;
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.4);
+      width: 100%;
+      min-height: 560px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* Top gradient border accent */
+    .slide-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 6px;
+      background: linear-gradient(90deg, var(--accent-blue), var(--primary), var(--electric-blue));
+    }
+
+    /* Typography */
+    h1.slide-title {
+      font-size: 44px;
+      font-weight: 800;
+      letter-spacing: -1px;
+      margin-bottom: 20px;
+      background: linear-gradient(135deg, #FFFFFF 60%, var(--primary) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      display: flex;
+      align-items: center;
+      gap: 15px;
+    }
+
+    h1.slide-title span.number {
+      color: var(--primary);
+      -webkit-text-fill-color: initial;
+      font-size: 26px;
+      font-weight: 400;
+      opacity: 0.6;
+      border: 1px solid rgba(212, 175, 55, 0.3);
+      padding: 2px 10px;
+      border-radius: 8px;
+    }
+
+    .slide-content {
+      font-size: 18px;
+      line-height: 1.6;
+      color: var(--text-muted);
+      flex: 1;
+    }
+
+    /* Grids & Layouts */
+    .two-col {
+      display: grid;
+      grid-template-columns: 1.2fr 0.8fr;
+      gap: 40px;
+      align-items: center;
+      height: 100%;
+    }
+
+    .grid-3 {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 25px;
+      margin-top: 15px;
+    }
+
+    .portfolio-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 20px;
+      margin-top: 15px;
+    }
+
+    .portfolio-item {
+      background: rgba(255, 255, 255, 0.02);
+      border: 1px solid rgba(255, 255, 255, 0.05);
+      border-radius: 16px;
+      padding: 20px;
+      transition: all 0.3s ease;
+    }
+
+    .portfolio-item h3 {
+      font-size: 17px;
+      color: var(--primary);
+      margin-bottom: 8px;
+      font-weight: 600;
+    }
+
+    .portfolio-item.highlight {
+      border-color: rgba(0, 229, 255, 0.3);
+      background: rgba(0, 229, 255, 0.02);
+    }
+
+    .portfolio-item.highlight h3 {
+      color: var(--electric-blue);
+    }
+
+    .project-meta {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    .meta-box {
+      background: rgba(255, 255, 255, 0.02);
+      border: 1px solid rgba(255, 255, 255, 0.04);
+      border-radius: 16px;
+      padding: 20px;
+    }
+
+    .meta-box h3 {
+      font-size: 15px;
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      color: var(--primary);
+      margin-bottom: 8px;
+      font-weight: 600;
+    }
+
+    .meta-box p {
+      font-size: 16px;
+      color: var(--text-main);
+    }
+
+    /* Badges */
+    .badge {
+      display: inline-block;
+      font-size: 11px;
+      font-weight: 600;
+      padding: 4px 12px;
+      border-radius: 12px;
+      margin-right: 8px;
+      margin-bottom: 8px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .badge-primary {
+      background: rgba(212, 175, 55, 0.12);
+      border: 1px solid rgba(212, 175, 55, 0.25);
+      color: var(--primary);
+    }
+
+    .badge-blue {
+      background: rgba(0, 229, 255, 0.1);
+      border: 1px solid rgba(0, 229, 255, 0.3);
+      color: var(--electric-blue);
+    }
+
+    .badge-grey {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      color: var(--text-muted);
+    }
+
+    /* Controls & Footer */
+    footer {
+      width: 100%;
+      padding: 25px 50px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      z-index: 10;
+    }
+
+    .nav-buttons {
+      display: flex;
+      gap: 15px;
+    }
+
+    .nav-btn {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid var(--border-color);
+      color: var(--text-main);
+      padding: 10px 22px;
+      border-radius: 30px;
+      cursor: pointer;
+      font-family: 'Outfit', sans-serif;
+      font-weight: 600;
+      font-size: 14px;
+      transition: all 0.3s ease;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .nav-btn:hover {
+      background: var(--primary);
+      color: #000;
+      border-color: var(--primary);
+      box-shadow: 0 0 20px var(--accent-glow);
+    }
+
+    .nav-btn:disabled {
+      opacity: 0.3;
+      cursor: not-allowed;
+      background: rgba(255, 255, 255, 0.02);
+      color: var(--text-muted);
+    }
+
+    .progress-container {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+    }
+
+    .progress-bar-bg {
+      width: 250px;
+      height: 4px;
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 2px;
+      overflow: hidden;
+    }
+
+    .progress-bar-fill {
+      height: 100%;
+      width: 6.6%;
+      background: linear-gradient(90deg, var(--accent-blue), var(--primary), var(--electric-blue));
+      transition: width 0.4s ease;
+    }
+
+    .slide-indicator {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text-muted);
+      letter-spacing: 1px;
+    }
+
+    /* Diagrams & Visuals */
+    .visual-wrapper {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100%;
+      position: relative;
+    }
+
+    .glow-circle {
+      width: 260px;
+      height: 260px;
+      border-radius: 50%;
+      border: 1px dashed rgba(212, 175, 55, 0.25);
+      position: relative;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      animation: rotate 25s linear infinite;
+    }
+
+    @keyframes rotate {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    .glow-circle-inner {
+      width: 200px;
+      height: 200px;
+      border-radius: 50%;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      background: radial-gradient(circle, rgba(212, 175, 55, 0.04) 0%, rgba(0,0,0,0) 80%);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      animation: rotate-reverse 18s linear infinite;
+    }
+
+    @keyframes rotate-reverse {
+      0% { transform: rotate(360deg); }
+      100% { transform: rotate(0deg); }
+    }
+
+    .visual-center {
+      position: absolute;
+      font-size: 26px;
+      font-weight: 800;
+      color: var(--primary);
+      text-shadow: 0 0 15px rgba(212, 175, 55, 0.3);
+    }
+
+    .agent-box {
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 16px;
+      padding: 20px;
+      background: rgba(255, 255, 255, 0.01);
+      text-align: center;
+    }
+
+    .agent-title {
+      font-weight: 800;
+      font-size: 20px;
+      color: var(--text-main);
+      margin-bottom: 5px;
+    }
+
+    .agent-desc {
+      font-size: 14px;
+      color: var(--text-muted);
+    }
+
+    .keyboard-shortcut {
+      position: absolute;
+      bottom: 20px;
+      right: 20px;
+      font-size: 11px;
+      color: rgba(255,255,255,0.2);
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    .key {
+      background: rgba(255,255,255,0.1);
+      border: 1px solid rgba(255,255,255,0.2);
+      border-radius: 4px;
+      padding: 1px 6px;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Access Control Password Gate Overlay -->
+  <div id="auth-overlay" style="position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: var(--bg-dark); z-index: 1000; display: flex; justify-content: center; align-items: center; backdrop-filter: blur(30px); -webkit-backdrop-filter: blur(30px);">
+    <div style="background: rgba(15, 23, 42, 0.6); border: 1px solid var(--border-color); padding: 40px; border-radius: 24px; text-align: center; max-width: 400px; width: 90%; box-shadow: 0 20px 50px rgba(0,0,0,0.5);">
+      <svg width="180" height="50" viewBox="0 0 240 80" xmlns="http://www.w3.org/2000/svg" style="margin-bottom: 20px;">
+        <text x="10" y="45">
+          <tspan font-family="'Outfit', sans-serif" font-weight="800" font-size="34px" fill="#FFFFFF" letter-spacing="2px">LAURAL</tspan><tspan font-family="'Outfit', sans-serif" font-weight="800" font-size="34px" fill="#D4AF37" letter-spacing="2px">AI</tspan>
+        </text>
+        <text x="178" y="60" font-family="'Outfit', sans-serif" font-weight="400" font-size="12px" fill="#94A3B8" letter-spacing="2.5px" text-anchor="end">LLC</text>
+      </svg>
+      <h2 style="font-size: 20px; font-weight: 300; letter-spacing: 2px; text-transform: uppercase; color: var(--primary); margin-bottom: 30px;">Private Portfolio Access</h2>
+      <div style="display: flex; flex-direction: column; gap: 15px; text-align: left; margin-bottom: 25px;">
+        <div>
+          <label style="font-size: 13px; text-transform: uppercase; letter-spacing: 1px; color: var(--text-muted); display: block; margin-bottom: 6px;">Username</label>
+          <input type="text" id="auth-user" style="width: 100%; padding: 12px 16px; background: rgba(0,0,0,0.3); border: 1px solid var(--border-color); border-radius: 10px; color: var(--text-main); font-family: inherit; font-size: 16px; outline: none; transition: border-color 0.3s;" onfocus="this.style.borderColor='var(--primary)'" onblur="this.style.borderColor='var(--border-color)'">
+        </div>
+        <div>
+          <label style="font-size: 13px; text-transform: uppercase; letter-spacing: 1px; color: var(--text-muted); display: block; margin-bottom: 6px;">Password</label>
+          <input type="password" id="auth-pass" style="width: 100%; padding: 12px 16px; background: rgba(0,0,0,0.3); border: 1px solid var(--border-color); border-radius: 10px; color: var(--text-main); font-family: inherit; font-size: 16px; outline: none; transition: border-color 0.3s;" onfocus="this.style.borderColor='var(--primary)'" onblur="this.style.borderColor='var(--border-color)'">
+        </div>
+      </div>
+      <button onclick="checkAuth()" style="width: 100%; background: var(--primary); color: #000; border: none; padding: 14px; border-radius: 30px; font-weight: 600; font-size: 16px; cursor: pointer; transition: all 0.3s; font-family: inherit;">Gain Access</button>
+      <p id="auth-error" style="color: #EF4444; font-size: 14px; margin-top: 15px; display: none;">Invalid credentials. Please try again.</p>
+    </div>
+  </div>
+
+  <div class="glow-1"></div>
+  <div class="glow-2"></div>
+
+  <!-- Header -->
+  <header>
+    <div class="logo-container">
+      <svg width="180" height="50" viewBox="0 0 240 80" xmlns="http://www.w3.org/2000/svg">
+        <text x="10" y="45">
+          <tspan font-family="'Outfit', sans-serif" font-weight="800" font-size="34px" fill="#FFFFFF" letter-spacing="2px">LAURAL</tspan><tspan font-family="'Outfit', sans-serif" font-weight="800" font-size="34px" fill="#D4AF37" letter-spacing="2px">AI</tspan>
+        </text>
+        <text x="178" y="60" font-family="'Outfit', sans-serif" font-weight="400" font-size="12px" fill="#94A3B8" letter-spacing="2.5px" text-anchor="end">LLC</text>
+      </svg>
+    </div>
+    <div class="meeting-tag">Strategic Briefing</div>
+  </header>
+
+  <!-- Presentation Canvas -->
+  <main class="deck-container">
+
+    <!-- SLIDE 1: TITLE -->
+    <section class="slide active" id="slide-1">
+      <div class="slide-card" style="justify-content: center; align-items: center; text-align: center;">
+        <svg width="320" height="100" viewBox="0 0 240 80" xmlns="http://www.w3.org/2000/svg" style="margin-bottom: 15px;">
+          <text x="10" y="45">
+            <tspan font-family="'Outfit', sans-serif" font-weight="800" font-size="36px" fill="#FFFFFF" letter-spacing="2px">LAURAL</tspan><tspan font-family="'Outfit', sans-serif" font-weight="800" font-size="36px" fill="#D4AF37" letter-spacing="2px">AI</tspan>
+          </text>
+          <text x="178" y="60" font-family="'Outfit', sans-serif" font-weight="400" font-size="12px" fill="#94A3B8" letter-spacing="2.5px" text-anchor="end">LLC</text>
+        </svg>
+        <h2 style="font-size: 30px; font-weight: 300; letter-spacing: 6px; text-transform: uppercase; color: var(--primary); margin-bottom: 20px;">The Agentic Conglomerate</h2>
+        <p style="font-size: 18px; color: var(--text-muted); max-width: 650px; line-height: 1.6; margin-bottom: 40px;">
+          A Mississippi-based startup laboratory building the "Central Nervous System" for the next generation of small business and individual sovereignty.
+        </p>
+        <div style="font-size: 14px; font-weight: 600; text-transform: uppercase; letter-spacing: 2px; color: var(--text-main);">
+          Mike Price & Laurie Price &nbsp;|&nbsp; Cypress Drive, Long Beach, MS
+        </div>
+      </div>
+    </section>
+
+    <!-- SLIDE 2: INDUSTRY CREDIBILITY -->
+    <section class="slide" id="slide-2">
+      <div class="slide-card">
+        <h1 class="slide-title"><span class="number">01</span> Industry Credibility</h1>
+        <div class="slide-content two-col">
+          <div>
+            <p style="font-size: 22px; color: var(--text-main); font-weight: 300; margin-bottom: 20px;">
+              Leveraging three decades of pattern recognition and leadership.
+            </p>
+            <p style="margin-bottom: 20px;">
+              Founded by <strong>Mike Price</strong>, a 30-year veteran of real estate technology and SaaS, operating the company alongside his business partner and wife of 43 years, Laurie Price.
+            </p>
+            <ul style="list-style-type: none; display: flex; flex-direction: column; gap: 12px; font-size: 16px;">
+              <li style="display: flex; gap: 10px; align-items: flex-start;">
+                <span style="color: var(--primary);">✦</span>
+                <span><strong>Executive Experience:</strong> Deep leadership background in corporate operations, enterprise software development, and successful business exits.</span>
+              </li>
+              <li style="display: flex; gap: 10px; align-items: flex-start;">
+                <span style="color: var(--primary);">✦</span>
+                <span><strong>PropTech Strategy:</strong> Decades of identifying and executing on emerging technology gaps in real estate and MLS software architectures.</span>
+              </li>
+              <li style="display: flex; gap: 10px; align-items: flex-start;">
+                <span style="color: var(--primary);">✦</span>
+                <span><strong>Strategic Distribution:</strong> Leveraging proven credibility to negotiate direct B2B pilot partnerships and site licensing deals.</span>
+              </li>
+            </ul>
+          </div>
+          <div class="project-meta">
+            <div class="meta-box">
+              <h3>Venture Direction</h3>
+              <p>Thirty years of executive experience in building products and navigating scaling cycles provides a direct, highly focused path to commercializing the portfolio.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SLIDE 3: OPERATING MODEL -->
+    <section class="slide" id="slide-3">
+      <div class="slide-card">
+        <h1 class="slide-title"><span class="number">02</span> The Human-Plus-AI Operating Model</h1>
+        <div class="slide-content" style="display: flex; flex-direction: column; justify-content: space-between;">
+          <p style="font-size: 20px; color: var(--text-main); font-weight: 300; margin-bottom: 20px; text-align: center;">
+            Two human co-leads directing strategic vision, supported by coordinated AI execution.
+          </p>
+          <div style="display: grid; grid-template-columns: 1.1fr 0.9fr; gap: 30px; margin-bottom: 15px; flex: 1;">
+            
+            <!-- Left: Human Co-Leads -->
+            <div style="display: flex; flex-direction: column; gap: 15px; border-right: 1px solid rgba(255, 255, 255, 0.08); padding-right: 30px;">
+              <div style="font-size: 13px; font-weight: 600; text-transform: uppercase; letter-spacing: 1.5px; color: var(--primary); margin-bottom: -5px;">Human Leadership</div>
+              
+              <div class="agent-box" style="text-align: left; background: rgba(212, 175, 55, 0.02); border-color: rgba(212, 175, 55, 0.15); padding: 15px;">
+                <div style="display: flex; justify-content: space-between; align-items: center;">
+                  <div class="agent-title" style="font-size: 18px; color: var(--text-main);">Mike Price</div>
+                  <span class="badge badge-primary" style="font-size: 9px; padding: 2px 8px;">Strategic Lead</span>
+                </div>
+                <p class="agent-desc" style="margin-top: 5px; font-size: 13.5px;">Directs conglomerate logic, technology architecture, and capital allocation across all portfolio holdings.</p>
+              </div>
+              
+              <div class="agent-box" style="text-align: left; background: rgba(212, 175, 55, 0.02); border-color: rgba(212, 175, 55, 0.15); padding: 15px;">
+                <div style="display: flex; justify-content: space-between; align-items: center;">
+                  <div class="agent-title" style="font-size: 18px; color: var(--text-main);">Laurie Price</div>
+                  <span class="badge badge-primary" style="font-size: 9px; padding: 2px 8px;">Operations & Creative</span>
+                </div>
+                <p class="agent-desc" style="margin-top: 5px; font-size: 13.5px;">20+ years of executive support, marketing, and data mining experience. Heading the Sovereign Hearth and Magnolia Charm ventures.</p>
+              </div>
+            </div>
+
+            <!-- Right: AI Executive Suite -->
+            <div style="display: flex; flex-direction: column; gap: 10px; justify-content: center;">
+              <div style="font-size: 13px; font-weight: 600; text-transform: uppercase; letter-spacing: 1.5px; color: var(--electric-blue); margin-bottom: -5px;">AI Execution Suite</div>
+              
+              <div class="agent-box" style="text-align: left; padding: 12px; border-color: rgba(255, 255, 255, 0.06);">
+                <div class="agent-title" style="font-size: 15px; color: #E5E7EB;">Claude (AI CCO)</div>
+                <p class="agent-desc" style="font-size: 12.5px; margin-top: 3px; line-height: 1.4;">Creative and copy lead. Formulates case content, newsletters, and maintains brand voice guidelines.</p>
+              </div>
+
+              <div class="agent-box" style="text-align: left; padding: 12px; border-color: rgba(212, 175, 55, 0.25); background: rgba(212, 175, 55, 0.02);">
+                <div class="agent-title" style="font-size: 15px; color: var(--primary);">Lauralai (AI COO)</div>
+                <p class="agent-desc" style="font-size: 12.5px; margin-top: 3px; line-height: 1.4;">Operations Orchestrator. Multi-agent coordination, information flow, cross-project execution. Powered by OpenClaw AI infrastructure.</p>
+              </div>
+              
+              <div class="agent-box" style="text-align: left; padding: 12px; border-color: rgba(0, 229, 255, 0.2); background: rgba(0, 229, 255, 0.01);">
+                <div class="agent-title" style="font-size: 15px; color: var(--electric-blue);">Antigravity (AI CTO)</div>
+                <p class="agent-desc" style="font-size: 12.5px; margin-top: 3px; line-height: 1.4;">Developer and designer. Coordinates coding, API integrations, database architectures, and proof of concept deployments.</p>
+              </div>
+            </div>
+
+          </div>
+          <div style="text-align: center; font-size: 14.5px; color: var(--text-muted); border-top: 1px solid rgba(255,255,255,0.05); padding-top: 15px;">
+            Venture economics are redefined by automating 90%+ of technical execution, design, and content creation.
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SLIDE 4: PORTFOLIO AT A GLANCE -->
+    <section class="slide" id="slide-4">
+      <div class="slide-card">
+        <h1 class="slide-title"><span class="number">03</span> The Portfolio at a Glance</h1>
+        <div class="slide-content" style="display: flex; flex-direction: column; justify-content: space-between;">
+          <p style="font-size: 20px; color: var(--text-muted); font-weight: 300;">
+            A conglomerate structure: one shared engine powering multiple targeted market verticals.
+          </p>
+          <div class="portfolio-grid" style="margin-bottom: 15px;">
+            <div class="portfolio-item">
+              <h3>250Proud™</h3>
+              <p style="font-size: 13px; color: var(--text-muted); margin-top: 5px;">B2B marketing configurator & patriotic coloring book for real estate and local business leads.</p>
+            </div>
+            <div class="portfolio-item highlight">
+              <h3>Aligned Agentics</h3>
+              <p style="font-size: 13px; color: var(--text-muted); margin-top: 5px;">Autonomous multi-agent OS dashboard for solopreneurs. Productizing LauralAI's operating model.</p>
+            </div>
+            <div class="portfolio-item">
+              <h3>Real Estate AI Guide</h3>
+              <p style="font-size: 13px; color: var(--text-muted); margin-top: 5px;">Bulk licensed workflow education guide sold to MLS networks and real estate associations.</p>
+            </div>
+            <div class="portfolio-item">
+              <h3>Sovereign Hearth</h3>
+              <p style="font-size: 13px; color: var(--text-muted); margin-top: 5px;">Laurie's project. Consumer resource helping families navigate food dyes, chemicals, and sensitivities.</p>
+            </div>
+            <div class="portfolio-item">
+              <h3>Magnolia Charm</h3>
+              <p style="font-size: 13px; color: var(--text-muted); margin-top: 5px;">High-velocity live event custom magnet venture. On-site photo-to-print cash-flow engine.</p>
+            </div>
+            <div class="portfolio-item" style="border: 1px dashed rgba(255, 255, 255, 0.1); background: transparent; display: flex; justify-content: center; align-items: center; text-align: center;">
+              <span style="font-size: 14px; font-weight: 600; color: var(--text-muted);">+ Pipeline Ideas</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SLIDE 5: 250PROUD -->
+    <section class="slide" id="slide-5">
+      <div class="slide-card">
+        <h1 class="slide-title"><span class="number">04</span> 250Proud™</h1>
+        <div class="slide-content two-col">
+          <div>
+            <span class="badge badge-primary">Active Flagship</span>
+            <span class="badge badge-blue">Launched</span>
+            <p style="margin-top: 15px; margin-bottom: 20px; font-size: 22px; color: var(--text-main); font-weight: 300;">
+              Patriotic Lead Generation Configurator
+            </p>
+            <p style="font-size: 17px; margin-bottom: 25px;">
+              A white-label PDF coloring book configurator built around "250 Strong, Built By Hand" — a 24-page illustrated patriotic coloring book. Real estate agents and local businesses customize the book to distribute as a premium digital lead magnet.
+            </p>
+            <div class="metrics-grid">
+              <div class="metric-card">
+                <div class="metric-value">Configurator</div>
+                <div class="metric-label">250proud.net/configurator</div>
+              </div>
+              <div class="metric-card">
+                <div class="metric-value">Resource Center</div>
+                <div class="metric-label">AI Copywriter & Assets</div>
+              </div>
+            </div>
+          </div>
+          <div class="project-meta">
+            <div class="meta-box">
+              <h3>Distribution Strategy</h3>
+              <p>Direct outreach to Mike's warm PropTech network. B2B site-licensing sold to regional and national MLS associations as co-branded member benefits.</p>
+            </div>
+            <div class="meta-box">
+              <h3>Daily Content Engine</h3>
+              <p>"The American Story" — daily rotating history cards generating organic traffic. Managed under a disciplined 48-hour approval workflow.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SLIDE 6: ALIGNED AGENTICS -->
+    <section class="slide" id="slide-6">
+      <div class="slide-card">
+        <h1 class="slide-title"><span class="number">05</span> Aligned Agentics</h1>
+        <div class="slide-content two-col">
+          <div>
+            <span class="badge badge-primary">In Development</span>
+            <span class="badge badge-blue">The Portfolio's Big Swing</span>
+            <p style="margin-top: 15px; margin-bottom: 20px; font-size: 22px; color: var(--text-main); font-weight: 300;">
+              Agentic OS for Solopreneurs
+            </p>
+            <p style="font-size: 17px; margin-bottom: 25px;">
+              A platform that ingests solopreneur business parameters and instantly deploys a coordinated, active "AI Board of Directors" — specialized AI agents executing workflows, copywriting, research, and technical logistics in real-time.
+            </p>
+            <div class="metrics-grid">
+              <div class="metric-card">
+                <div class="metric-value">Autonomous</div>
+                <div class="metric-label">Self-Updating Core</div>
+              </div>
+              <div class="metric-card">
+                <div class="metric-value">Dashboard</div>
+                <div class="metric-label">Daily Agent Reporting</div>
+              </div>
+            </div>
+          </div>
+          <div class="project-meta">
+            <div class="meta-box">
+              <h3>Dashboard & Analytics</h3>
+              <p>Provides daily reporting structured by agent category (copywriting, development, lead-gen), showing active agent tasks and coordinated outputs.</p>
+            </div>
+            <div class="meta-box">
+              <h3>The Living Prototype</h3>
+              <p>Productizing the exact way LauralAI LLC operates: Mike (Strategic Lead) + Claude (AI CCO) + Antigravity (AI COO) managing the conglomerate.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SLIDE 7: REAL ESTATE AI GUIDE -->
+    <section class="slide" id="slide-7">
+      <div class="slide-card">
+        <h1 class="slide-title"><span class="number">06</span> Real Estate AI Guide</h1>
+        <div class="slide-content two-col">
+          <div>
+            <span class="badge badge-primary">Bulk Licensing</span>
+            <span class="badge badge-blue">Association Distribution</span>
+            <p style="margin-top: 15px; margin-bottom: 20px; font-size: 22px; color: var(--text-main); font-weight: 300;">
+              Workflow-Centered AI Education
+            </p>
+            <p style="font-size: 17px; margin-bottom: 25px;">
+              A comprehensive AI guide for real estate agents, showing step-by-step how to deploy AI tools from listing to post-closing. Focuses on practical workflow execution rather than developer-level jargon.
+            </p>
+            <div class="metrics-grid">
+              <div class="metric-card">
+                <div class="metric-value">PropTech</div>
+                <div class="metric-label">Mike's 30-Yr Network</div>
+              </div>
+              <div class="metric-card">
+                <div class="metric-value">B2B</div>
+                <div class="metric-label">Associations & MLS's</div>
+              </div>
+            </div>
+          </div>
+          <div class="project-meta">
+            <div class="meta-box">
+              <h3>Top-of-Funnel Pipeline</h3>
+              <p>Acts as an immediate relationship builder and credibility asset for Aligned Agentics' eventual real estate industry vertical rollout.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SLIDE 8: SOVEREIGN HEARTH -->
+    <section class="slide" id="slide-8">
+      <div class="slide-card">
+        <h1 class="slide-title"><span class="number">07</span> Sovereign Hearth</h1>
+        <div class="slide-content two-col">
+          <div>
+            <span class="badge badge-primary">Laurie's Project</span>
+            <span class="badge badge-blue">Health Sovereignty</span>
+            <p style="margin-top: 15px; margin-bottom: 20px; font-size: 22px; color: var(--text-main); font-weight: 300;">
+              Food Sensitivity & Chemical Navigation
+            </p>
+            <p style="font-size: 17px; margin-bottom: 25px;">
+              A consumer resource helping families navigate the complex landscape of food dyes, additives, chemicals, and gluten sensitivities. Co-originated and led by Laurie Price, it anchors the conglomerate's wellness and consumer-focused lane.
+            </p>
+            <div class="metrics-grid">
+              <div class="metric-card">
+                <div class="metric-value">Wellness</div>
+                <div class="metric-label">Food Transparency</div>
+              </div>
+              <div class="metric-card">
+                <div class="metric-value">Affiliate</div>
+                <div class="metric-label">Monetization Engine</div>
+              </div>
+            </div>
+          </div>
+          <div class="project-meta">
+            <div class="meta-box">
+              <h3>Philanthropic Core</h3>
+              <p>Provides vetted, actionable, and free support resources for families dealing with severe allergies and dietary sensitivities, funded by trusted partner affiliate links.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SLIDE 9: MAGNOLIA CHARM -->
+    <section class="slide" id="slide-9">
+      <div class="slide-card">
+        <h1 class="slide-title"><span class="number">08</span> Magnolia Charm</h1>
+        <div class="slide-content two-col">
+          <div>
+            <img src="/socials/magnolia_charm_final.png" alt="Magnolia Charm Logo" style="max-width: 180px; margin-bottom: 20px; display: block;">
+            <span class="badge badge-primary">Live & Web Commerce</span>
+            <span class="badge badge-blue">Procured & Ready</span>
+            <p style="margin-top: 15px; margin-bottom: 20px; font-size: 22px; color: var(--text-main); font-weight: 300;">
+              Capture the Moment. Keep the Memory.
+            </p>
+            <p style="font-size: 17px; margin-bottom: 25px;">
+              A high-velocity magnet venture for live events and B2B orders. All physical production equipment and raw supplies have already been procured. Powered by a custom-developed web app enabling instant photo uploads and ordering on-site or online.
+            </p>
+            <div class="metrics-grid">
+              <div class="metrics-card">
+                <div class="metric-value">Procured</div>
+                <div class="metric-label">Equipment & Supplies</div>
+              </div>
+              <div class="metric-card">
+                <div class="metric-value">Custom App</div>
+                <div class="metric-label">Web & Live Uploads</div>
+              </div>
+            </div>
+          </div>
+          <div class="project-meta">
+            <div class="meta-box">
+              <h3>Market Opportunity</h3>
+              <p>Combines immediate, high-margin cash flow at festivals/weddings with robust B2B corporate branding orders and online direct-to-door sales.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SLIDE 10: TRACTION & PROOF -->
+    <section class="slide" id="slide-10">
+      <div class="slide-card">
+        <h1 class="slide-title"><span class="number">09</span> Traction & Proof</h1>
+        <div class="slide-content" style="display: flex; flex-direction: column; justify-content: space-between;">
+          <p style="font-size: 22px; color: var(--text-main); font-weight: 300; margin-bottom: 20px; text-align: center;">
+            We don't wait to build. We launch, validate, and iterate.
+          </p>
+          <div class="grid-3" style="margin-bottom: 20px;">
+            <div class="meta-box">
+              <h3 style="color: var(--primary);">250Proud™</h3>
+              <p style="font-size: 15px; color: var(--text-main); margin-top: 5px;"><strong>Shopify Storefront Live</strong></p>
+              <p style="font-size: 14px; color: var(--text-muted); margin-top: 5px;">White-label PDF coloring book configurator is active. Marketing Resource Center, daily historical content queue, and social channels established.</p>
+            </div>
+            <div class="meta-box">
+              <h3 style="color: var(--electric-blue);">Magnolia Charm</h3>
+              <p style="font-size: 15px; color: var(--text-main); margin-top: 5px;"><strong>Equipment & Supplies Procured</strong></p>
+              <p style="font-size: 14px; color: var(--text-muted); margin-top: 5px;">All high-velocity live event magnet production equipment and raw inventory are in-hand and ready. The custom web application for instant event uploads is ready for testing.</p>
+            </div>
+            <div class="meta-box">
+              <h3 style="color: var(--primary);">LauralAI LLC</h3>
+              <p style="font-size: 15px; color: var(--text-main); margin-top: 5px;"><strong>Operating Framework</strong></p>
+              <p style="font-size: 14px; color: var(--text-muted); margin-top: 5px;">Conglomerate structure and Master Briefing finalized. Core operational development continues with strict adherence to security, data privacy protocols, and redundant backup storage layers.</p>
+            </div>
+          </div>
+          <div style="text-align: center; font-size: 15px; color: var(--text-muted);">
+            Proving our multi-agent operational models daily before selling the software to the public.
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SLIDE 11: THE ROADMAP -->
+    <section class="slide" id="slide-11">
+      <div class="slide-card">
+        <h1 class="slide-title"><span class="number">10</span> The Roadmap</h1>
+        <div class="slide-content" style="display: flex; flex-direction: column; justify-content: space-between;">
+          <p style="font-size: 22px; color: var(--text-main); font-weight: 300; margin-bottom: 25px; text-align: center;">
+            Sequenced growth designed for maximum speed-to-revenue and systemic capital efficiency.
+          </p>
+          <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 20px; margin-bottom: 20px;">
+            <div class="meta-box" style="border-color: rgba(212, 175, 55, 0.4);">
+              <h3 style="color: var(--primary); font-size: 14px;">1. 250Proud Scale</h3>
+              <p style="font-size: 14px; color: var(--text-main); margin-top: 5px;"><strong>MLS Pilot Rollout</strong></p>
+              <p style="font-size: 13px; color: var(--text-muted); margin-top: 5px;">Secure pilot deals with regional real estate networks (Triangle MLS demo) using warm personal outreach.</p>
+            </div>
+            <div class="meta-box">
+              <h3 style="font-size: 14px;">2. Cash Engines</h3>
+              <p style="font-size: 14px; color: var(--text-main); margin-top: 5px;"><strong>Magnolia Charm</strong></p>
+              <p style="font-size: 13px; color: var(--text-muted); margin-top: 5px;">Deploy the mobile-to-print custom magnet setup at live local events, generating high-margin cash flow.</p>
+            </div>
+            <div class="meta-box" style="border-color: rgba(0, 229, 255, 0.3);">
+              <h3 style="color: var(--electric-blue); font-size: 14px;">3. SaaS Core & Hearth</h3>
+              <p style="font-size: 14px; color: var(--text-main); margin-top: 5px;"><strong>Aligned Agentics & Hearth</strong></p>
+              <p style="font-size: 13px; color: var(--text-muted); margin-top: 5px;">Build Aligned Agentics OS dashboard and launch Laurie's health sovereignty portal, driving organic wellness traffic.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SLIDE 12: THE CLOSING (INVESTOR / CLIENT FOCUS) -->
+    <section class="slide" id="slide-12">
+      <div class="slide-card" style="justify-content: center; align-items: center; text-align: center;">
+        <h1 style="font-size: 32px; font-weight: 300; letter-spacing: 4px; text-transform: uppercase; color: var(--primary); margin-bottom: 25px;">The LauralAI Leverage</h1>
+        <p style="font-size: 22px; color: var(--text-main); font-weight: 300; max-width: 850px; line-height: 1.6; margin-bottom: 30px;">
+          "We aren't chasing the general AI hype. We are leveraging 30 years of PropTech, business logic, and SaaS scaling experience to build high-margin, automated systems that execute on real-world needs."
+        </p>
+        <p style="font-size: 16px; color: var(--text-muted); max-width: 700px; line-height: 1.6; margin-bottom: 40px;">
+          LauralAI LLC offers a rare, highly diversified conglomerate model. We build cash-flowing assets, validate demand immediately, and scale using minimal human overhead. We are seeking strategic investment partners, pilot associations/MLSs, and enterprise clients ready to deploy these automated systems.
+        </p>
+        <div style="font-size: 13px; font-weight: 600; text-transform: uppercase; letter-spacing: 2.5px; color: var(--primary);">
+          Operational Efficiency. Real Execution. Scalable ROI.
+        </div>
+      </div>
+    </section>
+
+    <!-- SLIDE 13: CONTACT -->
+    <section class="slide" id="slide-13">
+      <div class="slide-card" style="justify-content: center; align-items: center; text-align: center;">
+        <svg width="240" height="80" viewBox="0 0 240 80" xmlns="http://www.w3.org/2000/svg" style="margin-bottom: 25px;">
+          <text x="10" y="45">
+            <tspan font-family="'Outfit', sans-serif" font-weight="800" font-size="34px" fill="#FFFFFF" letter-spacing="2px">LAURAL</tspan><tspan font-family="'Outfit', sans-serif" font-weight="800" font-size="34px" fill="#D4AF37" letter-spacing="2px">AI</tspan>
+          </text>
+          <text x="178" y="60" font-family="'Outfit', sans-serif" font-weight="400" font-size="12px" fill="#94A3B8" letter-spacing="2.5px" text-anchor="end">LLC</text>
+        </svg>
+        <h2 style="font-size: 20px; font-weight: 300; letter-spacing: 4px; text-transform: uppercase; color: var(--primary); margin-bottom: 30px;">Let's Build Together</h2>
+        
+        <div style="background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.05); border-radius: 20px; padding: 30px; display: inline-block; text-align: left; min-width: 320px;">
+          <p style="font-size: 16px; color: var(--text-muted); margin-bottom: 5px;">Founder & Strategist</p>
+          <p style="font-size: 20px; font-weight: 600; color: var(--text-main); margin-bottom: 20px;">Mike Price</p>
+          
+          <p style="font-size: 16px; color: var(--text-muted); margin-bottom: 5px;">Direct Email</p>
+          <p style="font-size: 20px; font-weight: 600; color: var(--primary); margin-bottom: 20px;">mike@lauralai.llc</p>
+          
+          <p style="font-size: 16px; color: var(--text-muted); margin-bottom: 5px;">Location</p>
+          <p style="font-size: 18px; color: var(--text-main);">Long Beach, Mississippi</p>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Footer -->
+  <footer>
+    <div class="progress-container">
+      <div class="progress-bar-bg">
+        <div class="progress-bar-fill" id="progress-bar-fill"></div>
+      </div>
+      <div class="slide-indicator" id="slide-indicator">Slide 1 of 13</div>
+    </div>
+    <div class="nav-buttons">
+      <button class="nav-btn" id="prev-btn" disabled>← Previous</button>
+      <button class="nav-btn" id="next-btn">Next Slide →</button>
+    </div>
+  </footer>
+
+  <div class="keyboard-shortcut">
+    Use <span class="key">Space</span>, <span class="key">→</span>, or <span class="key">↓</span> to advance. <span class="key">←</span> or <span class="key">↑</span> to go back.
+  </div>
+
+  <script>
+    // Access Control Passcode Verification
+    function checkAuth() {
+      const user = document.getElementById('auth-user').value.trim().toLowerCase();
+      const pass = document.getElementById('auth-pass').value.trim();
+      if ((user === 'lauralai' || user === 'prospect' || user === 'investor' || user === 'partner') && 
+          (pass === 'sovereign' || pass === 'lauralai2026' || pass === 'operator')) {
+        localStorage.setItem('lauralai_deck_auth', 'granted');
+        document.getElementById('auth-overlay').style.display = 'none';
+      } else {
+        document.getElementById('auth-error').style.display = 'block';
+      }
+    }
+
+    window.addEventListener('DOMContentLoaded', () => {
+      if (localStorage.getItem('lauralai_deck_auth') === 'granted') {
+        document.getElementById('auth-overlay').style.display = 'none';
+      }
+    });
+
+    // Slide Navigation Logic
+    const slides = document.querySelectorAll('.slide');
+    const prevBtn = document.getElementById('prev-btn');
+    const nextBtn = document.getElementById('next-btn');
+    const progressBarFill = document.getElementById('progress-bar-fill');
+    const slideIndicator = document.getElementById('slide-indicator');
+    
+    let currentSlideIndex = 0;
+    const totalSlides = slides.length;
+
+    function updateSlide(index) {
+      // Deactivate current slide
+      slides[currentSlideIndex].classList.remove('active');
+      
+      // Update index
+      currentSlideIndex = index;
+      
+      // Activate new slide
+      slides[currentSlideIndex].classList.add('active');
+      
+      // Update buttons
+      prevBtn.disabled = currentSlideIndex === 0;
+      nextBtn.innerText = currentSlideIndex === totalSlides - 1 ? 'Finish Presentation' : 'Next Slide →';
+      
+      // Update progress bar
+      const progressPercent = ((currentSlideIndex + 1) / totalSlides) * 100;
+      progressBarFill.style.width = `${progressPercent}%`;
+      
+      // Update indicator text
+      slideIndicator.innerText = `Slide ${currentSlideIndex + 1} of ${totalSlides}`;
+    }
+
+    // Event Listeners for buttons
+    prevBtn.addEventListener('click', () => {
+      if (currentSlideIndex > 0) {
+        updateSlide(currentSlideIndex - 1);
+      }
+    });
+
+    nextBtn.addEventListener('click', () => {
+      if (currentSlideIndex < totalSlides - 1) {
+        updateSlide(currentSlideIndex + 1);
+      } else {
+        // Loop back to start on finish click
+        updateSlide(0);
+      }
+    });
+
+    // Keyboard Shortcuts
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'ArrowRight' || e.key === 'ArrowDown' || e.key === ' ') {
+        e.preventDefault();
+        if (currentSlideIndex < totalSlides - 1) {
+          updateSlide(currentSlideIndex + 1);
+        } else {
+          updateSlide(0); // loop
+        }
+      } else if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') {
+        e.preventDefault();
+        if (currentSlideIndex > 0) {
+          updateSlide(currentSlideIndex - 1);
+        }
+      }
+    });
+  </script>
+</body>
+</html>

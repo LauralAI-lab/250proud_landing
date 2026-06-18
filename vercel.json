@@ -48,6 +48,14 @@
     {
       "src": "**/*.svg",
       "use": "@vercel/static"
+    },
+    {
+      "src": "nc_assets/**/*.css",
+      "use": "@vercel/static"
+    },
+    {
+      "src": "nc_assets/**/*.js",
+      "use": "@vercel/static"
     }
   ],
   "routes": [

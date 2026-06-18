@@ -12,6 +12,7 @@ const { createClient } = require('@supabase/supabase-js');
 const mailchimp = require('@mailchimp/mailchimp_marketing');
 const { Resend } = require('resend');
 const QRCode = require('qrcode');
+const { GoogleGenAI } = require('@google/genai');
 
 const app = express();
 app.use(cors());
@@ -440,9 +441,21 @@ async function generateAndDeliverPDF(order) {
                                             <tr>
                                                 <td style="padding: 40px 30px;">
                                                     <h1 style="color: #1a1a1a; font-size: 22px; font-weight: 800; margin: 0 0 20px 0; text-align: center;">YOUR MASTER EDITION IS READY</h1>
-                                                    <p style="font-size: 16px; line-height: 1.6; color: #444444; margin: 0 0 35px 0;">
+                                                    <p style="font-size: 16px; line-height: 1.6; color: #444444; margin: 0 0 25px 0;">
                                                         Thank you for your partnership, <strong>${order.company_name || 'Partner'}</strong>. Your digitally licensed, white-labeled master copy of <strong>250 Strong: Built By Hand</strong> has been generated successfully and is ready for deployment.
                                                     </p>
+                                                    
+                                                    <!-- Create Campaigns Block -->
+                                                    <div style="background-color: #ffffff; border: 2px solid #D4AF37; padding: 25px; border-radius: 8px; margin-bottom: 35px;">
+                                                        <h3 style="color: #0A3161; font-size: 18px; margin: 0 0 15px 0; text-transform: uppercase; letter-spacing: 1px;">Create Campaigns That Convert</h3>
+                                                        <p style="font-size: 14px; color: #444; margin-bottom: 15px; line-height: 1.6;">Leverage your new digital asset with highly targeted messaging. Here are proven calls-to-action based on who you are sending it to:</p>
+                                                        
+                                                        <ul style="font-size: 14px; line-height: 1.6; color: #444; margin: 0; padding-left: 20px;">
+                                                            <li style="margin-bottom: 10px;"><strong>Past Clients:</strong> "Thank you for trusting us with your business. As we approach America's 250th, we wanted to gift your family this exclusive history book to celebrate the quiet hands that built our nation."</li>
+                                                            <li style="margin-bottom: 10px;"><strong>Current Prospects:</strong> "We believe in building legacies. Download our custom 250PROUD edition of 'Built By Hand' and let's discuss how we can build something great together."</li>
+                                                            <li><strong>Vendors & Partners:</strong> "Our success is built on strong partnerships. We licensed this exclusive 250PROUD historical collection to share with the partners who keep America moving."</li>
+                                                        </ul>
+                                                    </div>
                                                     
                                                     <!-- Buttons -->
                                                     <table width="100%" border="0" cellspacing="0" cellpadding="0" style="margin-bottom: 35px;">
@@ -480,6 +493,17 @@ async function generateAndDeliverPDF(order) {
                                                             <li><strong>Your Shortened Book Link:</strong> <a href="https://250proud.net/book/${bookSlug}" style="color: #0A3161;">https://250proud.net/book/${bookSlug}</a></li>
                                                         </ul>
                                                     </div>` : ''}
+
+                                                    <!-- Support Block -->
+                                                    <div style="background-color: #071E3D; color: #ffffff; padding: 25px; border-radius: 8px; text-align: center; margin-bottom: 30px;">
+                                                        <h3 style="color: #D4AF37; font-size: 16px; margin: 0 0 10px 0; text-transform: uppercase; letter-spacing: 1px;">Meet LauralAI</h3>
+                                                        <p style="font-size: 14px; line-height: 1.6; margin: 0 0 15px 0; color: #e2e8f0;">
+                                                            If you have questions or would like customized suggestions on how to leverage your new digital marketing tool, click the chat bubble on our site to ask <strong>LauralAI</strong>, our expert digital support agent.
+                                                        </p>
+                                                        <p style="font-size: 13px; color: #94a3b8; margin: 0;">
+                                                            If you don't get the answers you need, reach out to our human team at <a href="mailto:info@250proud.net" style="color: #D4AF37; text-decoration: none;">info@250proud.net</a>.
+                                                        </p>
+                                                    </div>
 
 
                                                     <!-- Instructions -->
@@ -1061,7 +1085,8 @@ app.post('/api/bookings', async (req, res) => {
             guest_company,
             topic,
             meeting_type = 'gmeet', // 'phone', 'gmeet', or 'zoom'
-            duration = 30
+            duration = 30,
+            guest_timezone = 'America/Chicago'
         } = req.body;
 
         if (!host || !date || !time || !guest_name || !guest_email) {
@@ -1149,17 +1174,100 @@ app.post('/api/bookings', async (req, res) => {
                 meeting_type,
                 location: finalLocation,
                 duration,
+                guest_timezone,
                 created_at: new Date().toISOString()
             });
         }
 
         // Calculate UTC ISO times for Google Calendar link & ICS
-        // Central Daylight Time (CDT) is UTC-5
-        const startDate = new Date(`${date}T${time}:00-05:00`);
+        // Self-correct Central Time offset (CDT is -05:00, CST is -06:00)
+        let offset = "-05:00";
+        try {
+            const tempDate = new Date(`${date}T${time}:00-05:00`);
+            const formattedTemp = tempDate.toLocaleTimeString("en-US", {
+                timeZone: "America/Chicago",
+                hour: "2-digit",
+                minute: "2-digit",
+                hour12: false
+            });
+            if (formattedTemp !== time) {
+                offset = "-06:00";
+            }
+        } catch (offsetErr) {
+            console.error("Offset calculation error:", offsetErr);
+        }
+
+        const startDate = new Date(`${date}T${time}:00${offset}`);
         const endDate = new Date(startDate.getTime() + duration * 60 * 1000);
         const startUTC = startDate.toISOString().replace(/[-:]/g, '').split('.')[0] + 'Z';
         const endUTC = endDate.toISOString().replace(/[-:]/g, '').split('.')[0] + 'Z';
         const nowUTC = new Date().toISOString().replace(/[-:]/g, '').split('.')[0] + 'Z';
+
+        function format12HourLocal(time24) {
+            const [hours, minutes] = time24.split(':').map(Number);
+            const ampm = hours >= 12 ? 'PM' : 'AM';
+            const hours12 = hours % 12 || 12;
+            return `${hours12}:${String(minutes).padStart(2, '0')} ${ampm}`;
+        }
+
+        // Calculate guest and host local date & time display strings
+        let guestDisplayTime = '';
+        let guestDisplayDate = '';
+        let hostDisplayTime = '';
+        let hostDisplayDate = '';
+
+        try {
+            // Guest formats
+            const guestTimeFormatted = startDate.toLocaleTimeString("en-US", {
+                timeZone: guest_timezone,
+                hour: "numeric",
+                minute: "2-digit",
+                hour12: true
+            });
+            const guestDateFormatted = startDate.toLocaleDateString("en-US", {
+                timeZone: guest_timezone,
+                weekday: 'long',
+                month: 'long',
+                day: 'numeric',
+                year: 'numeric'
+            });
+            const guestTZLabel = startDate.toLocaleDateString("en-US", {
+                timeZone: guest_timezone,
+                timeZoneName: "short"
+            }).split(', ').pop() || '';
+
+            guestDisplayTime = `${guestTimeFormatted} (${guestTZLabel})`;
+            guestDisplayDate = guestDateFormatted;
+
+            // Host formats (America/Chicago)
+            const hostTimeFormatted = startDate.toLocaleTimeString("en-US", {
+                timeZone: "America/Chicago",
+                hour: "numeric",
+                minute: "2-digit",
+                hour12: true
+            });
+            const hostDateFormatted = startDate.toLocaleDateString("en-US", {
+                timeZone: "America/Chicago",
+                weekday: 'long',
+                month: 'long',
+                day: 'numeric',
+                year: 'numeric'
+            });
+            const hostTZLabel = startDate.toLocaleDateString("en-US", {
+                timeZone: "America/Chicago",
+                timeZoneName: "short"
+            }).split(', ').pop() || '';
+
+            hostDisplayTime = `${hostTimeFormatted} (${hostTZLabel})`;
+            hostDisplayDate = hostDateFormatted;
+
+        } catch (tzFormatErr) {
+            console.error("Timezone display formatting error:", tzFormatErr);
+            guestDisplayTime = `${format12HourLocal(time)} (Central Time)`;
+            guestDisplayDate = date;
+            hostDisplayTime = `${format12HourLocal(time)} (Central Time)`;
+            hostDisplayDate = date;
+        }
 
         // Google Calendar Add Link
         const gCalSummary = encodeURIComponent(`Meeting with ${guest_name} (LauralAI)`);
@@ -1209,8 +1317,8 @@ app.post('/api/bookings', async (req, res) => {
                             
                             <table style="width: 100%; border-collapse: collapse; margin: 20px 0;">
                                 <tr style="background: #f8f9fa;"><td style="padding: 10px; font-weight: bold; width: 120px;">Host:</td><td style="padding: 10px;">${hostName}</td></tr>
-                                <tr><td style="padding: 10px; font-weight: bold;">Date:</td><td style="padding: 10px;">${date}</td></tr>
-                                <tr style="background: #f8f9fa;"><td style="padding: 10px; font-weight: bold;">Time:</td><td style="padding: 10px;">${time} (Central Time)</td></tr>
+                                <tr><td style="padding: 10px; font-weight: bold;">Date:</td><td style="padding: 10px;">${guestDisplayDate}</td></tr>
+                                <tr style="background: #f8f9fa;"><td style="padding: 10px; font-weight: bold;">Time:</td><td style="padding: 10px;">${guestDisplayTime}${guest_timezone.toLowerCase() !== 'america/chicago' ? ` / ${hostDisplayTime}` : ''}</td></tr>
                                 <tr><td style="padding: 10px; font-weight: bold;">Duration:</td><td style="padding: 10px;">${duration} minutes</td></tr>
                                 <tr style="background: #f8f9fa;"><td style="padding: 10px; font-weight: bold;">Format / Link:</td><td style="padding: 10px;">${finalLocation.startsWith('http') ? `<a href="${finalLocation}">${finalLocation}</a>` : finalLocation}</td></tr>
                                 <tr><td style="padding: 10px; font-weight: bold;">Topic:</td><td style="padding: 10px;">${topic || 'General Catch Up'}</td></tr>
@@ -1239,7 +1347,7 @@ app.post('/api/bookings', async (req, res) => {
                 await resend.emails.send({
                     from: 'LauralAI Meetings <meetings@250proud.net>',
                     to: notificationEmails,
-                    subject: `[New Booking] ${guest_name} - ${date} @ ${time} CT`,
+                    subject: `[New Booking] ${guest_name} - ${date} @ ${format12HourLocal(time)} CT`,
                     html: `
                         <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #eaeaea; border-radius: 8px;">
                             <h2 style="color: #B31942; border-bottom: 2px solid #0A3161; padding-bottom: 10px;">New Meeting Booked</h2>
@@ -1250,8 +1358,8 @@ app.post('/api/bookings', async (req, res) => {
                                 <tr><td style="padding: 10px; font-weight: bold;">Guest Email:</td><td style="padding: 10px;"><a href="mailto:${guest_email}">${guest_email}</a></td></tr>
                                 <tr style="background: #f8f9fa;"><td style="padding: 10px; font-weight: bold;">Phone:</td><td style="padding: 10px;">${guest_phone || 'N/A'}</td></tr>
                                 <tr><td style="padding: 10px; font-weight: bold;">Company:</td><td style="padding: 10px;">${guest_company || 'N/A'}</td></tr>
-                                <tr style="background: #f8f9fa;"><td style="padding: 10px; font-weight: bold;">Date:</td><td style="padding: 10px;">${date}</td></tr>
-                                <tr><td style="padding: 10px; font-weight: bold;">Time:</td><td style="padding: 10px;">${time} (Central Time)</td></tr>
+                                <tr style="background: #f8f9fa;"><td style="padding: 10px; font-weight: bold;">Date:</td><td style="padding: 10px;">${hostDisplayDate}${guestDisplayDate !== hostDisplayDate ? ` (Guest Local: ${guestDisplayDate})` : ''}</td></tr>
+                                <tr><td style="padding: 10px; font-weight: bold;">Time:</td><td style="padding: 10px;">${hostDisplayTime}${guest_timezone.toLowerCase() !== 'america/chicago' ? ` (Guest Local: ${guestDisplayTime})` : ''}</td></tr>
                                 <tr style="background: #f8f9fa;"><td style="padding: 10px; font-weight: bold;">Format / Link:</td><td style="padding: 10px;">${finalLocation.startsWith('http') ? `<a href="${finalLocation}">${finalLocation}</a>` : finalLocation}</td></tr>
                                 <tr><td style="padding: 10px; font-weight: bold;">Topic:</td><td style="padding: 10px;">${topic || 'N/A'}</td></tr>
                             </table>
@@ -1286,6 +1394,58 @@ app.post('/api/bookings', async (req, res) => {
     } catch (e) {
         console.error("Booking error:", e);
         res.status(500).json({ error: e.message });
+    }
+});
+
+// ---------------------------------------------------------
+// Chatbot Route (LauralAI)
+// ---------------------------------------------------------
+app.post('/api/chat', async (req, res) => {
+    try {
+        const { messages } = req.body;
+        
+        if (!process.env.GEMINI_API_KEY) {
+            return res.status(500).json({ error: "Gemini API key is not configured." });
+        }
+
+        const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
+        
+        const systemInstruction = `You are LauralAI, an expert digital support agent for the 250PROUD platform. Your job is to help business partners (real estate agents, brokers, mortgage lenders, etc.) use their custom digital B2B coloring book ("250 Strong: Built By Hand") to generate leads and build relationships. Provide concise, friendly, and highly actionable marketing advice. If you don't know the answer or the user needs complex technical support, gently suggest they reach out to info@250proud.net. Always maintain a professional, patriotic, and encouraging tone.`;
+
+        // Format history for Gemini
+        const history = [];
+        let latestUserMsg = "Hello";
+
+        if (messages && messages.length > 0) {
+            latestUserMsg = messages[messages.length - 1].content;
+            
+            // Map previous messages (excluding the last one which is the prompt)
+            for (let i = 0; i < messages.length - 1; i++) {
+                const msg = messages[i];
+                history.push({
+                    role: msg.role === 'assistant' ? 'model' : 'user',
+                    parts: [{ text: msg.content }]
+                });
+            }
+        }
+
+        const response = await ai.models.generateContent({
+            model: 'gemini-2.5-flash',
+            contents: [
+                ...history,
+                { role: 'user', parts: [{ text: latestUserMsg }] }
+            ],
+            config: {
+                systemInstruction: systemInstruction,
+                temperature: 0.7
+            }
+        });
+
+        res.json({ reply: response.text });
+
+    } catch (e) {
+        console.error("LauralAI Chat Error:", e);
+        res.status(500).json({ error: "Failed to generate a response. Please try again or email info@250proud.net." });
     }
 });
 

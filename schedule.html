@@ -693,6 +693,7 @@
             }
         }
     </style>
+<link rel="stylesheet" href="nc_assets/css/lauralai-chat.css">
 </head>
 
 <body>
@@ -800,6 +801,24 @@
                         <!-- Slots Selector -->
                         <div class="slots-section">
                             <h2>Available Times</h2>
+                            
+                            <!-- Time Zone Selector -->
+                            <div class="timezone-selector-container" style="margin: 15px 0; display: flex; align-items: center; gap: 8px;">
+                                <svg style="width: 14px; height: 14px; fill: var(--text-muted); flex-shrink: 0;" viewBox="0 0 24 24">
+                                    <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm.5-13H11v6l5.25 3.15.75-1.23-4.5-2.67z"/>
+                                </svg>
+                                <select id="timezoneSelect" style="background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.08); color: var(--text-main); font-family: inherit; font-size: 13px; padding: 6px 12px; border-radius: 8px; outline: none; cursor: pointer; max-width: 100%;">
+                                    <option value="America/New_York">Eastern Time (ET)</option>
+                                    <option value="America/Chicago">Central Time (CT)</option>
+                                    <option value="America/Denver">Mountain Time (MT)</option>
+                                    <option value="America/Phoenix">Arizona Time (MST)</option>
+                                    <option value="America/Los_Angeles">Pacific Time (PT)</option>
+                                    <option value="America/Anchorage">Alaska Time (AKT)</option>
+                                    <option value="Pacific/Honolulu">Hawaii Time (HST)</option>
+                                    <option value="UTC">UTC / GMT</option>
+                                </select>
+                            </div>
+
                             <div class="slots-wrapper" id="slotsWrapper">
                                 <div class="no-slots-msg">Please select a date on the calendar to see available slots.</div>
                             </div>
@@ -885,7 +904,8 @@
             selectedDate: null, // 'YYYY-MM-DD'
             selectedTime: null, // 'HH:MM'
             currentYear: new Date().getFullYear(),
-            currentMonth: new Date().getMonth() // 0-indexed
+            currentMonth: new Date().getMonth(), // 0-indexed
+            availableSlots: [] // To store Central Time slots for client-side timezone shifting
         };
 
         const monthNames = [
@@ -908,6 +928,7 @@
 
         const calendarMonthLabel = document.getElementById('calendarMonthLabel');
         const calendarGrid = document.getElementById('calendarGrid');
+        const timezoneSelect = document.getElementById('timezoneSelect');
         const slotsWrapper = document.getElementById('slotsWrapper');
         
         const bookingForm = document.getElementById('bookingForm');
@@ -918,6 +939,23 @@
         document.addEventListener('DOMContentLoaded', () => {
             parseQueryString();
             setupEventListeners();
+            
+            // Detect and set local timezone
+            try {
+                const detectedTZ = Intl.DateTimeFormat().resolvedOptions().timeZone;
+                if (detectedTZ) {
+                    const existingOptions = Array.from(timezoneSelect.options).map(opt => opt.value);
+                    if (!existingOptions.includes(detectedTZ)) {
+                        const opt = document.createElement('option');
+                        opt.value = detectedTZ;
+                        opt.innerText = `Local Time (${detectedTZ})`;
+                        timezoneSelect.appendChild(opt);
+                    }
+                    timezoneSelect.value = detectedTZ;
+                }
+            } catch (tzErr) {
+                console.warn("Timezone detection failed:", tzErr);
+            }
         });
 
         function parseQueryString() {
@@ -951,6 +989,13 @@
 
             // Toggle Phone field based on format
             document.getElementById('meetingType').addEventListener('change', updatePhoneVisibility);
+
+            // Timezone selector change listener
+            timezoneSelect.addEventListener('change', () => {
+                if (state.availableSlots.length > 0) {
+                    renderSlots(state.availableSlots);
+                }
+            });
         }
 
         function updatePhoneVisibility() {
@@ -1096,6 +1141,7 @@
                     throw new Error(data.error || "Failed to fetch slots.");
                 }
 
+                state.availableSlots = data.slots;
                 renderSlots(data.slots);
             } catch (err) {
                 console.error("Fetch slots error:", err);
@@ -1107,18 +1153,53 @@
             slotsWrapper.innerHTML = `<div class="no-slots-msg">${msg}</div>`;
         }
 
+        // Helper to self-correct DST offset guess for America/Chicago on any target date
+        function getChicagoOffset(dateStr, timeStr) {
+            let offset = "-05:00";
+            const tempDate = new Date(`${dateStr}T${timeStr}:00-05:00`);
+            const formattedTemp = tempDate.toLocaleTimeString("en-US", {
+                timeZone: "America/Chicago",
+                hour: "2-digit",
+                minute: "2-digit",
+                hour12: false
+            });
+            if (formattedTemp !== timeStr) {
+                offset = "-06:00";
+            }
+            return offset;
+        }
+
         function renderSlots(slots) {
             if (!slots || slots.length === 0) {
                 renderSlotsMessage("No slots available for this date. Please select another day.");
                 return;
             }
 
+            const targetTimeZone = timezoneSelect.value;
             slotsWrapper.innerHTML = '';
+            
             slots.forEach(slot => {
+                const offset = getChicagoOffset(state.selectedDate, slot);
+                const slotDate = new Date(`${state.selectedDate}T${slot}:00${offset}`);
+
+                // Local time presentation
+                const localTimeStr = slotDate.toLocaleTimeString("en-US", {
+                    timeZone: targetTimeZone,
+                    hour: "numeric",
+                    minute: "2-digit",
+                    hour12: true
+                });
+
+                // Short timezone name (abbreviation like EDT, PST, etc.)
+                const localTZLabel = slotDate.toLocaleDateString("en-US", {
+                    timeZone: targetTimeZone,
+                    timeZoneName: "short"
+                }).split(', ').pop() || '';
+
                 const btn = document.createElement('button');
                 btn.className = 'slot-btn';
-                btn.innerText = format12Hour(slot);
-                btn.addEventListener('click', () => selectSlot(slot, btn));
+                btn.innerHTML = `${localTimeStr} <span style="font-size: 10px; opacity: 0.5; font-weight: normal; margin-left: 4px;">${localTZLabel}</span>`;
+                btn.addEventListener('click', () => selectSlot(slot, btn, localTimeStr, localTZLabel));
                 slotsWrapper.appendChild(btn);
             });
         }
@@ -1130,17 +1211,23 @@
             return `${hours12}:${String(minutes).padStart(2, '0')} ${ampm}`;
         }
 
-        function selectSlot(timeStr, element) {
+        function selectSlot(timeStr, element, localTimeStr, localTZLabel) {
             slotsWrapper.querySelectorAll('.slot-btn.active').forEach(el => el.classList.remove('active'));
             element.classList.add('active');
-            state.selectedTime = timeStr;
+            state.selectedTime = timeStr; // Keep original Central Time slot
 
-            // Render selected slot info in sidebar
-            const dateObj = new Date(state.selectedDate + 'T00:00:00');
-            const options = { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' };
-            const formattedDateStr = dateObj.toLocaleDateString('en-US', options);
+            // Render selected slot info in sidebar in guest's local time & date
+            const targetTimeZone = timezoneSelect.value;
+            const offset = getChicagoOffset(state.selectedDate, timeStr);
+            const slotDate = new Date(`${state.selectedDate}T${timeStr}:00${offset}`);
             
-            selectedSlotText.innerText = `${formattedDateStr} at ${format12Hour(timeStr)}`;
+            const options = { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' };
+            const localDateStr = slotDate.toLocaleDateString('en-US', {
+                timeZone: targetTimeZone,
+                ...options
+            });
+            
+            selectedSlotText.innerText = `${localDateStr} at ${localTimeStr} (${localTZLabel})`;
             selectedSlotBadge.style.display = 'block';
 
             // Smooth transition to booking details form
@@ -1160,13 +1247,14 @@
             const payload = {
                 host: state.host,
                 date: state.selectedDate,
-                time: state.selectedTime,
+                time: state.selectedTime, // Central Time
                 guest_name: document.getElementById('guestName').value,
                 guest_email: document.getElementById('guestEmail').value,
                 guest_phone: document.getElementById('guestPhone').value,
                 guest_company: document.getElementById('guestCompany').value,
                 meeting_type: document.getElementById('meetingType').value,
-                topic: document.getElementById('meetingTopic').value
+                topic: document.getElementById('meetingTopic').value,
+                guest_timezone: timezoneSelect.value
             };
 
             try {
@@ -1195,11 +1283,33 @@
             screenSuccess.style.display = 'block';
 
             document.getElementById('successHostName').innerText = state.hostName;
-            
-            const dateObj = new Date(state.selectedDate + 'T00:00:00');
-            const options = { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' };
-            document.getElementById('successDate').innerText = dateObj.toLocaleDateString('en-US', options);
-            document.getElementById('successTime').innerText = `${format12Hour(state.selectedTime)} (Central Time)`;
+
+            // Get local time display for success screen
+            const guestTimeZone = timezoneSelect.value;
+            const offset = getChicagoOffset(state.selectedDate, state.selectedTime);
+            const slotDate = new Date(`${state.selectedDate}T${state.selectedTime}:00${offset}`);
+            const localTimeStr = slotDate.toLocaleTimeString("en-US", {
+                timeZone: guestTimeZone,
+                hour: "numeric",
+                minute: "2-digit",
+                hour12: true
+            });
+            const localTZLabel = slotDate.toLocaleDateString("en-US", {
+                timeZone: guestTimeZone,
+                timeZoneName: "short"
+            }).split(', ').pop() || '';
+
+            // Get local date display for success screen
+            const localDateStr = slotDate.toLocaleDateString('en-US', {
+                timeZone: guestTimeZone,
+                weekday: 'long',
+                month: 'long',
+                day: 'numeric',
+                year: 'numeric'
+            });
+
+            document.getElementById('successDate').innerText = localDateStr;
+            document.getElementById('successTime').innerText = `${localTimeStr} (${localTZLabel}) / ${format12Hour(state.selectedTime)} (Central Time)`;
 
             // Display dynamic format / location info
             const successFormat = document.getElementById('successFormat');
@@ -1224,6 +1334,7 @@
         }
     </script>
 
+<script src="nc_assets/js/lauralai-chat.js"></script>
 </body>
 
 </html>

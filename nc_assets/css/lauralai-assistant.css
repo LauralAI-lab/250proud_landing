@@ -9,8 +9,8 @@
 }
 
 .lauralai-chat-button {
-    width: 60px;
-    height: 60px;
+    width: 75px;
+    height: 75px;
     border-radius: 50%;
     background-color: #0A3161;
     color: #D4AF37;
@@ -18,9 +18,12 @@
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
     cursor: pointer;
     display: flex;
+    flex-direction: column;
     justify-content: center;
     align-items: center;
     transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.3s ease;
+    font-family: 'Oswald', sans-serif;
+    line-height: 1.1;
 }
 
 .lauralai-chat-button:hover {
@@ -28,10 +31,17 @@
     box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2);
 }
 
-.lauralai-chat-button svg {
-    width: 30px;
-    height: 30px;
-    fill: currentColor;
+.lauralai-btn-top {
+    font-size: 16px;
+    font-weight: 700;
+    letter-spacing: 1px;
+}
+
+.lauralai-btn-bottom {
+    font-size: 12px;
+    font-weight: 400;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
 }
 
 .lauralai-chat-window {

@@ -1,4 +1,4 @@
-document.addEventListener('DOMContentLoaded', () => {
+(function() {
     // 1. Inject HTML for the chat widget
     const chatHTML = `
         <div class="lauralai-chat-widget">
@@ -123,4 +123,4 @@ document.addEventListener('DOMContentLoaded', () => {
             handleSend();
         }
     });
-});
+})();

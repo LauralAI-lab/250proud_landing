@@ -62,15 +62,15 @@
 
     const addMessageToUI = (content, role) => {
         const msgDiv = document.createElement('div');
-        msgDiv.className = \`lauralai-message \${role}\`;
+        msgDiv.className = `lauralai-message ${role}`;
         
         // Convert URLs to clickable links if assistant
         if (role === 'assistant') {
-            const urlRegex = /(https?:\\/\\/[^\\s]+)/g;
+            const urlRegex = /(https?:\/\/[^\s]+)/g;
             content = content.replace(urlRegex, '<a href="$1" target="_blank">$1</a>');
         }
         
-        msgDiv.innerHTML = content.replace(/\\n/g, '<br>');
+        msgDiv.innerHTML = content.replace(/\n/g, '<br>');
         
         messagesContainer.insertBefore(msgDiv, typingIndicator);
         scrollToBottom();

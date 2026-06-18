@@ -62,12 +62,22 @@
             margin-bottom: 0.25in;
         }
 
-        .company-logo-left {
-            max-height: 1.0in;
-            max-width: 95%;
-            object-fit: contain;
-            object-position: center center;
+        .company-logo-wrapper {
             margin-top: auto;
+            background-color: white;
+            padding: 0.1in;
+            border-radius: 6px;
+            mix-blend-mode: multiply;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 95%;
+        }
+
+        .company-logo-left {
+            max-height: 0.8in;
+            max-width: 100%;
+            object-fit: contain;
         }
 
         /* Right Pane */
@@ -160,7 +170,9 @@
     <div class="left-col">
         <div class="hook">A Gift For Your Family</div>
         <img src="{{COVER_URL}}" class="book-preview" alt="250PROUD Coloring Book">
-        <img src="{{LOGO_URL}}" class="company-logo-left" alt="Company Logo">
+        <div class="company-logo-wrapper">
+            <img src="{{LOGO_URL}}" class="company-logo-left" alt="Company Logo">
+        </div>
     </div>
 
     <div class="right-col">

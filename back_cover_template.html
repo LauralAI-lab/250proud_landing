@@ -151,23 +151,39 @@
             transform: scale(1.05);
         }
 
-        /* Footer Section */
         .footer-section {
             background-color: var(--off-white);
-            padding: 20px 60px 30px 60px;
+            padding: 20px 60px 15px 60px;
             display: flex;
-            justify-content: space-between;
-            align-items: center;
+            flex-direction: column;
             border-top: 1px solid var(--gray-light);
-            height: 15%;
-            position: relative;
+            height: auto;
+            min-height: 15%;
             flex-shrink: 0;
         }
 
+        .footer-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            width: 100%;
+            margin-bottom: 15px;
+        }
+
+        .sponsor-logo-wrapper {
+            display: flex;
+            align-items: center;
+            justify-content: flex-start;
+            background-color: white;
+            padding: 10px;
+            border-radius: 6px;
+            mix-blend-mode: multiply; /* Helps white backgrounds blend into the off-white footer */
+        }
+
         .sponsor-logo {
-            height: 110px;
+            max-height: 90px;
             object-fit: contain;
-            max-width: 350px;
+            max-width: 330px;
         }
 
         .contact-info {
@@ -190,15 +206,13 @@
         }
 
         .proud-tag {
-            position: absolute;
-            bottom: 12px;
-            left: 0;
             width: 100%;
             text-align: center;
             font-size: 0.7rem;
             color: #999;
             letter-spacing: 1.5px;
             text-transform: uppercase;
+            margin-top: auto;
         }
 
         @media print {
@@ -259,16 +273,20 @@
 
         <!-- BOTTOM: FOOTER -->
         <div class="footer-section">
-            <!-- LOGO -->
-            <!-- image 4 -->
-            <img src="{{LOGO_URL}}" alt="Sponsor Logo Placeholder" class="sponsor-logo">
-            
-            <!-- CONTACT INFO -->
-            <div class="contact-info">
-                <h3>{{COMPANY_NAME}}</h3>
-                <p>{{PHONE}}</p>
-                <p>{{EMAIL}}</p>
-                <p>{{WEBSITE}}</p>
+            <div class="footer-top">
+                <!-- LOGO -->
+                <!-- image 4 -->
+                <div class="sponsor-logo-wrapper">
+                    <img src="{{LOGO_URL}}" alt="Sponsor Logo Placeholder" class="sponsor-logo">
+                </div>
+                
+                <!-- CONTACT INFO -->
+                <div class="contact-info">
+                    <h3>{{COMPANY_NAME}}</h3>
+                    <p>{{PHONE}}</p>
+                    <p>{{EMAIL}}</p>
+                    <p>{{WEBSITE}}</p>
+                </div>
             </div>
             
             <div class="proud-tag">

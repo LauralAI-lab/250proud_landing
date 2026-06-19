@@ -313,8 +313,7 @@ async function generateAndDeliverPDF(order) {
         const fileSuffix = `${safeName}_${shortId}`;
         
         const pdfFileName = `250Proud_ColoringBook_${fileSuffix}.pdf`;
-        
-        const { data, error: uploadError } = await supabase.storage
+           const { data, error: uploadError } = await supabase.storage
             .from('b2b_pdfs')
             .upload(`completed/${pdfFileName}`, finalPdfBuffer, {
                 contentType: 'application/pdf',
@@ -322,11 +321,47 @@ async function generateAndDeliverPDF(order) {
             });
 
         if (uploadError) throw uploadError;
-
         const { data: publicUrlData } = supabase.storage.from('b2b_pdfs').getPublicUrl(`completed/${pdfFileName}`);
         const pdfDownloadUrl = publicUrlData.publicUrl;
+        console.log(`✅ Digital PDF Uploaded! URL: ${pdfDownloadUrl}`);
 
-        console.log(`✅ PDF Uploaded to Supabase! URL: ${pdfDownloadUrl}`);
+        // ------------------------------------
+        // LULU PRINT API FILE GENERATION
+        // ------------------------------------
+        console.log("Generating Lulu Print-on-Demand files...");
+        
+        // 1. Lulu Interior (Pages 1-22, bypassing front cover and back cover)
+        const luluInteriorDoc = await PDFDocument.create();
+        const interiorPages = await luluInteriorDoc.copyPages(mainPdfDoc, Array.from({length: 22}, (_, i) => i + 1));
+        interiorPages.forEach(p => luluInteriorDoc.addPage(p));
+        const luluInteriorBuffer = Buffer.from(await luluInteriorDoc.save());
+
+        // 2. Lulu Wraparound Cover (Left: Back Cover, Right: Front Cover)
+        const luluCoverDoc = await PDFDocument.create();
+        const wrapPage = luluCoverDoc.addPage([1224, 792]); // 17 x 11 inches
+        
+        const [embeddedFront] = await luluCoverDoc.embedPdf(mainPdfBytes, [0]);
+        const [embeddedBack] = await luluCoverDoc.embedPdf(backCoverPdfBuffer, [0]);
+        
+        wrapPage.drawPage(embeddedBack, { x: 0, y: 0, width: 612, height: 792 });
+        wrapPage.drawPage(embeddedFront, { x: 612, y: 0, width: 612, height: 792 });
+        
+        const luluCoverBuffer = Buffer.from(await luluCoverDoc.save());
+
+        // Upload Lulu Files
+        const luluInteriorName = `250Proud_LuluInterior_${fileSuffix}.pdf`;
+        const luluCoverName = `250Proud_LuluCover_${fileSuffix}.pdf`;
+        
+        await supabase.storage.from('b2b_pdfs').upload(`completed/${luluInteriorName}`, luluInteriorBuffer, { contentType: 'application/pdf', upsert: true });
+        await supabase.storage.from('b2b_pdfs').upload(`completed/${luluCoverName}`, luluCoverBuffer, { contentType: 'application/pdf', upsert: true });
+        
+        const { data: luluIntUrlData } = supabase.storage.from('b2b_pdfs').getPublicUrl(`completed/${luluInteriorName}`);
+        const { data: luluCovUrlData } = supabase.storage.from('b2b_pdfs').getPublicUrl(`completed/${luluCoverName}`);
+        const luluInteriorUrl = luluIntUrlData.publicUrl;
+        const luluCoverUrl = luluCovUrlData.publicUrl;
+        console.log(`✅ Lulu Cover URL: ${luluCoverUrl}`);
+        console.log(`✅ Lulu Interior URL: ${luluInteriorUrl}`);
+        // ------------------------------------
 
         // --- NEW: Generate Marketing Card & Update Resource Center ---
         console.log("Looking up user for Resource Center...");
@@ -405,7 +440,9 @@ async function generateAndDeliverPDF(order) {
         await supabase.from('users').update({
             book_download_url: pdfDownloadUrl,
             postcard_download_url: cardDownloadUrl,
-            qr_code_url: qrCodePublicUrl
+            qr_code_url: qrCodePublicUrl,
+            lulu_interior_url: luluInteriorUrl,
+            lulu_cover_url: luluCoverUrl
         }).eq('email', order.email);
 
         const email = order.email;

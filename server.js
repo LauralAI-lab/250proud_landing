@@ -230,10 +230,10 @@ app.post('/api/update-book', upload.fields(uploadFields), async (req, res) => {
         let logoUrl = existingOrder.logo_path;
         let headshotUrl = existingOrder.headshot_path;
 
-        if (req.files['heroUpload']) heroUrl = await uploadToSupabase(req.files['heroUpload'][0]);
-        if (req.files['interiorUpload']) interiorUrl = await uploadToSupabase(req.files['interiorUpload'][0]);
-        if (req.files['logoUpload']) logoUrl = await uploadToSupabase(req.files['logoUpload'][0]);
-        if (req.files['headshotUpload']) headshotUrl = await uploadToSupabase(req.files['headshotUpload'][0]);
+        if (req.files && req.files['heroUpload']) heroUrl = await uploadBufferToSupabase(req.files['heroUpload'][0].buffer, req.files['heroUpload'][0].originalname, req.files['heroUpload'][0].mimetype);
+        if (req.files && req.files['interiorUpload']) interiorUrl = await uploadBufferToSupabase(req.files['interiorUpload'][0].buffer, req.files['interiorUpload'][0].originalname, req.files['interiorUpload'][0].mimetype);
+        if (req.files && req.files['logoUpload']) logoUrl = await uploadBufferToSupabase(req.files['logoUpload'][0].buffer, req.files['logoUpload'][0].originalname, req.files['logoUpload'][0].mimetype);
+        if (req.files && req.files['headshotUpload']) headshotUrl = await uploadBufferToSupabase(req.files['headshotUpload'][0].buffer, req.files['headshotUpload'][0].originalname, req.files['headshotUpload'][0].mimetype);
 
         // Update the order in the database
         const { error: updateError } = await supabase

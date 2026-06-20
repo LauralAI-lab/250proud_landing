@@ -754,6 +754,9 @@ app.post('/api/generate-text', async (req, res) => {
         } else if (industry === 'Wealth Management') {
             mockHeadline = `Securing Legacies. Proudly Supported by ${companyName}.`;
             mockCopy = `America’s 250-year history is a testament to vision, planning, and perseverance. At ${companyName}, we help families and businesses plan for the long term so they can leave a lasting legacy. We hope you enjoy this 24-page coloring book highlighting the pivotal moments and everyday heroes that built our nation's incredible wealth of history.`;
+        } else if (industry === 'Education') {
+            mockHeadline = `Fostering Future Generations. Proudly Supported by ${companyName}.`;
+            mockCopy = `Education is the foundation upon which the American spirit thrives. At ${companyName}, we are proud to support the learners and leaders of tomorrow. As we celebrate our 250-year history, we invite you to use this 24-page coloring book in your classroom or home to spark curiosity about the people and events that built our nation.`;
         }
 
         res.json({ headline: mockHeadline, copy: mockCopy });

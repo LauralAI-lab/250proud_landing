@@ -652,11 +652,17 @@
         }
 
         async function checkSession() {
-            const { data: { session } } = await supabaseClient.auth.getSession();
-            if (session) {
-                currentUser = session.user;
-                loadDashboardData();
-            } else {
+            try {
+                const { data: { session } } = await supabaseClient.auth.getSession();
+                if (session) {
+                    currentUser = session.user;
+                    await loadDashboardData();
+                } else {
+                    showAuth();
+                }
+            } catch (err) {
+                console.error("Session check error:", err);
+                alert("Session Check Error: " + err.message);
                 showAuth();
             }
         }
@@ -672,32 +678,31 @@
         }
 
         async function loadDashboardData() {
-            const { data, error } = await supabaseClient
-                .from('users')
-                .select('*')
-                .eq('id', currentUser.id)
-                .single();
+            try {
+                const { data, error } = await supabaseClient
+                    .from('users')
+                    .select('*')
+                    .eq('id', currentUser.id)
+                    .single();
 
-            if (error || !data) {
-                console.error("Error loading profile:", error);
-                // Create a basic fallback profile to prevent the dashboard from hanging on a blank screen
-                currentProfile = {
-                    id: currentUser.id,
-                    username: currentUser.email.split('@')[0],
-                    email: currentUser.email,
-                    company_name: 'Premium Member',
-                    book_slug: 'default'
-                };
-                showDashboard();
-                return;
-            }
+                if (error || !data) {
+                    console.error("Error loading profile:", error);
+                    // Create a basic fallback profile to prevent the dashboard from hanging on a blank screen
+                    currentProfile = {
+                        id: currentUser.id,
+                        username: currentUser.email.split('@')[0],
+                        email: currentUser.email,
+                        company_name: 'Premium Member',
+                        book_slug: 'default'
+                    };
+                    showDashboard();
+                    return;
+                }
 
             currentProfile = data;
 
-            // Populate UI
-            // document.getElementById('userGreeting').innerText = `Welcome back, ${data.company_name || data.username}`;
-            
-            const shortlink = `https://250proud.net/book/${data.book_slug}`;
+            try {
+                const shortlink = `https://250proud.net/book/${data.book_slug}`;
             document.getElementById('shortlinkDisplay').innerText = shortlink;
 
             const embedHtml = `<!-- 250PROUD Lead Magnet -->
@@ -736,12 +741,19 @@
             document.getElementById('btnSquare').href = `social_square_template.html${query}`;
             document.getElementById('btnStory').href = `story_template.html${query}`;
             document.getElementById('btnX').href = `x_post_template.html${query}`;
-            document.getElementById('btnLead').href = `lead_capture_graphic.html${query}`;
+                document.getElementById('btnLead').href = `lead_capture_graphic.html${query}`;
+            } catch (uiErr) {
+                console.error("Non-fatal error populating dashboard UI:", uiErr);
+            }
 
             showDashboard();
+            } catch (fatalErr) {
+                console.error("Fatal error loading dashboard:", fatalErr);
+                alert("Dashboard Load Error: " + fatalErr.message);
+                document.getElementById('loginBtn').innerText = 'Log In';
+            }
         }
 
-        // --- AUTH FORMS ---
         document.getElementById('loginForm').addEventListener('submit', async (e) => {
             e.preventDefault();
             const email = document.getElementById('loginEmail').value;
@@ -752,12 +764,22 @@
             btn.innerText = 'Logging in...';
             errDiv.style.display = 'none';
 
-            const { error } = await supabaseClient.auth.signInWithPassword({ email, password });
-            
-            if (error) {
+            try {
+                const { data, error } = await supabaseClient.auth.signInWithPassword({ email, password });
+                
+                if (error) {
+                    btn.innerText = 'Log In';
+                    errDiv.innerText = error.message;
+                    errDiv.style.display = 'block';
+                } else {
+                    // Force session check immediately to prevent hanging
+                    await checkSession();
+                }
+            } catch (err) {
                 btn.innerText = 'Log In';
-                errDiv.innerText = error.message;
+                errDiv.innerText = "An unexpected error occurred.";
                 errDiv.style.display = 'block';
+                console.error(err);
             }
         });
 

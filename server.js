@@ -5,6 +5,8 @@ const multer = require('multer');
 const fs = require('fs');
 const path = require('path');
 const crypto = require('crypto');
+const fetch = require('node-fetch');
+const luluService = require('./luluService');
 const { PDFDocument } = require('pdf-lib');
 const puppeteer = require('puppeteer-core');
 const chromium = require('@sparticuz/chromium');
@@ -349,7 +351,7 @@ app.post('/api/shopify/webhook', async (req, res) => {
     }
 });
 
-async function generateAndDeliverPDF(order) {
+async function generateAndDeliverPDF(orderData) {
     try {
         console.log("Starting PDF generation pipeline...");
 
@@ -358,19 +360,19 @@ async function generateAndDeliverPDF(order) {
         let htmlTemplate = fs.readFileSync(templatePath, 'utf8');
 
         // Replace placeholders with Supabase Storage URLs or fallback text
-        htmlTemplate = htmlTemplate.replace(/{{COMPANY_NAME}}/g, order.company_name || 'Your Company LLC');
-        htmlTemplate = htmlTemplate.replace('{{WEBSITE}}', order.website || 'www.yourwebsite.com');
-        htmlTemplate = htmlTemplate.replace('{{PHONE}}', order.phone || '555-0198');
-        htmlTemplate = htmlTemplate.replace('{{EMAIL}}', order.email || 'hello@yourcompany.com');
-        htmlTemplate = htmlTemplate.replace('{{HEADLINE}}', order.headline || 'Built on Grit.');
-        htmlTemplate = htmlTemplate.replace('{{COPY}}', order.copy || 'Thank you for supporting American values.');
+        htmlTemplate = htmlTemplate.replace(/{{COMPANY_NAME}}/g, orderData.company_name || 'Your Company LLC');
+        htmlTemplate = htmlTemplate.replace('{{WEBSITE}}', orderData.website || 'www.yourwebsite.com');
+        htmlTemplate = htmlTemplate.replace('{{PHONE}}', orderData.phone || '555-0198');
+        htmlTemplate = htmlTemplate.replace('{{EMAIL}}', orderData.email || 'hello@yourcompany.com');
+        htmlTemplate = htmlTemplate.replace('{{HEADLINE}}', orderData.headline || 'Built on Grit.');
+        htmlTemplate = htmlTemplate.replace('{{COPY}}', orderData.copy || 'Thank you for supporting American values.');
         
         // Inject images (Base64 or external URLs)
-        htmlTemplate = htmlTemplate.replace('{{LOGO_URL}}', order.logo_path || 'https://via.placeholder.com/300x150.png?text=YOUR+LOGO');
-        htmlTemplate = htmlTemplate.replace('{{HEADSHOT_URL}}', order.headshot_path || 'https://via.placeholder.com/200x200.png?text=YOUR+PHOTO');
-        htmlTemplate = htmlTemplate.replace('{{HEADSHOT_DISPLAY}}', order.headshot_path ? 'block' : 'none');
-        htmlTemplate = htmlTemplate.replace('{{HERO_URL}}', order.hero_path || 'https://via.placeholder.com/600x400.png?text=YOUR+HERO+IMAGE');
-        htmlTemplate = htmlTemplate.replace('{{INTERIOR_URL}}', order.interior_path || 'https://via.placeholder.com/400x500.png?text=INTERIOR+PREVIEW');
+        htmlTemplate = htmlTemplate.replace('{{LOGO_URL}}', orderData.logo_path || 'https://via.placeholder.com/300x150.png?text=YOUR+LOGO');
+        htmlTemplate = htmlTemplate.replace('{{HEADSHOT_URL}}', orderData.headshot_path || 'https://via.placeholder.com/200x200.png?text=YOUR+PHOTO');
+        htmlTemplate = htmlTemplate.replace('{{HEADSHOT_DISPLAY}}', orderData.headshot_path ? 'block' : 'none');
+        htmlTemplate = htmlTemplate.replace('{{HERO_URL}}', orderData.hero_path || 'https://via.placeholder.com/600x400.png?text=YOUR+HERO+IMAGE');
+        htmlTemplate = htmlTemplate.replace('{{INTERIOR_URL}}', orderData.interior_path || 'https://via.placeholder.com/400x500.png?text=INTERIOR+PREVIEW');
 
         console.log("Launching serverless browser...");
         
@@ -410,8 +412,8 @@ async function generateAndDeliverPDF(order) {
         const finalPdfBuffer = Buffer.from(finalPdfBytes);
 
         console.log("Uploading final PDF to Supabase...");
-        const safeName = (order.company_name || 'Edition').replace(/[^a-zA-Z0-9]/g, '');
-        const shortId = order.order_id.substring(0, 5);
+        const safeName = (orderData.company_name || 'Edition').replace(/[^a-zA-Z0-9]/g, '');
+        const shortId = orderData.order_id.substring(0, 5);
         const fileSuffix = `${safeName}_${shortId}`;
         
         const pdfFileName = `250Proud_ColoringBook_${fileSuffix}.pdf`;
@@ -424,8 +426,8 @@ async function generateAndDeliverPDF(order) {
 
         if (uploadError) throw uploadError;
         const { data: publicUrlData } = supabase.storage.from('b2b_pdfs').getPublicUrl(`completed/${pdfFileName}`);
-        const pdfDownloadUrl = publicUrlData.publicUrl;
-        console.log(`✅ Digital PDF Uploaded! URL: ${pdfDownloadUrl}`);
+        const digitalPdfUrl = publicUrlData.publicUrl;
+        console.log(`✅ Digital PDF Uploaded! URL: ${digitalPdfUrl}`);
 
         // ------------------------------------
         // LULU PRINT API FILE GENERATION
@@ -467,11 +469,11 @@ async function generateAndDeliverPDF(order) {
 
         // --- NEW: Generate Marketing Card & Update Resource Center ---
         console.log("Looking up user for Resource Center...");
-        let qrCodeLink = pdfDownloadUrl; // fallback
+        let qrCodeLink = digitalPdfUrl; // fallback
         let qrCodePublicUrl = null;
         let bookSlug = null;
         
-        const { data: userData } = await supabase.from('users').select('book_slug, username').eq('email', order.email).single();
+        const { data: userData } = await supabase.from('users').select('book_slug, username').eq('email', orderData.email).single();
         if (userData && userData.book_slug) {
             bookSlug = userData.book_slug;
             qrCodeLink = `https://250proud.net/book/${bookSlug}`;
@@ -494,16 +496,16 @@ async function generateAndDeliverPDF(order) {
 
         const cardTemplatePath = path.join(__dirname, 'marketing_card_template.html');
         let cardHtmlTemplate = fs.readFileSync(cardTemplatePath, 'utf8');
-        cardHtmlTemplate = cardHtmlTemplate.replace('{{COMPANY_NAME}}', order.company_name || 'Your Company LLC');
-        cardHtmlTemplate = cardHtmlTemplate.replace('{{LOGO_URL}}', order.logo_path || 'https://placehold.co/300x150/png?text=YOUR+LOGO');
+        cardHtmlTemplate = cardHtmlTemplate.replace('{{COMPANY_NAME}}', orderData.company_name || 'Your Company LLC');
+        cardHtmlTemplate = cardHtmlTemplate.replace('{{LOGO_URL}}', orderData.logo_path || 'https://placehold.co/300x150/png?text=YOUR+LOGO');
         cardHtmlTemplate = cardHtmlTemplate.replace('{{QR_CODE_DATA_URI}}', qrCodeDataUri);
         cardHtmlTemplate = cardHtmlTemplate.replace('{{COVER_URL}}', 'https://250proud.net/nc_assets/img/generated_true_cover.png');
-        cardHtmlTemplate = cardHtmlTemplate.replace('{{PHONE}}', order.phone || '');
-        cardHtmlTemplate = cardHtmlTemplate.replace('{{PHONE_DISPLAY}}', order.phone ? 'flex' : 'none');
-        cardHtmlTemplate = cardHtmlTemplate.replace('{{EMAIL}}', order.email || '');
-        cardHtmlTemplate = cardHtmlTemplate.replace('{{EMAIL_DISPLAY}}', order.email ? 'flex' : 'none');
-        cardHtmlTemplate = cardHtmlTemplate.replace('{{WEBSITE}}', order.website || '');
-        cardHtmlTemplate = cardHtmlTemplate.replace('{{WEBSITE_DISPLAY}}', order.website ? 'flex' : 'none');
+        cardHtmlTemplate = cardHtmlTemplate.replace('{{PHONE}}', orderData.phone || '');
+        cardHtmlTemplate = cardHtmlTemplate.replace('{{PHONE_DISPLAY}}', orderData.phone ? 'flex' : 'none');
+        cardHtmlTemplate = cardHtmlTemplate.replace('{{EMAIL}}', orderData.email || '');
+        cardHtmlTemplate = cardHtmlTemplate.replace('{{EMAIL_DISPLAY}}', orderData.email ? 'flex' : 'none');
+        cardHtmlTemplate = cardHtmlTemplate.replace('{{WEBSITE}}', orderData.website || '');
+        cardHtmlTemplate = cardHtmlTemplate.replace('{{WEBSITE_DISPLAY}}', orderData.website ? 'flex' : 'none');
 
         const cardPage = await browser.newPage();
         await cardPage.setContent(cardHtmlTemplate, { waitUntil: 'load', timeout: 15000 });
@@ -535,19 +537,61 @@ async function generateAndDeliverPDF(order) {
         console.log(`✅ Marketing Card Uploaded! URL: ${cardDownloadUrl}`);
         // ------------------------------------
 
-        // Update Order Status
-        await supabase.from('b2b_orders').update({ status: 'completed' }).eq('order_id', order.order_id);
-
         // Update Users Table (Resource Center)
         await supabase.from('users').update({
-            book_download_url: pdfDownloadUrl,
+            book_download_url: digitalPdfUrl,
             postcard_download_url: cardDownloadUrl,
             qr_code_url: qrCodePublicUrl,
             lulu_interior_url: luluInteriorUrl,
             lulu_cover_url: luluCoverUrl
-        }).eq('email', order.email);
+        }).eq('email', orderData.email);
 
-        const email = order.email;
+        const { error: finalUpdateError } = await supabase
+            .from('b2b_orders')
+            .update({
+                status: 'completed',
+                pdf_url: digitalPdfUrl,
+                lulu_interior_url: luluInteriorUrl,
+                lulu_cover_url: luluCoverUrl
+            })
+            .eq('order_id', orderData.order_id);
+
+        if (finalUpdateError) throw finalUpdateError;
+
+        console.log(`✅ Order ${orderData.order_id} marked as completed!`);
+
+        // --- SUBMIT PRINT JOB TO LULU API ---
+        try {
+            // In a production environment, shipping details should come from Shopify Webhook 
+            // payload stored in b2b_orders, or the user's input.
+            // For now, we pass placeholder/fallback values until we capture exact addresses.
+            const shippingAddress = {
+                name: orderData.company_name || 'Customer',
+                street1: '123 Print St',
+                city: 'Raleigh',
+                state_code: 'NC',
+                postcode: '27601',
+                country_code: 'US',
+                phone: orderData.phone || '555-555-5555'
+            };
+            
+            // Assume 50 quantity for the bulk order by default, can be dynamically mapped
+            const luluJob = await luluService.createPrintJob(
+                { ...orderData, lulu_cover_url: luluCoverUrl, lulu_interior_url: luluInteriorUrl }, 
+                shippingAddress, 
+                50 
+            );
+            
+            // We could store the luluJob.id in Supabase if needed
+            if (luluJob && luluJob.id) {
+                await supabase.from('b2b_orders').update({ lulu_job_id: luluJob.id }).eq('order_id', orderData.order_id);
+            }
+        } catch (luluErr) {
+            console.error('⚠️ Failed to submit print job to Lulu. Digital PDFs were still delivered.', luluErr);
+            // We don't throw here to avoid failing the email delivery step
+        }
+
+        const email = orderData.email;
 
         // 1. Send Transactional Fulfillment Email via Resend
         if (process.env.RESEND_API_KEY && email) {

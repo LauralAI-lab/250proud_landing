@@ -5,7 +5,7 @@ const multer = require('multer');
 const fs = require('fs');
 const path = require('path');
 const crypto = require('crypto');
-const fetch = require('node-fetch');
+
 const luluService = require('./luluService');
 const { PDFDocument } = require('pdf-lib');
 const puppeteer = require('puppeteer-core');

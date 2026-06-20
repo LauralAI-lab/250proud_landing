@@ -262,10 +262,9 @@ app.post('/api/update-book', upload.fields(uploadFields), async (req, res) => {
             .eq('order_id', existingOrder.order_id)
             .single();
 
-        // Trigger the async PDF generation in the background
-        generateAndDeliverPDF(updatedOrder).catch(err => console.error("Error regenerating PDF in background:", err));
+        // We MUST await this so Vercel doesn't freeze the process mid-execution and cause ETXTBSY errors on the next wake
+        await generateAndDeliverPDF(updatedOrder);
 
-        // Return immediately so the user doesn't wait 30 seconds
         res.json({ success: true, message: "Book is being refreshed in the background." });
 
     } catch (err) {
@@ -541,18 +540,13 @@ async function generateAndDeliverPDF(orderData) {
         await supabase.from('users').update({
             book_download_url: digitalPdfUrl,
             postcard_download_url: cardDownloadUrl,
-            qr_code_url: qrCodePublicUrl,
-            lulu_interior_url: luluInteriorUrl,
-            lulu_cover_url: luluCoverUrl
+            qr_code_url: qrCodePublicUrl
         }).eq('email', orderData.email);
 
         const { error: finalUpdateError } = await supabase
             .from('b2b_orders')
             .update({
-                status: 'completed',
-                pdf_url: digitalPdfUrl,
-                lulu_interior_url: luluInteriorUrl,
-                lulu_cover_url: luluCoverUrl
+                status: 'completed'
             })
             .eq('order_id', orderData.order_id);
 
@@ -582,9 +576,8 @@ async function generateAndDeliverPDF(orderData) {
                 50 
             );
             
-            // We could store the luluJob.id in Supabase if needed
             if (luluJob && luluJob.id) {
-                await supabase.from('b2b_orders').update({ lulu_job_id: luluJob.id }).eq('order_id', orderData.order_id);
+                console.log(`✅ Lulu Print Job Created! Job ID: ${luluJob.id}`);
             }
         } catch (luluErr) {
             console.error('⚠️ Failed to submit print job to Lulu. Digital PDFs were still delivered.', luluErr);

@@ -239,7 +239,6 @@ app.post('/api/update-book', upload.fields(uploadFields), async (req, res) => {
         const { error: updateError } = await supabase
             .from('b2b_orders')
             .update({
-                industry: data.industry || existingOrder.industry,
                 company_name: data.companyName || existingOrder.company_name,
                 phone: data.phone || existingOrder.phone,
                 website: data.website || existingOrder.website,

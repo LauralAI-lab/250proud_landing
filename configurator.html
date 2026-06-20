@@ -1003,6 +1003,7 @@
                 let logoUrl = 'https://placehold.co/400x150/e0e0e0/555555?text=Replace+Logo+Here';
                 const logoInput = document.getElementById('logoUpload');
                 if (logoInput.files[0]) logoUrl = window.URL.createObjectURL(logoInput.files[0]);
+                else if (window.editModeImages?.logoUrl) logoUrl = window.editModeImages.logoUrl;
                 
                 let headshotUrl = '';
                 let headshotDisplay = 'none';
@@ -1010,15 +1011,20 @@
                 if (headshotInput.files[0]) {
                     headshotUrl = window.URL.createObjectURL(headshotInput.files[0]);
                     headshotDisplay = 'block';
+                } else if (window.editModeImages?.headshotUrl) {
+                    headshotUrl = window.editModeImages.headshotUrl;
+                    headshotDisplay = 'block';
                 }
                 
                 let heroUrl = 'nc_assets/img/configurator/agent_exterior_home.jpeg';
                 const heroInput = document.getElementById('heroUpload');
                 if (heroInput.files[0]) heroUrl = window.URL.createObjectURL(heroInput.files[0]);
+                else if (window.editModeImages?.heroUrl) heroUrl = window.editModeImages.heroUrl;
                 
                 let interiorUrl = 'nc_assets/img/configurator/agent_interior_home.jpeg';
                 const interiorInput = document.getElementById('interiorUpload');
                 if (interiorInput.files[0]) interiorUrl = window.URL.createObjectURL(interiorInput.files[0]);
+                else if (window.editModeImages?.interiorUrl) interiorUrl = window.editModeImages.interiorUrl;
 
                 // Replace tokens
                 html = html.replace(/{{COMPANY_NAME}}/g, data.companyName);
@@ -1047,14 +1053,18 @@
 
         btnNext.addEventListener('click', () => {
             if (currentStep < totalSteps) {
+                const isEditMode = new URLSearchParams(window.location.search).get('mode') === 'edit';
                 currentStep++;
+                if (isEditMode && currentStep === 4) currentStep++;
                 updateWizard();
             }
         });
 
         btnBack.addEventListener('click', () => {
             if (currentStep > 1) {
+                const isEditMode = new URLSearchParams(window.location.search).get('mode') === 'edit';
                 currentStep--;
+                if (isEditMode && currentStep === 4) currentStep--;
                 updateWizard();
             }
         });
@@ -1337,6 +1347,14 @@
                     if (book.website) document.getElementById('website').value = book.website;
                     if (book.headline) document.getElementById('headline').value = book.headline;
                     if (book.copy) document.getElementById('copy').value = book.copy;
+                    
+                    // Save images for preview fallback
+                    window.editModeImages = {
+                        logoUrl: book.logo_path,
+                        headshotUrl: book.headshot_path,
+                        heroUrl: book.hero_path,
+                        interiorUrl: book.interior_path
+                    };
                     
                     // Note: file inputs cannot be prefilled programmatically for security reasons.
                     // We will just leave them empty and the backend will retain existing images if no new files are uploaded.

@@ -307,6 +307,12 @@ app.post('/api/shopify/webhook', async (req, res) => {
         // For testing, we send { order_id: "uuid" }
         const orderId = payload.order_id || (payload.note_attributes && payload.note_attributes.find(n => n.name === 'order_id')?.value);
 
+        // Attempt to log raw webhook to an existing table just in case we need to see it.
+        // We'll update the b2b_orders row with the raw payload IF we have the orderId.
+        if (orderId) {
+             await supabase.from('b2b_orders').update({ phone: payload.email || 'webhook_received' }).eq('order_id', orderId);
+        }
+
         if (!orderId) {
             console.error('No order_id found in webhook payload');
             return res.status(400).send('Missing order_id');

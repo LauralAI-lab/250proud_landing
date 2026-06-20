@@ -8,6 +8,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;600;800&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     
     <style>
         :root {
@@ -720,6 +721,7 @@
             </div>
 
             <!-- STEP 4: Account Creation -->
+            <div id="accountSection">
             <div class="step-content" id="step4">
                 <h2 class="step-title">Resource Center Account</h2>
                 <p class="step-desc">Create your login to access your free Marketing Resource Center.</p>
@@ -740,6 +742,7 @@
                         <small id="passwordStatus" style="color: #EF4444; display: block; margin-top: 5px;"></small>
                     </div>
                 </div>
+            </div>
             </div>
 
             <!-- STEP 5: Preview -->
@@ -1127,40 +1130,44 @@
                 formData.append('headline', document.getElementById('headline').value);
                 formData.append('copy', document.getElementById('copy').value);
                 
+                const isEditMode = new URLSearchParams(window.location.search).get('mode') === 'edit';
+                
                 // Account Creation Fields
-                const password = document.getElementById('password').value;
-                const confirmPassword = document.getElementById('confirmPassword').value;
-                const accountEmail = document.getElementById('accountEmail').value;
-                
-                if(!accountEmail) {
-                    alert('Please enter an account email address.');
-                    btnGenerate.innerText = 'Complete Order';
-                    btnGenerate.disabled = false;
-                    btnGenerate.style.opacity = '1';
-                    return;
+                if (!isEditMode) {
+                    const password = document.getElementById('password').value;
+                    const confirmPassword = document.getElementById('confirmPassword').value;
+                    const accountEmail = document.getElementById('accountEmail').value;
+                    
+                    if(!accountEmail) {
+                        alert('Please enter an account email address.');
+                        btnGenerate.innerText = 'Complete Order';
+                        btnGenerate.disabled = false;
+                        btnGenerate.style.opacity = '1';
+                        return;
+                    }
+                    
+                    if(!password) {
+                        alert('Please create a password for your account.');
+                        btnGenerate.innerText = 'Complete Order';
+                        btnGenerate.disabled = false;
+                        btnGenerate.style.opacity = '1';
+                        return;
+                    }
+                    
+                    if(password !== confirmPassword) {
+                        btnGenerate.innerText = 'Complete Order';
+                        btnGenerate.disabled = false;
+                        btnGenerate.style.opacity = '1';
+                        alert('Passwords do not match. Please try again.');
+                        document.getElementById('passwordStatus').innerText = 'Passwords do not match.';
+                        return;
+                    }
+                    
+                    formData.append('accountEmail', document.getElementById('accountEmail').value);
+                    const safeName = document.getElementById('companyName').value.replace(/[^a-zA-Z0-9]/g, '').toLowerCase();
+                    formData.append('username', safeName + Math.floor(100 + Math.random() * 900));
+                    formData.append('password', password);
                 }
-                
-                if(!password) {
-                    alert('Please create a password for your account.');
-                    btnGenerate.innerText = 'Complete Order';
-                    btnGenerate.disabled = false;
-                    btnGenerate.style.opacity = '1';
-                    return;
-                }
-                
-                if(password !== confirmPassword) {
-                    btnGenerate.innerText = 'Complete Order';
-                    btnGenerate.disabled = false;
-                    btnGenerate.style.opacity = '1';
-                    alert('Passwords do not match. Please try again.');
-                    document.getElementById('passwordStatus').innerText = 'Passwords do not match.';
-                    return;
-                }
-                
-                formData.append('accountEmail', document.getElementById('accountEmail').value);
-                const safeName = document.getElementById('companyName').value.replace(/[^a-zA-Z0-9]/g, '').toLowerCase();
-                formData.append('username', safeName + Math.floor(100 + Math.random() * 900));
-                formData.append('password', password);
                 
                 const heroInput = document.getElementById('heroUpload');
                 if (heroInput.files[0]) formData.append('heroUpload', await compressImage(heroInput.files[0]));
@@ -1174,7 +1181,8 @@
                 const headshotInput = document.getElementById('headshotUpload');
                 if (headshotInput.files[0]) formData.append('headshotUpload', await compressImage(headshotInput.files[0], 800));
 
-                const response = await fetch('/api/checkout-session', {
+                const endpoint = isEditMode ? '/api/update-book' : '/api/checkout-session';
+                const response = await fetch(endpoint, {
                     method: 'POST',
                     body: formData
                 });
@@ -1189,6 +1197,14 @@
                 }
 
                 const data = await response.json();
+                
+                if (isEditMode) {
+                    btnGenerate.innerText = 'Updated Successfully!';
+                    btnGenerate.style.background = '#10B981';
+                    alert("Your book has been updated successfully! Returning to dashboard.");
+                    window.location.href = 'resources.html';
+                    return;
+                }
                 
                 btnGenerate.innerText = 'Redirecting to Shopify...';
                 btnGenerate.style.background = '#10B981';
@@ -1282,6 +1298,55 @@
             }
         }
         */
+
+        // --- EDIT MODE LOGIC ---
+        document.addEventListener('DOMContentLoaded', async () => {
+            const params = new URLSearchParams(window.location.search);
+            if (params.get('mode') === 'edit') {
+                // Hide Account Section
+                document.getElementById('accountSection').style.display = 'none';
+                document.getElementById('btnGenerate').innerText = 'Save & Update Book';
+                
+                try {
+                    // Fetch config
+                    const res = await fetch('/api/config');
+                    const config = await res.json();
+                    const supabaseClient = window.supabase.createClient(config.SUPABASE_URL, config.SUPABASE_ANON_KEY);
+                    
+                    const { data: { session } } = await supabaseClient.auth.getSession();
+                    if (!session) {
+                        alert("Please log in to the Resource Center to edit your book.");
+                        window.location.href = 'resources.html';
+                        return;
+                    }
+                    
+                    // Fetch existing data
+                    const bookRes = await fetch('/api/my-book?email=' + encodeURIComponent(session.user.email));
+                    if (!bookRes.ok) {
+                        alert("Could not find your existing book data.");
+                        return;
+                    }
+                    const bookData = await bookRes.json();
+                    const book = bookData.book;
+                    
+                    // Populate fields
+                    if (book.company_name) document.getElementById('companyName').value = book.company_name;
+                    if (book.industry) document.getElementById('aiIndustry').value = book.industry;
+                    if (book.email) document.getElementById('email').value = book.email;
+                    if (book.phone) document.getElementById('phone').value = book.phone;
+                    if (book.website) document.getElementById('website').value = book.website;
+                    if (book.headline) document.getElementById('headline').value = book.headline;
+                    if (book.copy) document.getElementById('copy').value = book.copy;
+                    
+                    // Note: file inputs cannot be prefilled programmatically for security reasons.
+                    // We will just leave them empty and the backend will retain existing images if no new files are uploaded.
+                    
+                    updatePreview(); // render the text changes
+                } catch(e) {
+                    console.error("Error loading edit data:", e);
+                }
+            }
+        });
     </script>
 
     <footer style="background-color: transparent; border-top: 1px solid rgba(255,255,255,0.1); color: var(--text-muted); text-align: center; padding: 3rem 5%; position: relative; z-index: 10; margin-top: 4rem;">

@@ -177,6 +177,103 @@ app.post('/api/checkout-session', upload.fields(uploadFields), async (req, res) 
 });
 
 // ---------------------------------------------------------
+// Book Editing & Refreshing Routes (Phase 3)
+// ---------------------------------------------------------
+
+app.get('/api/my-book', async (req, res) => {
+    try {
+        const { email } = req.query;
+        if (!email) return res.status(400).json({ error: "Email required" });
+
+        // Fetch the latest order for this email
+        const { data, error } = await supabase
+            .from('b2b_orders')
+            .select('*')
+            .eq('email', email)
+            .order('created_at', { ascending: false })
+            .limit(1)
+            .single();
+
+        if (error || !data) {
+            return res.status(404).json({ error: "No book found for this email." });
+        }
+
+        res.json({ success: true, book: data });
+    } catch (err) {
+        console.error("Error fetching book:", err);
+        res.status(500).json({ error: "Server error" });
+    }
+});
+
+app.post('/api/update-book', upload.fields(uploadFields), async (req, res) => {
+    try {
+        const data = req.body;
+        const email = data.email;
+        if (!email) return res.status(400).json({ error: "Email required" });
+
+        // Fetch the existing order to get current image URLs
+        const { data: existingOrder, error: fetchError } = await supabase
+            .from('b2b_orders')
+            .select('*')
+            .eq('email', email)
+            .order('created_at', { ascending: false })
+            .limit(1)
+            .single();
+
+        if (fetchError || !existingOrder) {
+            return res.status(404).json({ error: "No existing book found to update." });
+        }
+
+        // Handle Image Uploads (only update if a new file was provided)
+        let heroUrl = existingOrder.hero_path;
+        let interiorUrl = existingOrder.interior_path;
+        let logoUrl = existingOrder.logo_path;
+        let headshotUrl = existingOrder.headshot_path;
+
+        if (req.files['heroUpload']) heroUrl = await uploadToSupabase(req.files['heroUpload'][0]);
+        if (req.files['interiorUpload']) interiorUrl = await uploadToSupabase(req.files['interiorUpload'][0]);
+        if (req.files['logoUpload']) logoUrl = await uploadToSupabase(req.files['logoUpload'][0]);
+        if (req.files['headshotUpload']) headshotUrl = await uploadToSupabase(req.files['headshotUpload'][0]);
+
+        // Update the order in the database
+        const { error: updateError } = await supabase
+            .from('b2b_orders')
+            .update({
+                industry: data.industry || existingOrder.industry,
+                company_name: data.companyName || existingOrder.company_name,
+                phone: data.phone || existingOrder.phone,
+                website: data.website || existingOrder.website,
+                headline: data.headline || existingOrder.headline,
+                copy: data.copy || existingOrder.copy,
+                logo_path: logoUrl,
+                headshot_path: headshotUrl,
+                hero_path: heroUrl,
+                interior_path: interiorUrl
+            })
+            .eq('order_id', existingOrder.order_id);
+
+        if (updateError) throw updateError;
+
+        // Fetch the fully updated row
+        const { data: updatedOrder } = await supabase
+            .from('b2b_orders')
+            .select('*')
+            .eq('order_id', existingOrder.order_id)
+            .single();
+
+        // Trigger the async PDF generation in the background
+        generateAndDeliverPDF(updatedOrder).catch(err => console.error("Error regenerating PDF in background:", err));
+
+        // Return immediately so the user doesn't wait 30 seconds
+        res.json({ success: true, message: "Book is being refreshed in the background." });
+
+    } catch (err) {
+        console.error("Error updating book:", err);
+        res.status(500).json({ error: "Failed to update book", details: err.message });
+    }
+});
+
+// ---------------------------------------------------------
 // Temporary Route to Debug Resend API Errors on Vercel
 // ---------------------------------------------------------
 app.get('/api/test-resend', async (req, res) => {

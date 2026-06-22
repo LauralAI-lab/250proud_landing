@@ -691,11 +691,11 @@
                     </div>
                     <div class="form-group">
                         <label style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
-                            <span id="labelInteriorUpload">Secondary Graphic (Recommended 260 x 200 pixels)</span>
+                            <span id="labelInteriorUpload">Secondary Image (Recommended 260 x 200 pixels)</span>
                         </label>
                         <div class="upload-zone" onclick="document.getElementById('interiorUpload').click()">
                             <svg viewBox="0 0 24 24" id="interiorIcon"><path d="M19.35 10.04A7.49 7.49 0 0012 4C9.11 4 6.6 5.64 5.35 8.04A5.994 5.994 0 000 14c0 3.31 2.69 6 6 6h13c2.76 0 5-2.24 5-5 0-2.64-2.05-4.78-4.65-4.96zM14 13v4h-4v-4H7l5-5 5 5h-3z"/></svg>
-                            <p class="upload-text" id="interiorText"><strong>Click to upload</strong> secondary graphic</p>
+                            <p class="upload-text" id="interiorText"><strong>Click to upload</strong> secondary image</p>
                             <input type="file" id="interiorUpload" class="file-input" accept="image/*" onchange="handleUpload(this, 'interiorIcon', 'interiorText')">
                         </div>
                     </div>
@@ -798,7 +798,7 @@
             
             document.getElementById('labelHeadshotUpload').innerText = isEdu ? 'Teacher Photo' : 'Headshot Graphic (Optional)';
             document.getElementById('labelHeroUpload').innerText = isEdu ? 'School / Classroom Photo' : 'Hero Graphic (Recommended 816 x 422 pixels)';
-            document.getElementById('labelInteriorUpload').innerText = isEdu ? 'Class Activity Photo' : 'Secondary Graphic (Recommended 260 x 200 pixels)';
+            document.getElementById('labelInteriorUpload').innerText = isEdu ? 'Secondary Image (Class Activity)' : 'Secondary Image (Recommended 260 x 200 pixels)';
         });
 
         // Wizard Logic

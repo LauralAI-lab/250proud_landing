@@ -52,6 +52,16 @@
     </div>
 
     <div id="tab-write" class="tab-content active">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+            <h3>Write a Post</h3>
+            <div>
+                <label style="display:inline-block; margin-right: 10px;">Edit Existing Post:</label>
+                <select id="edit-post-select" onchange="loadPostForEditing()" style="padding: 5px; width: 250px;">
+                    <option value="">-- Select a post --</option>
+                </select>
+            </div>
+        </div>
+
         <div class="form-group">
             <label>Title</label>
             <input type="text" id="post-title" placeholder="e.g. My First Blog Post">
@@ -113,6 +123,7 @@
             adminToken = pwd;
             document.getElementById('login-overlay').style.display = 'none';
             document.getElementById('admin-content').style.display = 'block';
+            loadPostsList();
             loadComments();
             loadSubscribers();
         } else {
@@ -151,9 +162,35 @@
             document.getElementById('post-title').value = '';
             document.getElementById('post-slug').value = '';
             document.getElementById('post-content').value = '';
+            document.getElementById('edit-post-select').value = '';
             updatePreview();
+            loadPostsList(); // Refresh the list
         } else {
             alert('Failed to publish');
+        }
+    }
+
+    async function loadPostsList() {
+        const res = await fetch('/api/blog/posts');
+        if(res.ok) {
+            const posts = await res.json();
+            const select = document.getElementById('edit-post-select');
+            select.innerHTML = '<option value="">-- Select a post --</option>' + posts.map(p => `<option value="${p.slug}">${p.title}</option>`).join('');
+        }
+    }
+
+    async function loadPostForEditing() {
+        const slug = document.getElementById('edit-post-select').value;
+        if(!slug) return;
+        
+        const res = await fetch(`/api/blog/posts/${slug}`);
+        if(res.ok) {
+            const { post } = await res.json();
+            document.getElementById('post-title').value = post.title;
+            document.getElementById('post-slug').value = post.slug;
+            document.getElementById('post-hero').value = post.hero_image_url || '';
+            document.getElementById('post-content').value = post.content;
+            updatePreview();
         }
     }
 

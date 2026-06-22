@@ -19,10 +19,11 @@
         .tab.active { border-bottom: 2px solid #000; font-weight: bold; margin-bottom: -2px; }
         .tab-content { display: none; }
         .tab-content.active { display: block; }
-        #preview { border: 1px solid #ccc; padding: 15px; border-radius: 4px; min-height: 300px; background: #fff; }
+        #preview { border: 1px solid #ccc; padding: 15px; border-radius: 4px; min-height: 300px; background: #fff; overflow-x: auto; word-wrap: break-word; }
         /* Markdown styles for preview */
         #preview h1, #preview h2, #preview h3 { margin-top: 0; }
         #preview p { line-height: 1.6; }
+        #preview img { max-width: 100%; height: auto; display: block; border-radius: 4px; margin: 10px 0; }
     </style>
     <!-- Simple Markdown Parser -->
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
@@ -64,12 +65,12 @@
             <input type="text" id="post-hero" placeholder="https://...">
         </div>
         
-        <div style="display: flex; gap: 20px;">
-            <div style="flex: 1;">
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+            <div style="min-width: 0;">
                 <label>Content (Markdown)</label>
                 <textarea id="post-content" oninput="updatePreview()" placeholder="# Heading 1\n\nWrite your content here..."></textarea>
             </div>
-            <div style="flex: 1;">
+            <div style="min-width: 0;">
                 <label>Live Preview</label>
                 <div id="preview"></div>
             </div>

@@ -425,7 +425,8 @@ async function generateAndDeliverPDF(orderData) {
 
         if (uploadError) throw uploadError;
         const { data: publicUrlData } = supabase.storage.from('b2b_pdfs').getPublicUrl(`completed/${pdfFileName}`);
-        const digitalPdfUrl = publicUrlData.publicUrl;
+        const timestamp = Date.now();
+        const digitalPdfUrl = `${publicUrlData.publicUrl}?v=${timestamp}`;
         console.log(`✅ Digital PDF Uploaded! URL: ${digitalPdfUrl}`);
 
         // ------------------------------------
@@ -489,9 +490,10 @@ async function generateAndDeliverPDF(orderData) {
         // Upload QR Code to Supabase Storage for the Resource Center
         const qrBuffer = Buffer.from(qrCodeDataUri.split(',')[1], 'base64');
         const qrFileName = `250Proud_QRCode_${fileSuffix}.png`;
-        await supabase.storage.from('b2b_pdfs').upload(`completed/${qrFileName}`, qrBuffer, { contentType: 'image/png', upsert: true });
-        const { data: qrPublicUrlData } = supabase.storage.from('b2b_pdfs').getPublicUrl(`completed/${qrFileName}`);
-        qrCodePublicUrl = qrPublicUrlData.publicUrl;
+        const { error: qrUploadError } = await supabase.storage.from('b2b_pdfs').upload(`completed/${qrFileName}`, qrBuffer, { contentType: 'image/png', upsert: true });
+        if (qrUploadError) console.error("QR Upload Error:", qrUploadError);
+        const { data: qrUrlData } = supabase.storage.from('b2b_pdfs').getPublicUrl(`completed/${qrFileName}`);
+        qrCodePublicUrl = `${qrUrlData.publicUrl}?v=${timestamp}`;
 
         const cardTemplatePath = path.join(__dirname, 'marketing_card_template.html');
         let cardHtmlTemplate = fs.readFileSync(cardTemplatePath, 'utf8');
@@ -531,8 +533,8 @@ async function generateAndDeliverPDF(orderData) {
             });
 
         if (cardUploadError) throw cardUploadError;
-        const { data: cardPublicUrlData } = supabase.storage.from('b2b_pdfs').getPublicUrl(`completed/${cardFileName}`);
-        const cardDownloadUrl = cardPublicUrlData.publicUrl;
+        const { data: cardUrlData } = supabase.storage.from('b2b_pdfs').getPublicUrl(`completed/${cardFileName}`);
+        const cardDownloadUrl = `${cardUrlData.publicUrl}?v=${timestamp}`;
         console.log(`✅ Marketing Card Uploaded! URL: ${cardDownloadUrl}`);
         // ------------------------------------
 
@@ -982,25 +984,7 @@ app.get('/api/config', (req, res) => {
 // Marketing Resource Center Endpoints
 // ---------------------------------------------------------
 
-app.get('/book/:slug', async (req, res) => {
-    try {
-        const slug = req.params.slug;
-        const { data, error } = await supabase
-            .from('users')
-            .select('book_download_url')
-            .eq('book_slug', slug)
-            .single();
 
-        if (error || !data || !data.book_download_url) {
-            return res.status(404).send("Book not found or still generating. If you just placed an order, please wait a minute and refresh.");
-        }
-
-        res.redirect(301, data.book_download_url);
-    } catch (err) {
-        console.error("Error resolving shortlink:", err);
-        res.status(500).send("Internal server error");
-    }
-});
 
 // 1. Generate AI Marketing Copy
 app.post('/api/generate-marketing-copy', async (req, res) => {

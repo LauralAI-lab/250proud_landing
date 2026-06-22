@@ -38,6 +38,10 @@
         .comment-author { font-weight: bold; color: var(--primary); }
         .comment-date { font-size: 0.8rem; color: #888; }
         .comment-form input, .comment-form textarea { width: 100%; padding: 10px; margin-bottom: 10px; background: rgba(255,255,255,0.1); border: 1px solid var(--glass-border); color: #FFF; border-radius: 4px; box-sizing: border-box; font-family: 'Inter', sans-serif;}
+        
+        /* Footer */
+        footer { background: #0A0A0A; color: #F5F5F5; text-align: center; padding: 3rem 1rem; border-top: 1px solid rgba(255, 255, 255, 0.1); margin-top: 4rem; }
+        .footer-logo { max-height: 50px; margin-bottom: 1rem; filter: brightness(0) invert(1); }
     </style>
 </head>
 <body>
@@ -45,7 +49,10 @@
 <img id="hero-image" class="hero" style="display:none;">
 
 <div class="container">
-    <a href="/blog.html" style="color: #888; text-decoration: none; display: inline-block; margin-bottom: 2rem;">&larr; Back to Blog</a>
+    <div style="margin-bottom: 2rem;">
+        <a href="index.html" style="color: #888; text-decoration: none; margin-right: 15px;">&larr; Site Home</a>
+        <a href="/blog.html" style="color: #888; text-decoration: none;">&larr; Back to Blog</a>
+    </div>
     
     <h1 id="post-title">Loading...</h1>
     <div class="meta" id="post-meta"></div>
@@ -75,6 +82,17 @@
         </div>
     </div>
 </div>
+
+<footer>
+    <a href="index.html"><img src="nc_assets/img/logo.svg" alt="250PROUD™ White Logo" class="footer-logo"></a>
+    <p>&copy; 2026 Lauralai LLC. All rights reserved. 250PROUD™ is a trademark of Lauralai LLC. Celebrating USA 1776 - 2026.</p>
+    <p style="font-size: 0.8rem; margin-top: 1rem; color: #888;">Lauralai LLC | 515 Cypress Dr, Long Beach MS, 39560</p>
+    <div style="margin-top: 1rem; font-size: 0.9rem;">
+        <a href="terms.html" style="color: #F5F5F5; text-decoration: none; margin: 0 10px;">Terms of Service</a> |
+        <a href="privacy.html" style="color: #F5F5F5; text-decoration: none; margin: 0 10px;">Privacy Policy</a> |
+        <a href="contact.html" style="color: #F5F5F5; text-decoration: none; margin: 0 10px;">Contact Us</a>
+    </div>
+</footer>
 
 <script>
     let currentPostId = null;

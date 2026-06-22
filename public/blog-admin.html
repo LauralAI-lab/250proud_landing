@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Blog Admin - 250Proud</title>
+    <style>
+        body { font-family: 'Inter', sans-serif; background: #f9f9f9; padding: 20px; }
+        .container { max-width: 800px; margin: auto; background: white; padding: 30px; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+        h1 { color: #333; }
+        .form-group { margin-bottom: 15px; }
+        label { display: block; font-weight: bold; margin-bottom: 5px; }
+        input[type="text"], input[type="password"] { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box; }
+        textarea { width: 100%; height: 300px; padding: 10px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box; font-family: monospace; }
+        button { background: #000; color: #fff; padding: 10px 20px; border: none; border-radius: 4px; cursor: pointer; }
+        button:hover { background: #333; }
+        .tab-bar { display: flex; border-bottom: 2px solid #ccc; margin-bottom: 20px; }
+        .tab { padding: 10px 20px; cursor: pointer; }
+        .tab.active { border-bottom: 2px solid #000; font-weight: bold; margin-bottom: -2px; }
+        .tab-content { display: none; }
+        .tab-content.active { display: block; }
+        #preview { border: 1px solid #ccc; padding: 15px; border-radius: 4px; min-height: 300px; background: #fff; }
+        /* Markdown styles for preview */
+        #preview h1, #preview h2, #preview h3 { margin-top: 0; }
+        #preview p { line-height: 1.6; }
+    </style>
+    <!-- Simple Markdown Parser -->
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+</head>
+<body>
+
+<!-- Login Overlay -->
+<div id="login-overlay" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #f9f9f9; display: flex; justify-content: center; align-items: center; z-index: 1000;">
+    <div style="background: white; padding: 30px; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); width: 300px;">
+        <h2>Admin Login</h2>
+        <div class="form-group">
+            <label>Password</label>
+            <input type="password" id="admin-password">
+        </div>
+        <button onclick="login()">Login</button>
+    </div>
+</div>
+
+<div class="container" id="admin-content" style="display: none;">
+    <h1>Blog Dashboard</h1>
+    
+    <div class="tab-bar">
+        <div class="tab active" onclick="switchTab('write')">Write Post</div>
+        <div class="tab" onclick="switchTab('comments')">Moderate Comments</div>
+        <div class="tab" onclick="switchTab('subscribers')">Subscribers</div>
+    </div>
+
+    <div id="tab-write" class="tab-content active">
+        <div class="form-group">
+            <label>Title</label>
+            <input type="text" id="post-title" placeholder="e.g. My First Blog Post">
+        </div>
+        <div class="form-group">
+            <label>Slug (URL)</label>
+            <input type="text" id="post-slug" placeholder="e.g. my-first-blog-post">
+        </div>
+        <div class="form-group">
+            <label>Hero Image URL</label>
+            <input type="text" id="post-hero" placeholder="https://...">
+        </div>
+        
+        <div style="display: flex; gap: 20px;">
+            <div style="flex: 1;">
+                <label>Content (Markdown)</label>
+                <textarea id="post-content" oninput="updatePreview()" placeholder="# Heading 1\n\nWrite your content here..."></textarea>
+            </div>
+            <div style="flex: 1;">
+                <label>Live Preview</label>
+                <div id="preview"></div>
+            </div>
+        </div>
+        <button onclick="publishPost()" style="margin-top: 20px;">Publish Post</button>
+    </div>
+
+    <div id="tab-comments" class="tab-content">
+        <p>Pending comments will appear here.</p>
+        <div id="comments-list"></div>
+    </div>
+
+    <div id="tab-subscribers" class="tab-content">
+        <p>Your subscriber list.</p>
+        <div id="subscribers-list"></div>
+    </div>
+</div>
+
+<script>
+    let adminToken = '';
+
+    function login() {
+        const pwd = document.getElementById('admin-password').value;
+        if(pwd === 'Lauralai2026') { // Simple secret for now
+            adminToken = pwd;
+            document.getElementById('login-overlay').style.display = 'none';
+            document.getElementById('admin-content').style.display = 'block';
+            loadComments();
+            loadSubscribers();
+        } else {
+            alert('Incorrect password');
+        }
+    }
+
+    function switchTab(tabId) {
+        document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+        document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+        event.target.classList.add('active');
+        document.getElementById('tab-' + tabId).classList.add('active');
+    }
+
+    function updatePreview() {
+        const content = document.getElementById('post-content').value;
+        document.getElementById('preview').innerHTML = marked.parse(content);
+    }
+
+    async function publishPost() {
+        const title = document.getElementById('post-title').value;
+        const slug = document.getElementById('post-slug').value;
+        const hero = document.getElementById('post-hero').value;
+        const content = document.getElementById('post-content').value;
+
+        if(!title || !slug || !content) return alert('Title, slug, and content required.');
+
+        const res = await fetch('/api/admin/blog/post', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json', 'Authorization': adminToken },
+            body: JSON.stringify({ title, slug, hero_image_url: hero, content })
+        });
+        
+        if(res.ok) {
+            alert('Post published!');
+            document.getElementById('post-title').value = '';
+            document.getElementById('post-slug').value = '';
+            document.getElementById('post-content').value = '';
+            updatePreview();
+        } else {
+            alert('Failed to publish');
+        }
+    }
+
+    async function loadComments() {
+        // Fetch comments to moderate
+    }
+
+    async function loadSubscribers() {
+        // Fetch subscribers
+    }
+</script>
+</body>
+</html>

@@ -1618,6 +1618,123 @@ app.post('/api/chat', async (req, res) => {
     }
 });
 
+// ==========================================
+// BLOG API ROUTES
+// ==========================================
+
+// --- PUBLIC ROUTES ---
+app.get('/api/blog/posts', async (req, res) => {
+    try {
+        const { data, error } = await supabase
+            .from('blog_posts')
+            .select('slug, title, hero_image_url, published_at')
+            .order('published_at', { ascending: false });
+        if (error) throw error;
+        res.json(data);
+    } catch (err) {
+        console.error("Blog Posts Error:", err);
+        res.status(500).json({ error: "Failed to fetch posts" });
+    }
+});
+
+app.get('/api/blog/posts/:slug', async (req, res) => {
+    try {
+        const { data: post, error: postError } = await supabase
+            .from('blog_posts')
+            .select('*')
+            .eq('slug', req.params.slug)
+            .single();
+        if (postError) throw postError;
+
+        const { data: comments, error: commentsError } = await supabase
+            .from('blog_comments')
+            .select('author_name, content, created_at')
+            .eq('post_id', post.id)
+            .eq('approved', true)
+            .order('created_at', { ascending: true });
+        if (commentsError) throw commentsError;
+
+        res.json({ post, comments });
+    } catch (err) {
+        console.error("Blog Post Error:", err);
+        res.status(500).json({ error: "Failed to fetch post" });
+    }
+});
+
+app.post('/api/blog/subscribe', express.json(), async (req, res) => {
+    try {
+        const { email } = req.body;
+        const { error } = await supabase.from('blog_subscribers').insert([{ email }]);
+        if (error && error.code !== '23505') throw error; // Ignore unique constraint error
+        res.json({ success: true });
+    } catch (err) {
+        console.error("Subscribe Error:", err);
+        res.status(500).json({ error: "Failed to subscribe" });
+    }
+});
+
+app.post('/api/blog/comment', express.json(), async (req, res) => {
+    try {
+        const { post_id, author_name, author_email, content } = req.body;
+        const { error } = await supabase.from('blog_comments').insert([{
+            post_id, author_name, author_email, content
+        }]);
+        if (error) throw error;
+        res.json({ success: true });
+    } catch (err) {
+        console.error("Comment Error:", err);
+        res.status(500).json({ error: "Failed to submit comment" });
+    }
+});
+
+// --- ADMIN ROUTES ---
+const adminAuth = (req, res, next) => {
+    const token = req.headers.authorization;
+    if (token === 'Lauralai2026') return next();
+    res.status(401).json({ error: "Unauthorized" });
+};
+
+app.post('/api/admin/blog/post', adminAuth, express.json(), async (req, res) => {
+    try {
+        const { title, slug, hero_image_url, content } = req.body;
+        const { error } = await supabase.from('blog_posts').upsert({
+            title, slug, hero_image_url, content
+        }, { onConflict: 'slug' });
+        if (error) throw error;
+        res.json({ success: true });
+    } catch (err) {
+        console.error("Create Post Error:", err);
+        res.status(500).json({ error: "Failed to save post" });
+    }
+});
+
+app.get('/api/admin/blog/comments', adminAuth, async (req, res) => {
+    try {
+        const { data, error } = await supabase
+            .from('blog_comments')
+            .select('*, blog_posts(title)')
+            .eq('approved', false)
+            .order('created_at', { ascending: false });
+        if (error) throw error;
+        res.json(data);
+    } catch (err) {
+        console.error("Fetch Comments Error:", err);
+        res.status(500).json({ error: "Failed to fetch pending comments" });
+    }
+});
+
+app.post('/api/admin/blog/comments/:id/approve', adminAuth, async (req, res) => {
+    try {
+        const { error } = await supabase.from('blog_comments').update({ approved: true }).eq('id', req.params.id);
+        if (error) throw error;
+        res.json({ success: true });
+    } catch (err) {
+        console.error("Approve Comment Error:", err);
+        res.status(500).json({ error: "Failed to approve comment" });
+    }
+});
+
+
 // Vercel requires exporting the app
 module.exports = app;
 

@@ -1623,6 +1623,43 @@ app.post('/api/chat', async (req, res) => {
 // ==========================================
 
 // --- PUBLIC ROUTES ---
+app.get('/rss.xml', async (req, res) => {
+    try {
+        const { data, error } = await supabase
+            .from('blog_posts')
+            .select('*')
+            .order('published_at', { ascending: false })
+            .limit(20);
+        if (error) throw error;
+
+        let rss = `<?xml version="1.0" encoding="UTF-8" ?>
+<rss version="2.0">
+<channel>
+    <title>250Proud Journal</title>
+    <link>https://250proud.net/blog.html</link>
+    <description>News, insights, and stories celebrating 250 years of American heritage.</description>
+`;
+        for (const post of data) {
+            rss += `
+    <item>
+        <title><![CDATA[${post.title}]]></title>
+        <link>https://250proud.net/post.html?slug=${post.slug}</link>
+        <description><![CDATA[${post.content.substring(0, 300)}...]]></description>
+        <pubDate>${new Date(post.published_at).toUTCString()}</pubDate>
+        <guid>https://250proud.net/post.html?slug=${post.slug}</guid>
+    </item>`;
+        }
+        rss += `
+</channel>
+</rss>`;
+
+        res.set('Content-Type', 'text/xml');
+        res.send(rss);
+    } catch (err) {
+        console.error("RSS Error:", err);
+        res.status(500).send("Error generating RSS feed");
+    }
+});
 app.get('/api/blog/posts', async (req, res) => {
     try {
         const { data, error } = await supabase

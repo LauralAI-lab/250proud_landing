@@ -92,7 +92,7 @@
             currentPostId = post.id;
             document.title = `${post.title} - 250Proud`;
             document.getElementById('post-title').textContent = post.title;
-            document.getElementById('post-meta').innerHTML = `By ${post.author_name} &bull; ${new Date(post.published_at).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}`;
+            document.getElementById('post-meta').innerHTML = `By Mike Price &bull; ${new Date(post.published_at).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}`;
             
             if(post.hero_image_url) {
                 const hero = document.getElementById('hero-image');

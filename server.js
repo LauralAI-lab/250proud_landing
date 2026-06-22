@@ -366,10 +366,16 @@ async function generateAndDeliverPDF(orderData) {
         htmlTemplate = htmlTemplate.replace('{{HEADLINE}}', orderData.headline || 'Built on Grit.');
         htmlTemplate = htmlTemplate.replace('{{COPY}}', orderData.copy || 'Thank you for supporting American values.');
         
+        let safeLogoPath = orderData.logo_path;
+        let safeHeadshotPath = orderData.headshot_path;
+
+        if (!safeLogoPath && safeHeadshotPath) safeLogoPath = safeHeadshotPath;
+        if (!safeHeadshotPath && safeLogoPath) safeHeadshotPath = safeLogoPath;
+
         // Inject images (Base64 or external URLs)
-        htmlTemplate = htmlTemplate.replace('{{LOGO_URL}}', orderData.logo_path || 'https://via.placeholder.com/300x150.png?text=YOUR+LOGO');
-        htmlTemplate = htmlTemplate.replace('{{HEADSHOT_URL}}', orderData.headshot_path || 'https://via.placeholder.com/200x200.png?text=YOUR+PHOTO');
-        htmlTemplate = htmlTemplate.replace('{{HEADSHOT_DISPLAY}}', orderData.headshot_path ? 'block' : 'none');
+        htmlTemplate = htmlTemplate.replace('{{LOGO_URL}}', safeLogoPath || 'https://via.placeholder.com/300x150.png?text=YOUR+LOGO');
+        htmlTemplate = htmlTemplate.replace('{{HEADSHOT_URL}}', safeHeadshotPath || 'https://via.placeholder.com/200x200.png?text=YOUR+PHOTO');
+        htmlTemplate = htmlTemplate.replace('{{HEADSHOT_DISPLAY}}', safeHeadshotPath ? 'block' : 'none');
         htmlTemplate = htmlTemplate.replace('{{HERO_URL}}', orderData.hero_path || 'https://via.placeholder.com/600x400.png?text=YOUR+HERO+IMAGE');
         htmlTemplate = htmlTemplate.replace('{{INTERIOR_URL}}', orderData.interior_path || 'https://via.placeholder.com/400x500.png?text=INTERIOR+PREVIEW');
 
@@ -498,7 +504,7 @@ async function generateAndDeliverPDF(orderData) {
         const cardTemplatePath = path.join(__dirname, 'marketing_card_template.html');
         let cardHtmlTemplate = fs.readFileSync(cardTemplatePath, 'utf8');
         cardHtmlTemplate = cardHtmlTemplate.replace('{{COMPANY_NAME}}', orderData.company_name || 'Your Company LLC');
-        cardHtmlTemplate = cardHtmlTemplate.replace('{{LOGO_URL}}', orderData.logo_path || 'https://placehold.co/300x150/png?text=YOUR+LOGO');
+        cardHtmlTemplate = cardHtmlTemplate.replace('{{LOGO_URL}}', safeLogoPath || 'https://placehold.co/300x150/png?text=YOUR+LOGO');
         cardHtmlTemplate = cardHtmlTemplate.replace('{{QR_CODE_DATA_URI}}', qrCodeDataUri);
         cardHtmlTemplate = cardHtmlTemplate.replace('{{COVER_URL}}', 'https://250proud.net/nc_assets/img/generated_true_cover.png');
         cardHtmlTemplate = cardHtmlTemplate.replace('{{PHONE}}', orderData.phone || '');

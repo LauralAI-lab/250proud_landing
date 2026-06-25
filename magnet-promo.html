@@ -1,0 +1,439 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>250PROUD Commemorative Magnets - Build Yours Now</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;800;900&family=Playfair+Display:ital,wght@0,700;0,900;1,700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --gold-primary: #D4AF37;
+            --gold-hover: #F3E5AB;
+            --dark-bg: #0A0A0A;
+            --card-bg: rgba(25, 25, 25, 0.8);
+            --text-light: #F5F5F5;
+            --text-muted: #A0A0A0;
+            --accent-red: #8B0000;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Montserrat', sans-serif;
+        }
+
+        body {
+            background-color: var(--dark-bg);
+            color: var(--text-light);
+            overflow-x: hidden;
+            line-height: 1.6;
+        }
+
+        /* Nav Header */
+        header {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            padding: 15px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: rgba(10, 10, 10, 0.95);
+            backdrop-filter: blur(10px);
+            z-index: 1000;
+            border-bottom: 2px solid var(--gold-primary);
+        }
+
+        .logo {
+            font-family: 'Playfair Display', serif;
+            font-size: 2rem;
+            color: var(--gold-primary);
+            text-decoration: none;
+            font-weight: 900;
+            letter-spacing: 2px;
+        }
+
+        /* Power Buttons */
+        .btn {
+            display: inline-block;
+            padding: 16px 32px;
+            background: linear-gradient(135deg, #D4AF37, #B8860B);
+            color: #000;
+            text-decoration: none;
+            font-weight: 900;
+            font-size: 1.2rem;
+            border-radius: 8px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: all 0.3s ease;
+            border: none;
+            cursor: pointer;
+            box-shadow: 0 4px 20px rgba(212, 175, 55, 0.4);
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { box-shadow: 0 0 0 0 rgba(212, 175, 55, 0.7); }
+            70% { box-shadow: 0 0 0 15px rgba(212, 175, 55, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(212, 175, 55, 0); }
+        }
+
+        .btn:hover {
+            background: linear-gradient(135deg, #F3E5AB, #D4AF37);
+            transform: translateY(-3px) scale(1.05);
+            box-shadow: 0 8px 30px rgba(212, 175, 55, 0.6);
+            animation: none;
+        }
+
+        /* Hero Section */
+        .hero {
+            position: relative;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 120px 20px 60px;
+            background: linear-gradient(to bottom, rgba(10,10,10,0.7), rgba(10,10,10,0.9)), 
+                        url('nc_assets/img/magnet/stock_liberty_bell.png') center/cover no-repeat fixed;
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 10;
+            max-width: 1000px;
+        }
+
+        .alert-banner {
+            display: inline-block;
+            background: rgba(139, 0, 0, 0.8);
+            color: white;
+            padding: 8px 20px;
+            border-radius: 50px;
+            font-weight: 800;
+            letter-spacing: 2px;
+            margin-bottom: 30px;
+            text-transform: uppercase;
+            border: 1px solid #ff4d4d;
+        }
+
+        .title {
+            font-family: 'Playfair Display', serif;
+            font-size: 5rem;
+            line-height: 1.1;
+            margin-bottom: 20px;
+            color: #fff;
+            text-shadow: 0 4px 20px rgba(0,0,0,0.8);
+        }
+
+        .title span {
+            color: var(--gold-primary);
+        }
+
+        .hero-desc {
+            font-size: 1.5rem;
+            color: #E0E0E0;
+            font-weight: 600;
+            margin-bottom: 40px;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+            text-shadow: 0 2px 10px rgba(0,0,0,0.8);
+        }
+
+        /* Pain & Solution Section (Sales Pitch) */
+        .pitch-section {
+            padding: 100px 5%;
+            background: var(--dark-bg);
+            text-align: center;
+        }
+
+        .pitch-headline {
+            font-family: 'Playfair Display', serif;
+            font-size: 3.5rem;
+            color: var(--gold-primary);
+            margin-bottom: 30px;
+        }
+
+        .pitch-body {
+            font-size: 1.3rem;
+            max-width: 800px;
+            margin: 0 auto 50px;
+            color: var(--text-light);
+        }
+
+        .roi-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .roi-card {
+            background: var(--card-bg);
+            padding: 40px 30px;
+            border-radius: 12px;
+            border-top: 4px solid var(--gold-primary);
+            text-align: left;
+        }
+
+        .roi-card h3 {
+            color: var(--gold-primary);
+            font-size: 1.8rem;
+            margin-bottom: 15px;
+            font-family: 'Playfair Display', serif;
+        }
+
+        .roi-card p {
+            font-size: 1.1rem;
+            color: var(--text-muted);
+        }
+
+        /* Massive Mid-Page CTA */
+        .mid-cta {
+            background: linear-gradient(45deg, #1a1a1a, #0A0A0A);
+            padding: 80px 20px;
+            text-align: center;
+            border-top: 1px solid var(--gold-primary);
+            border-bottom: 1px solid var(--gold-primary);
+        }
+
+        .mid-cta h2 {
+            font-size: 2.5rem;
+            margin-bottom: 20px;
+            color: #fff;
+        }
+
+        /* Gallery/Social Proof Section */
+        .gallery {
+            padding: 100px 5%;
+            background: #050505;
+        }
+
+        .section-title {
+            text-align: center;
+            font-family: 'Playfair Display', serif;
+            font-size: 3.5rem;
+            color: var(--text-light);
+            margin-bottom: 15px;
+        }
+
+        .masonry {
+            column-count: 3;
+            column-gap: 20px;
+            max-width: 1400px;
+            margin: 40px auto 0;
+        }
+
+        .masonry-item {
+            break-inside: avoid;
+            margin-bottom: 20px;
+            position: relative;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            border: 2px solid transparent;
+            transition: border-color 0.3s ease;
+        }
+
+        .masonry-item:hover {
+            border-color: var(--gold-primary);
+        }
+
+        .masonry-item img {
+            width: 100%;
+            display: block;
+        }
+
+        .masonry-overlay {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(to top, rgba(0,0,0,0.9), transparent);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            display: flex;
+            align-items: flex-end;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .masonry-item:hover .masonry-overlay {
+            opacity: 1;
+        }
+
+        .overlay-text {
+            color: var(--gold-primary);
+            font-weight: 800;
+            font-size: 1.5rem;
+            text-transform: uppercase;
+        }
+
+        /* Final Push Section */
+        .bottom-cta {
+            padding: 120px 5%;
+            text-align: center;
+            background: linear-gradient(rgba(10,10,10,0.8), rgba(10,10,10,0.95)), url('nc_assets/img/magnet/stock_flag_1776.png') center/cover fixed;
+        }
+
+        .bottom-cta h2 {
+            font-family: 'Playfair Display', serif;
+            font-size: 4.5rem;
+            margin-bottom: 20px;
+            color: var(--gold-primary);
+            text-shadow: 0 5px 15px rgba(0,0,0,1);
+        }
+
+        .bottom-cta p {
+            font-size: 1.5rem;
+            color: #fff;
+            margin-bottom: 40px;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+            font-weight: 600;
+        }
+
+        /* Urgent Footer Bar */
+        .urgent-footer {
+            background: #8B0000;
+            color: white;
+            text-align: center;
+            padding: 15px;
+            font-weight: 800;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+
+        /* Responsive */
+        @media (max-width: 1024px) {
+            .masonry { column-count: 2; }
+            .title { font-size: 4rem; }
+            .pitch-headline { font-size: 3rem; }
+        }
+
+        @media (max-width: 768px) {
+            header { padding: 15px 20px; }
+            .logo { font-size: 1.5rem; }
+            .btn { width: 100%; text-align: center; font-size: 1.1rem; padding: 18px; }
+            .header-btn { display: none; }
+            
+            .title { font-size: 2.8rem; }
+            .hero-desc { font-size: 1.2rem; }
+            .masonry { column-count: 1; }
+            .pitch-headline { font-size: 2.2rem; }
+            .bottom-cta h2 { font-size: 3rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Header -->
+    <header>
+        <a href="https://250proud.net" class="logo">250PROUD&trade;</a>
+        <a href="magnet-configurator.html" class="btn header-btn" style="padding: 10px 20px; font-size: 0.9rem; animation: none;">Build Yours Now</a>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="hero-content">
+            <div class="alert-banner">The Ultimate 2026 Marketing Tool</div>
+            <h1 class="title">Don't Hand Out Business Cards. <br><span>Hand Out History.</span></h1>
+            <p class="hero-desc">Your clients throw away business cards. They keep high-quality, patriotic magnets on their fridge for years. Create your custom 250th Anniversary Commemorative Magnet today.</p>
+            <a href="magnet-configurator.html" class="btn" style="font-size: 1.5rem; padding: 20px 50px;">Start Designing My Magnet</a>
+            <p style="margin-top: 20px; color: var(--gold-primary); font-weight: 600;">Takes less than 2 minutes. See an instant proof.</p>
+        </div>
+    </section>
+
+    <!-- Pitch Section -->
+    <section class="pitch-section">
+        <h2 class="pitch-headline">Why Smart Businesses Are Stockpiling These</h2>
+        <p class="pitch-body">The 250th Anniversary of America is a once-in-a-lifetime event. People are actively seeking out memorabilia. When you hand them a premium magnet featuring your brand alongside stunning patriotic artwork, you aren't just advertising—you are giving them a gift they will display proudly in their homes.</p>
+        
+        <div class="roi-grid">
+            <div class="roi-card">
+                <h3>For Real Estate Agents</h3>
+                <p>Stop sending out the same boring calendars. Drop a 250PROUD magnet in your next mailer. Homeowners will stick it right on their fridge—giving you daily, prime real estate in their kitchen for the next decade.</p>
+                <a href="magnet-configurator.html" style="color: var(--gold-primary); font-weight: bold; display: block; margin-top: 15px; text-decoration: none;">Build Your Realtor Magnet &rarr;</a>
+            </div>
+            <div class="roi-card">
+                <h3>For Local Businesses</h3>
+                <p>Show your community pride. Leave a stack of these at your checkout counter or include them in every outgoing package. Your logo, paired with the 1776 flag, guarantees your brand won't end up in the trash.</p>
+                <a href="magnet-configurator.html" style="color: var(--gold-primary); font-weight: bold; display: block; margin-top: 15px; text-decoration: none;">Build Your Business Magnet &rarr;</a>
+            </div>
+            <div class="roi-card">
+                <h3>For Events & Non-Profits</h3>
+                <p>Hosting a July 4th event, local festival, or fundraiser? These are the ultimate high-margin items or VIP giveaways. Configure a custom design with your event details in seconds.</p>
+                <a href="magnet-configurator.html" style="color: var(--gold-primary); font-weight: bold; display: block; margin-top: 15px; text-decoration: none;">Build Your Event Magnet &rarr;</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Massive Mid CTA -->
+    <section class="mid-cta">
+        <h2>Stop Thinking About It. See It With Your Own Logo.</h2>
+        <a href="magnet-configurator.html" class="btn">Launch The Configurator</a>
+    </section>
+
+    <!-- Gallery Section -->
+    <section class="gallery" id="gallery">
+        <div class="section-title">Endless Possibilities</div>
+        <p style="text-align: center; color: var(--text-muted); font-size: 1.2rem;">Choose from our massive library of premium artwork or upload your own.</p>
+        
+        <div class="masonry">
+            <div class="masonry-item">
+                <a href="magnet-configurator.html">
+                    <img src="nc_assets/img/magnet/sample_realtor.png" alt="Realtor Custom Magnet">
+                    <div class="masonry-overlay"><div class="overlay-text">Make It Yours</div></div>
+                </a>
+            </div>
+            <div class="masonry-item">
+                <a href="magnet-configurator.html">
+                    <img src="nc_assets/img/magnet/stock_eagle_profile.png" alt="Eagle Profile">
+                    <div class="masonry-overlay"><div class="overlay-text">Make It Yours</div></div>
+                </a>
+            </div>
+            <div class="masonry-item">
+                <a href="magnet-configurator.html">
+                    <img src="nc_assets/img/magnet/stock_liberty_bell.png" alt="Liberty Bell">
+                    <div class="masonry-overlay"><div class="overlay-text">Make It Yours</div></div>
+                </a>
+            </div>
+            <div class="masonry-item">
+                <a href="magnet-configurator.html">
+                    <img src="nc_assets/img/magnet/stock_eagle.png" alt="Majestic Eagle">
+                    <div class="masonry-overlay"><div class="overlay-text">Make It Yours</div></div>
+                </a>
+            </div>
+            <div class="masonry-item">
+                <a href="magnet-configurator.html">
+                    <img src="nc_assets/img/magnet/stock_city_eagle.png" alt="City Eagle">
+                    <div class="masonry-overlay"><div class="overlay-text">Make It Yours</div></div>
+                </a>
+            </div>
+            <div class="masonry-item">
+                <a href="magnet-configurator.html">
+                    <img src="nc_assets/img/magnet/stock_unity_hands.png" alt="Unity Hands">
+                    <div class="masonry-overlay"><div class="overlay-text">Make It Yours</div></div>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Final Push Section -->
+    <section class="bottom-cta">
+        <h2>Your Competitors Aren't Doing This.</h2>
+        <p>This is your chance to stand out with a premium, memorable physical product that associates your brand with the biggest American milestone of our lifetime.</p>
+        <a href="magnet-configurator.html" class="btn" style="padding: 25px 60px; font-size: 1.6rem; margin-top: 20px;">DESIGN YOUR MAGNET NOW</a>
+    </section>
+
+    <div class="urgent-footer">
+        🔥 Orders are filling up fast for 2026. Design your magnet today to secure your place in line.
+    </div>
+
+</body>
+</html>

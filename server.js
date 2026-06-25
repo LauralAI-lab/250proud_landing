@@ -46,7 +46,8 @@ const uploadFields = [
     { name: 'logoUpload', maxCount: 1 },
     { name: 'headshotUpload', maxCount: 1 },
     { name: 'heroUpload', maxCount: 1 },
-    { name: 'interiorUpload', maxCount: 1 }
+    { name: 'interiorUpload', maxCount: 1 },
+    { name: 'magnetImage', maxCount: 1 }
 ];
 
 // Helper to upload Buffer to Supabase Storage
@@ -82,25 +83,38 @@ app.post('/api/checkout-session', upload.fields(uploadFields), async (req, res) 
         const orderId = crypto.randomUUID();
 
         // Upload files to Supabase if they exist
-        const logoUrl = req.files['logoUpload'] ? await uploadBufferToSupabase(req.files['logoUpload'][0].buffer, req.files['logoUpload'][0].originalname, req.files['logoUpload'][0].mimetype) : null;
-        const headshotUrl = req.files['headshotUpload'] ? await uploadBufferToSupabase(req.files['headshotUpload'][0].buffer, req.files['headshotUpload'][0].originalname, req.files['headshotUpload'][0].mimetype) : null;
-        const heroUrl = req.files['heroUpload'] ? await uploadBufferToSupabase(req.files['heroUpload'][0].buffer, req.files['heroUpload'][0].originalname, req.files['heroUpload'][0].mimetype) : null;
-        const interiorUrl = req.files['interiorUpload'] ? await uploadBufferToSupabase(req.files['interiorUpload'][0].buffer, req.files['interiorUpload'][0].originalname, req.files['interiorUpload'][0].mimetype) : null;
+        const logoUrl = req.files && req.files['logoUpload'] ? await uploadBufferToSupabase(req.files['logoUpload'][0].buffer, req.files['logoUpload'][0].originalname, req.files['logoUpload'][0].mimetype) : null;
+        const headshotUrl = req.files && req.files['headshotUpload'] ? await uploadBufferToSupabase(req.files['headshotUpload'][0].buffer, req.files['headshotUpload'][0].originalname, req.files['headshotUpload'][0].mimetype) : null;
+        const heroUrl = req.files && req.files['heroUpload'] ? await uploadBufferToSupabase(req.files['heroUpload'][0].buffer, req.files['heroUpload'][0].originalname, req.files['heroUpload'][0].mimetype) : null;
+        const interiorUrl = req.files && req.files['interiorUpload'] ? await uploadBufferToSupabase(req.files['interiorUpload'][0].buffer, req.files['interiorUpload'][0].originalname, req.files['interiorUpload'][0].mimetype) : null;
+
+        let finalMagnetUrl = null;
+        if (data.type === 'magnet') {
+            if (req.files && req.files['magnetImage']) {
+                finalMagnetUrl = await uploadBufferToSupabase(req.files['magnetImage'][0].buffer, req.files['magnetImage'][0].originalname, req.files['magnetImage'][0].mimetype);
+            } else if (data.magnetImageUrl) {
+                if (data.magnetImageUrl.startsWith('http')) {
+                    finalMagnetUrl = data.magnetImageUrl;
+                } else {
+                    finalMagnetUrl = `https://250proud.net/${data.magnetImageUrl.replace(/^\//, '')}`;
+                }
+            }
+        }
 
         // Save to Supabase b2b_orders table
         const { error } = await supabase
             .from('b2b_orders')
             .insert([{
                 order_id: orderId,
-                email: data.accountEmail || data.email,
+                email: data.accountEmail || data.email || 'magnet_order@250proud.net',
                 company_name: data.companyName,
                 phone: data.phone,
-                website: data.website,
-                headline: data.headline ? data.headline.substring(0, 60) : null,
-                copy: data.copy ? data.copy.substring(0, 350) : null,
+                website: data.type === 'magnet' ? data.qrUrl : data.website,
+                headline: data.type === 'magnet' ? data.orientation : (data.headline ? data.headline.substring(0, 60) : null),
+                copy: data.type === 'magnet' ? data.message : (data.copy ? data.copy.substring(0, 350) : null),
                 logo_path: logoUrl,
                 headshot_path: headshotUrl,
-                hero_path: heroUrl,
+                hero_path: data.type === 'magnet' ? finalMagnetUrl : heroUrl,
                 interior_path: interiorUrl,
                 status: 'pending_payment'
             }]);
@@ -167,8 +181,14 @@ app.post('/api/checkout-session', upload.fields(uploadFields), async (req, res) 
         }
 
         // Redirect to Shopify Cart Permalink
-        const shopifyVariantId = "46498770059463"; 
-        const checkoutUrl = `https://lauralai-one.myshopify.com/cart/${shopifyVariantId}:1?attributes[order_id]=${orderId}`;
+        let shopifyVariantId = "46498770059463"; // Default: Digital coloring book
+        if (data.type === 'magnet') {
+            shopifyVariantId = "46700272320711"; // Custom 250PROUD Commemorative Marketing Magnet
+        }
+        
+        const orderType = data.type === 'magnet' ? 'magnet' : 'coloring_book';
+        const quantity = data.type === 'magnet' && data.quantity ? data.quantity : 1;
+        const checkoutUrl = `https://lauralai-one.myshopify.com/cart/${shopifyVariantId}:${quantity}?attributes[order_id]=${orderId}&attributes[order_type]=${orderType}`;
 
         res.json({ success: true, orderId: orderId, checkoutUrl: checkoutUrl });
 
@@ -341,7 +361,12 @@ app.post('/api/shopify/webhook', async (req, res) => {
 
         // In Vercel serverless, we MUST await the background task before sending the response
         // Otherwise Vercel terminates the function and the PDF is never generated.
-        await generateAndDeliverPDF(orderData);
+        const orderType = payload.note_attributes && payload.note_attributes.find(n => n.name === 'order_type')?.value;
+        if (orderType === 'magnet') {
+            await generateMagnetPDF(orderData);
+        } else {
+            await generateAndDeliverPDF(orderData);
+        }
         res.status(200).json({ success: true, message: 'Webhook processed, PDF generated.' });
 
     } catch (err) {
@@ -1783,3 +1808,145 @@ if (require.main === module) {
     });
 }
 
+// ---------------------------------------------------------
+// Magnet PDF Generation Pipeline
+// ---------------------------------------------------------
+async function generateMagnetPDF(orderData) {
+    console.log(`Starting Magnet PDF generation for order: ${orderData.order_id}`);
+    
+    // Default to portrait if not specified
+    const orientation = orderData.headline || 'portrait';
+    const isLandscape = orientation === 'landscape';
+    
+    // Exact sizing at 300 DPI
+    const widthInches = isLandscape ? 4.202 : 3.204;
+    const heightInches = isLandscape ? 3.204 : 4.202;
+    const qrUrl = orderData.website || 'https://250proud.net';
+    const message = orderData.copy || 'Proudly supporting our community!';
+
+    const htmlContent = `
+    <!DOCTYPE html>
+    <html>
+    <head>
+        <meta charset="UTF-8">
+        <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+        <style>
+            @page { margin: 0; size: ${widthInches}in ${heightInches}in; }
+            body, html { margin: 0; padding: 0; width: 100%; height: 100%; }
+            .magnet-container {
+                width: 100%;
+                height: 100%;
+                display: flex;
+                flex-direction: column;
+                background: white;
+                position: relative;
+                overflow: hidden;
+            }
+            .bleed-top, .bleed-bottom {
+                height: 0.35in;
+                background: #111;
+                color: white;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-size: 8pt;
+                font-family: 'Inter', sans-serif;
+                letter-spacing: 2px;
+                width: 100%;
+            }
+            .bleed-top { transform: rotate(180deg); }
+            .safe-zone {
+                flex: 1;
+                display: flex;
+                background: white;
+            }
+            .col-left {
+                background-color: #ddd;
+                background-image: url('${orderData.hero_path || 'https://via.placeholder.com/400x600'}');
+                background-size: cover;
+                background-position: center;
+                border-right: 2px solid #fff;
+            }
+            .col-right {
+                padding: 0.15in;
+                display: flex;
+                flex-direction: column;
+                justify-content: space-between;
+                background: #f8f9fa;
+            }
+            
+            /* Portrait vs Landscape Layout */
+            ${isLandscape 
+                ? `.col-left { width: 45%; height: 100%; } .col-right { width: 55%; height: 100%; }`
+                : `.col-left { width: 55%; height: 100%; } .col-right { width: 45%; height: 100%; }`
+            }
+
+            .realtor-name { font-family: 'Playfair Display', serif; font-weight: 700; font-size: 16pt; margin-bottom: 2px; line-height: 1.1; word-wrap: break-word; color: #0a1122; }
+            .realtor-company { font-family: 'Inter', sans-serif; font-weight: 600; font-size: 10pt; color: #b31942; margin-bottom: 6px; line-height: 1.1; text-transform: uppercase; }
+            .realtor-phone { font-family: 'Inter', sans-serif; font-size: 10pt; color: #333; font-weight: 500; margin-bottom: 8px; }
+            .realtor-message { font-family: 'Inter', sans-serif; font-size: 9pt; color: #555; font-style: italic; line-height: 1.3; }
+
+            .qr-container { align-self: flex-end; margin-top: 5px; border: 1px solid #ddd; padding: 4px; background: white; border-radius: 4px; }
+            .qr-container img { width: 0.85in; height: 0.85in; display: block; }
+        </style>
+    </head>
+    <body>
+        <div class="magnet-container">
+            <div class="bleed-top">250PROUD.NET</div>
+            <div class="safe-zone">
+                <div class="col-left"></div>
+                <div class="col-right">
+                    <div>
+                        <div class="realtor-name">${orderData.email.split('@')[0]}</div>
+                        <div class="realtor-company">${orderData.company_name || ''}</div>
+                        <div class="realtor-phone">${orderData.phone || ''}</div>
+                        <div class="realtor-message">${message}</div>
+                    </div>
+                    <div class="qr-container">
+                        <img src="https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=${encodeURIComponent(qrUrl)}" alt="QR Code">
+                    </div>
+                </div>
+            </div>
+            <div class="bleed-bottom">250PROUD.NET - ORDER #${orderData.order_id.substring(0,8).toUpperCase()}</div>
+        </div>
+    </body>
+    </html>
+    `;
+
+    const browser = await puppeteer.launch({ args: ['--no-sandbox', '--disable-setuid-sandbox'] });
+    const page = await browser.newPage();
+    
+    // Wait for network idle to ensure fonts and QR code image load
+    await page.setContent(htmlContent, { waitUntil: 'networkidle0' });
+    
+    const pdfBuffer = await page.pdf({
+        width: `${widthInches}in`,
+        height: `${heightInches}in`,
+        printBackground: true,
+        pageRanges: '1'
+    });
+
+    await browser.close();
+
+    // Upload to Supabase
+    const fileName = `magnet_${orderData.order_id}.pdf`;
+    const { data: uploadData, error: uploadError } = await supabase.storage
+        .from('b2b_pdfs')
+        .upload(`final/${fileName}`, pdfBuffer, { contentType: 'application/pdf', upsert: true });
+
+    if (uploadError) {
+        console.error("Magnet PDF Upload Error:", uploadError);
+        return;
+    }
+
+    const { data: publicUrlData } = supabase.storage.from('b2b_pdfs').getPublicUrl(`final/${fileName}`);
+    const finalPdfUrl = publicUrlData.publicUrl;
+
+    console.log(`✅ Magnet PDF generated and uploaded: ${finalPdfUrl}`);
+
+    // Update database status
+    await supabase.from('b2b_orders').update({
+        status: 'completed',
+        pdf_url: finalPdfUrl
+    }).eq('order_id', orderData.order_id);
+}

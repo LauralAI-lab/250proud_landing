@@ -802,6 +802,81 @@ async function generateAndDeliverPDF(orderData) {
 // ---------------------------------------------------------
 // Copy API (ElevenLabs)
 // ---------------------------------------------------------
+// ====== MAGNET EXIT INTENT CAPTURE ======
+app.post('/api/capture-discount', async (req, res) => {
+    try {
+        const { firstName, lastName, email } = req.body;
+        if (!email || !firstName) {
+            return res.status(400).json({ error: 'Missing required fields' });
+        }
+
+        const fullName = `${firstName} ${lastName}`.trim();
+
+        // 1. Save to Supabase `users` table as a magnet_lead
+        if (supabase) {
+            await supabase.from('users').insert({
+                email: email,
+                username: fullName,
+                vertical: 'magnet_lead'
+            });
+            console.log(`✅ Saved Magnet Lead to Supabase: ${email}`);
+        }
+
+        // 2. Add to Mailchimp with Tag
+        const listId = process.env.MAILCHIMP_LIST_ID;
+        if (listId) {
+            const subscriberHash = require('crypto').createHash('md5').update(email.toLowerCase()).digest('hex');
+            try {
+                await mailchimp.lists.setListMember(listId, subscriberHash, {
+                    email_address: email,
+                    status_if_new: 'subscribed',
+                    merge_fields: {
+                        FNAME: firstName,
+                        LNAME: lastName || ''
+                    }
+                });
+
+                await mailchimp.lists.updateListMemberTags(listId, subscriberHash, {
+                    tags: [{ name: 'Magnet_Discount_Capture', status: 'active' }]
+                });
+                console.log(`📧 Added ${email} to Mailchimp with Magnet_Discount_Capture tag.`);
+            } catch (mcErr) {
+                console.error("Mailchimp error:", mcErr.response ? mcErr.response.body : mcErr);
+                // Non-fatal, continue to send email
+            }
+        }
+
+        // 3. Send 15% Discount Email via Resend
+        if (process.env.RESEND_API_KEY) {
+            const { Resend } = require('resend');
+            const resend = new Resend(process.env.RESEND_API_KEY);
+            await resend.emails.send({
+                from: '250PROUD <info@250proud.net>',
+                to: email,
+                subject: 'Your 15% Off Code for 250PROUD Commemorative Magnets!',
+                html: `
+                    <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto; color: #111;">
+                        <h1 style="color: #D4AF37;">Welcome to 250PROUD!</h1>
+                        <p>Hi ${firstName},</p>
+                        <p>Thank you for your interest in our American-made Commemorative Magnets. As promised, here is your 15% off discount code to use at checkout:</p>
+                        <div style="background: #f4f4f4; padding: 20px; text-align: center; border-radius: 8px; margin: 20px 0;">
+                            <span style="font-size: 24px; font-weight: bold; letter-spacing: 2px;">PROUD15</span>
+                        </div>
+                        <p>You can <a href="https://b2b.250proud.net/magnet-configurator.html" style="color: #D4AF37; font-weight: bold;">click here to start designing your magnet right now.</a></p>
+                        <p>Best,<br>The 250PROUD Team</p>
+                    </div>
+                `
+            });
+            console.log(`✉️ Sent discount email to ${email}`);
+        }
+
+        res.json({ success: true });
+    } catch (err) {
+        console.error("Error capturing discount lead:", err);
+        res.status(500).json({ success: false, error: "Internal Server Error" });
+    }
+});
+
 app.post('/api/generate-text', async (req, res) => {
     try {
         const { companyName, industry } = req.body;

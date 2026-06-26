@@ -85,6 +85,10 @@
       "dest": "/today-in-history.html"
     },
     {
+      "src": "/rss.xml",
+      "dest": "server.js"
+    },
+    {
       "src": "/api/(.*)",
       "dest": "server.js"
     },

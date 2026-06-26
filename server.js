@@ -862,7 +862,7 @@ app.post('/api/capture-discount', async (req, res) => {
                         <div style="background: #f4f4f4; padding: 20px; text-align: center; border-radius: 8px; margin: 20px 0;">
                             <span style="font-size: 24px; font-weight: bold; letter-spacing: 2px;">PROUD15</span>
                         </div>
-                        <p>You can <a href="https://b2b.250proud.net/magnet-configurator.html" style="color: #D4AF37; font-weight: bold;">click here to start designing your magnet right now.</a></p>
+                        <p>You can <a href="https://250proud.net/magnet-configurator.html" style="color: #D4AF37; font-weight: bold;">click here to start designing your magnet right now.</a></p>
                         <p>Best,<br>The 250PROUD Team</p>
                     </div>
                 `

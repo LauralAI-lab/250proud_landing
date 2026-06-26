@@ -7,6 +7,7 @@ const path = require('path');
 const crypto = require('crypto');
 
 const luluService = require('./luluService');
+const shopifyService = require('./shopifyService');
 const { PDFDocument } = require('pdf-lib');
 const puppeteer = require('puppeteer-core');
 const chromium = require('@sparticuz/chromium');
@@ -338,6 +339,10 @@ app.post('/api/shopify/webhook', async (req, res) => {
             return res.status(400).send('Missing order_id');
         }
 
+        if (payload.id) {
+            await supabase.from('b2b_orders').update({ shopify_order_id: payload.id.toString() }).eq('order_id', orderId);
+        }
+
         console.log(`🔔 Received Webhook from Shopify for Order: ${orderId}...`);
 
         // Fetch order from Supabase
@@ -372,6 +377,40 @@ app.post('/api/shopify/webhook', async (req, res) => {
     } catch (err) {
         console.error("Webhook processing error:", err);
         if (!res.headersSent) res.status(500).send('Server Error');
+    }
+});
+
+// --- LULU WEBHOOK HANDLER ---
+app.post('/api/lulu/webhook', async (req, res) => {
+    try {
+        const payload = req.body;
+        console.log("🔔 Received Webhook from Lulu:", JSON.stringify(payload, null, 2));
+
+        const eventType = payload.event_type || (payload.print_job && payload.print_job.status && payload.print_job.status.name);
+        
+        if (!payload.print_job || !payload.print_job.id) {
+            return res.status(200).send('No print job ID');
+        }
+
+        const luluJobId = payload.print_job.id.toString();
+        await supabase.from('b2b_orders').update({ lulu_status: eventType }).eq('lulu_job_id', luluJobId);
+
+        if (eventType === 'PRINT_JOB_SHIPPED' || eventType === 'SHIPPED') {
+            const { data: orderData } = await supabase.from('b2b_orders').select('*').eq('lulu_job_id', luluJobId).single();
+            if (orderData && orderData.shopify_order_id) {
+                let trackingUrl = '';
+                let trackingNumber = '';
+                if (payload.print_job.line_items && payload.print_job.line_items.length > 0) {
+                    trackingUrl = payload.print_job.line_items[0].tracking_urls?.[0] || '';
+                    trackingNumber = payload.print_job.line_items[0].tracking_id || '';
+                }
+                await shopifyService.fulfillOrder(orderData.shopify_order_id, trackingNumber, trackingUrl);
+            }
+        }
+        res.status(200).send('OK');
+    } catch (err) {
+        console.error("Lulu webhook error:", err);
+        res.status(500).send('Error');
     }
 });
 
@@ -576,10 +615,34 @@ async function generateAndDeliverPDF(orderData) {
             qr_code_url: qrCodePublicUrl
         }).eq('email', orderData.email);
 
+        // Fire off to Lulu automatically
+        orderData.lulu_cover_url = luluCoverUrl;
+        orderData.lulu_interior_url = luluInteriorUrl;
+        let luluJobId = null;
+        try {
+            const shippingAddress = {
+                name: orderData.company_name || 'Customer',
+                street1: '123 Test St', // We will need to pull this from Shopify payloads eventually
+                city: 'Raleigh',
+                state_code: 'NC',
+                postcode: '27601',
+                country_code: 'US'
+            };
+            const jobData = await luluService.createPrintJob(orderData, shippingAddress, 1);
+            if (jobData && jobData.id) {
+                luluJobId = jobData.id.toString();
+            }
+        } catch (e) {
+            console.error("Failed to create Lulu Print Job:", e);
+        }
+
         const { error: finalUpdateError } = await supabase
             .from('b2b_orders')
             .update({
-                status: 'completed'
+                status: 'completed',
+                lulu_cover_url: luluCoverUrl,
+                lulu_interior_url: luluInteriorUrl,
+                lulu_job_id: luluJobId
             })
             .eq('order_id', orderData.order_id);
 

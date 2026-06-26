@@ -104,7 +104,7 @@
             letter-spacing: 0.05em;
         }
 
-        input[type="text"], input[type="tel"], input[type="url"], select, textarea {
+        input[type="text"], input[type="tel"], input[type="url"], input[type="number"], select, textarea {
             width: 100%;
             background: var(--input-bg);
             border: 1px solid var(--glass-border);
@@ -116,11 +116,27 @@
             transition: var(--transition);
         }
 
+        /* Prominent Quantity Input styling */
+        input[type="number"] {
+            font-size: 1.5rem;
+            font-weight: 700;
+            padding: 0.75rem 1.25rem;
+        }
+        
+        /* Make up/down spinner buttons more prominent in webkit */
+        input[type="number"]::-webkit-inner-spin-button,
+        input[type="number"]::-webkit-outer-spin-button {
+            opacity: 1;
+            height: 40px;
+            width: 25px;
+            cursor: pointer;
+        }
+
         select option { background: var(--bg-dark); }
 
         textarea {
             resize: vertical;
-            min-height: 80px;
+            min-height: 150px;
         }
 
         input:focus, select:focus, textarea:focus {
@@ -438,7 +454,7 @@
                 
                 <div class="form-group">
                     <label for="quantity">Quantity ($7.99 + tax each, Free Shipping)</label>
-                    <input type="number" id="quantity" min="1" value="1" placeholder="Enter quantity">
+                    <input type="number" id="quantity" min="1" max="100" value="1" placeholder="Enter quantity">
                     <p style="color: var(--text-muted); font-size: 0.85rem; margin-top: 0.5rem; line-height: 1.4;">Need 50 or more? Please email <a href="mailto:info@250proud.net" style="color: var(--accent-blue); text-decoration: none;">info@250proud.net</a> for a custom quote.</p>
                 </div>
 

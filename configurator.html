@@ -758,7 +758,7 @@
                 
                 <div style="background-color: rgba(212, 175, 55, 0.1); border-left: 4px solid #D4AF37; padding: 1rem; border-radius: 4px; margin-bottom: 2rem;">
                     <strong style="color: white; display: block; margin-bottom: 0.3rem;">⚠️ Important Delivery Note</strong>
-                    <p style="margin: 0; color: #e2e8f0; font-size: 0.9rem;">Your custom PDFs and access to the Marketing Resource Center will be emailed to you immediately after checkout. <strong>Please check your Spam or Junk folder</strong> if you do not see the email in your inbox within 2 minutes.</p>
+                    <p id="deliveryNoteText" style="margin: 0; color: #e2e8f0; font-size: 0.9rem;">Your custom PDFs and access to the Marketing Resource Center will be emailed to you immediately after checkout. <strong>Please check your Spam or Junk folder</strong> if you do not see the email in your inbox within 2 minutes.</p>
                 </div>
                 
                 <div class="preview-iframe-wrapper" style="display: flex; justify-content: center; align-items: flex-start; background: rgba(0,0,0,0.2); padding: 2rem; border-radius: 12px; border: 1px solid var(--glass-border); overflow: hidden; height: 600px;">
@@ -1426,6 +1426,13 @@
                     
                     // Note: file inputs cannot be prefilled programmatically for security reasons.
                     // We will just leave them empty and the backend will retain existing images if no new files are uploaded.
+                    
+                    
+                    // Update delivery note for edit mode
+                    const deliveryNoteText = document.getElementById('deliveryNoteText');
+                    if (deliveryNoteText) {
+                        deliveryNoteText.innerHTML = "Your updated custom PDFs will be regenerated and emailed to you immediately. <strong>Please check your Spam or Junk folder</strong> if you do not see the email in your inbox within 2 minutes.";
+                    }
                     
                     updatePreview(); // render the text changes
                 } catch(e) {

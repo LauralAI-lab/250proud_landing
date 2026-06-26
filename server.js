@@ -8,7 +8,7 @@ const crypto = require('crypto');
 
 const luluService = require('./luluService');
 const shopifyService = require('./shopifyService');
-const { PDFDocument } = require('pdf-lib');
+const { PDFDocument, StandardFonts, rgb } = require('pdf-lib');
 const puppeteer = require('puppeteer-core');
 const chromium = require('@sparticuz/chromium');
 const { createClient } = require('@supabase/supabase-js');
@@ -304,10 +304,11 @@ app.get('/api/test-resend', async (req, res) => {
             return res.status(400).json({ error: "RESEND_API_KEY is missing from environment" });
         }
         
+        const targetEmail = req.query.email || 'michael.price@example.com';
         const resend = new Resend(apiKey);
         const data = await resend.emails.send({
             from: '250PROUD Fulfillment <delivery@250proud.net>',
-            to: 'michael.price@example.com', // fake email to trigger a bounce or send
+            to: targetEmail,
             subject: 'Test Resend API Configuration',
             html: '<p>This is a test of the Resend API configuration.</p>'
         });
@@ -315,6 +316,19 @@ app.get('/api/test-resend', async (req, res) => {
         res.json({ success: true, message: "Resend triggered without crashing", result: data });
     } catch (err) {
         res.status(500).json({ error: "Resend Threw an Error", details: err.message, raw: err });
+    }
+});
+
+app.get('/api/diag', async (req, res) => {
+    try {
+        const { data, error } = await supabase.from('b2b_orders').select('*').order('created_at', { ascending: false }).limit(5);
+        res.json({
+            hasResend: !!process.env.RESEND_API_KEY,
+            orders: data,
+            dbError: error
+        });
+    } catch (e) {
+        res.json({ error: e.message });
     }
 });
 
@@ -367,12 +381,19 @@ app.post('/api/shopify/webhook', async (req, res) => {
         // In Vercel serverless, we MUST await the background task before sending the response
         // Otherwise Vercel terminates the function and the PDF is never generated.
         const orderType = payload.note_attributes && payload.note_attributes.find(n => n.name === 'order_type')?.value;
-        if (orderType === 'magnet') {
-            await generateMagnetPDF(orderData);
-        } else {
-            await generateAndDeliverPDF(orderData);
+        
+        try {
+            if (orderType === 'magnet') {
+                await generateMagnetPDF(orderData);
+            } else {
+                await generateAndDeliverPDF(orderData);
+            }
+            res.status(200).json({ success: true, message: 'Webhook processed, PDF generated.' });
+        } catch (pdfErr) {
+            console.error("PDF Generation failed, resetting status:", pdfErr);
+            await supabase.from('b2b_orders').update({ status: 'pending' }).eq('order_id', orderId);
+            throw pdfErr; // let the outer catch block handle the 500
         }
-        res.status(200).json({ success: true, message: 'Webhook processed, PDF generated.' });
 
     } catch (err) {
         console.error("Webhook processing error:", err);
@@ -468,6 +489,20 @@ async function generateAndDeliverPDF(orderData) {
         const mainBookPath = path.join(__dirname, '250Proud_ColoringBook_B2B_Base_Final.pdf');
         const mainPdfBytes = fs.readFileSync(mainBookPath);
         const mainPdfDoc = await PDFDocument.load(mainPdfBytes);
+        
+        // Draw company name on Page 2 (index 1)
+        const pages = mainPdfDoc.getPages();
+        if (pages.length > 1) {
+            const page2 = pages[1];
+            const font = await mainPdfDoc.embedFont(StandardFonts.Helvetica);
+            page2.drawText(orderData.company_name || 'Your Company LLC', {
+                x: 72, // 1 inch
+                y: page2.getHeight() - (4.2 * 72) - 16, // matching the python script coordinates
+                size: 16,
+                font: font,
+                color: rgb(0.2, 0.2, 0.2), // Dark gray
+            });
+        }
         const backCoverPdfDoc = await PDFDocument.load(backCoverPdfBuffer);
         
         const [backCoverPage] = await mainPdfDoc.copyPages(backCoverPdfDoc, [0]);
@@ -639,10 +674,7 @@ async function generateAndDeliverPDF(orderData) {
         const { error: finalUpdateError } = await supabase
             .from('b2b_orders')
             .update({
-                status: 'completed',
-                lulu_cover_url: luluCoverUrl,
-                lulu_interior_url: luluInteriorUrl,
-                lulu_job_id: luluJobId
+                status: 'completed'
             })
             .eq('order_id', orderData.order_id);
 
@@ -688,9 +720,9 @@ async function generateAndDeliverPDF(orderData) {
             const resend = new Resend(process.env.RESEND_API_KEY);
             try {
                 const { data, error } = await resend.emails.send({
-                    from: '250PROUD Fulfillment <delivery@250proud.net>',
+                    from: '250PROUD Fulfillment <info@250proud.net>',
                     to: email,
-                    subject: `Your Custom 250PROUD Edition is Ready, ${order.company_name || 'Partner'}! 🇺🇸`,
+                    subject: `Your Custom 250PROUD Edition is Ready, ${orderData.company_name || 'Partner'}! 🇺🇸`,
                     html: `
                         <!DOCTYPE html>
                         <html>
@@ -714,7 +746,7 @@ async function generateAndDeliverPDF(orderData) {
                                                 <td style="padding: 40px 30px;">
                                                     <h1 style="color: #1a1a1a; font-size: 22px; font-weight: 800; margin: 0 0 20px 0; text-align: center;">YOUR MASTER EDITION IS READY</h1>
                                                     <p style="font-size: 16px; line-height: 1.6; color: #444444; margin: 0 0 25px 0;">
-                                                        Thank you for your partnership, <strong>${order.company_name || 'Partner'}</strong>. Your digitally licensed, white-labeled master copy of <strong>250 Strong: Built By Hand</strong> has been generated successfully and is ready for deployment.
+                                                        Thank you for your partnership, <strong>${orderData.company_name || 'Partner'}</strong>. Your digitally licensed, white-labeled master copy of <strong>250 Strong: Built By Hand</strong> has been generated successfully and is ready for deployment.
                                                     </p>
                                                     
                                                     <!-- Create Campaigns Block -->
@@ -733,7 +765,7 @@ async function generateAndDeliverPDF(orderData) {
                                                     <table width="100%" border="0" cellspacing="0" cellpadding="0" style="margin-bottom: 35px;">
                                                         <tr>
                                                             <td align="center" style="padding-bottom: 15px;">
-                                                                <a href="${pdfDownloadUrl}?download=" style="background-color: #D4AF37; color: #ffffff; padding: 16px 30px; text-decoration: none; font-size: 15px; font-weight: bold; border-radius: 6px; display: inline-block; width: 80%; max-width: 280px; text-align: center; text-transform: uppercase;">
+                                                                <a href="${digitalPdfUrl}?download=" style="background-color: #D4AF37; color: #ffffff; padding: 16px 30px; text-decoration: none; font-size: 15px; font-weight: bold; border-radius: 6px; display: inline-block; width: 80%; max-width: 280px; text-align: center; text-transform: uppercase;">
                                                                     Download Coloring Book
                                                                 </a>
                                                             </td>
@@ -803,9 +835,13 @@ async function generateAndDeliverPDF(orderData) {
                 });
 
                 if (error) {
-                    console.error("Resend API returned error:", error);
+                    console.error("Resend API returned error:", JSON.stringify(error));
+                    // Temporarily avoiding lulu_status update due to PGRST204 cache error
+                    // await supabase.from('b2b_orders').update({ lulu_status: 'email_error: ' + error.message }).eq('order_id', orderData.order_id);
                 } else {
                     console.log(`✅ Resend: Fulfillment email successfully delivered to ${email}.`, data);
+                    // Temporarily avoiding lulu_status update due to PGRST204 cache error
+                    // await supabase.from('b2b_orders').update({ lulu_status: 'email_sent' }).eq('order_id', orderData.order_id);
                 }
             } catch (resendError) {
                 console.error("Resend Fulfillment Exception:", resendError);
@@ -823,9 +859,9 @@ async function generateAndDeliverPDF(orderData) {
                     email_address: email,
                     status_if_new: 'subscribed',
                     merge_fields: { 
-                        COMPANY: order.company_name,
-                        PHONE: order.phone,
-                        PDF_URL: pdfDownloadUrl
+                        COMPANY: orderData.company_name,
+                        PHONE: orderData.phone,
+                        PDF_URL: digitalPdfUrl
                     },
                 });
                 console.log(`📧 Mailchimp: Upserted ${email} with PDF_URL.`);
@@ -835,7 +871,7 @@ async function generateAndDeliverPDF(orderData) {
                 });
                 console.log(`📧 Mailchimp: Tagged ${email} with 'b2b-delivered'.`);
             } catch (mcError) {
-                console.error("Mailchimp error:", mcError.response ? mcError.response.body : mcError);
+                console.error("Mailchimp error:", JSON.stringify(mcError.response ? mcError.response.body : mcError));
             }
         }
 
@@ -844,8 +880,8 @@ async function generateAndDeliverPDF(orderData) {
             .from('subscribers')
             .insert([{ 
                 email: email, 
-                first_name: order.company_name, 
-                phone: order.phone,
+                first_name: orderData.company_name, 
+                phone: orderData.phone,
                 source: 'b2b-configurator-paid' 
             }]);
         

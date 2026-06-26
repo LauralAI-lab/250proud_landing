@@ -625,17 +625,17 @@
                 <div class="form-row">
                     <div class="form-group">
                         <label class="form-label" id="labelCompanyName" for="companyName">Company Name / Brokerage <span class="text-danger">*</span></label>
-                        <input type="text" id="companyName" placeholder="e.g. Acme Realty" maxlength="40">
+                        <input type="text" id="companyName" placeholder="e.g. Acme Realty" maxlength="40" required>
                     </div>
                     <div class="form-group">
                         <label for="phone">Phone Number</label>
-                        <input type="tel" id="phone" placeholder="(555) 123-4567" maxlength="30">
+                        <input type="tel" id="phone" placeholder="123-456-7890" pattern="^\d{3}-\d{3}-\d{4}$" maxlength="12" title="Please use this format for phone: 123-456-7890" required>
                     </div>
                 </div>
                 <div class="form-row">
                     <div class="form-group">
                         <label for="email">Email Address</label>
-                        <input type="email" id="email" placeholder="agent@example.com" maxlength="40">
+                        <input type="email" id="email" placeholder="agent@example.com" maxlength="40" required>
                     </div>
                     <div class="form-group">
                         <label for="website">Website URL</label>
@@ -671,8 +671,11 @@
                             <button type="button" class="btn btn-secondary" style="padding: 0.4rem 0.8rem; font-size: 0.8rem; border-radius: 8px; color: #D4AF37; border-color: #D4AF37;" onclick="generateAICopy()">✨ Generate with AI</button>
                         </div>
                     </label>
-                    <textarea id="copy" placeholder="Replace this paragraph with your custom copy here to explain your services..." maxlength="350">America was built on the idea of home—a place to raise a family, build a future, and put down roots. For 250 years, the American dream of homeownership has driven our nation forward. At Our Company, we help families find their piece of that dream. Enjoy this exclusive 24-page coloring book celebrating the history and heroes of the land we love.</textarea>
-                    <small id="copy-count" style="display: block; text-align: right; color: #666; margin-top: 5px; font-size: 0.8rem;">0 / 350 characters</small>
+                    <div style="background: rgba(212, 175, 55, 0.1); border-left: 3px solid #D4AF37; padding: 10px; margin-bottom: 10px; border-radius: 4px; font-size: 0.85rem; color: #444;">
+                        <strong>✍️ Keep it punchy!</strong> To ensure your message looks perfect on the printed page, there is a strict <strong>400-character limit</strong>.
+                    </div>
+                    <textarea id="copy" placeholder="Replace this paragraph with your custom copy here to explain your services..." maxlength="400">America was built on the idea of home—a place to raise a family, build a future, and put down roots. For 250 years, the American dream of homeownership has driven our nation forward. At Our Company, we help families find their piece of that dream. Enjoy this exclusive 24-page coloring book celebrating the history and heroes of the land we love.</textarea>
+                    <small id="copy-count" style="display: block; text-align: right; color: #666; margin-top: 5px; font-size: 0.8rem;">0 / 400 characters</small>
                 </div>
             </div>
 
@@ -941,7 +944,7 @@
             const copyEl = document.getElementById('copy');
             const copyCount = document.getElementById('copy-count');
             if (copyEl && copyCount) {
-                copyCount.textContent = `${copyEl.value.length} / 350 characters`;
+                copyCount.textContent = `${copyEl.value.length} / 400 characters`;
             }
         }
 
@@ -1091,8 +1094,26 @@
             }
         }
 
+        function validateStep(step) {
+            const stepContent = document.getElementById(`step${step}`);
+            if (!stepContent) return true;
+            const inputs = stepContent.querySelectorAll('input[required], select[required], textarea[required]');
+            for (let input of inputs) {
+                if (!input.checkValidity()) {
+                    input.reportValidity();
+                    // Fallback alert just in case the browser bubble gets hidden
+                    const fieldName = input.previousElementSibling ? input.previousElementSibling.innerText.replace('*', '').trim() : input.name || input.id;
+                    const customMessage = input.title ? input.title : input.validationMessage;
+                    alert(`Error in "${fieldName}": ${customMessage}`);
+                    return false;
+                }
+            }
+            return true;
+        }
+
         btnNext.addEventListener('click', () => {
             if (currentStep < totalSteps) {
+                if (!validateStep(currentStep)) return;
                 const isEditMode = new URLSearchParams(window.location.search).get('mode') === 'edit';
                 currentStep++;
                 if (isEditMode && currentStep === 4) currentStep++;
@@ -1260,6 +1281,8 @@
                 btnGenerate.style.background = '#10B981';
                 btnGenerate.style.boxShadow = '0 4px 14px 0 rgba(16, 185, 129, 0.39)';
                 
+                alert("You are being redirected to checkout. Once complete, your custom book and marketing materials will be emailed to you immediately.");
+                
                 // Redirect instantly to Shopify!
                 window.location.href = data.checkoutUrl;
             } catch (err) {
@@ -1395,6 +1418,11 @@
                         heroUrl: book.hero_path,
                         interiorUrl: book.interior_path
                     };
+                    
+                    if (book.hero_path) document.getElementById('heroText').innerHTML = '<span style="color: #10B981; font-weight: bold;">✅ Saved Image Active</span><br>Click to overwrite';
+                    if (book.interior_path) document.getElementById('interiorText').innerHTML = '<span style="color: #10B981; font-weight: bold;">✅ Saved Image Active</span><br>Click to overwrite';
+                    if (book.logo_path) document.getElementById('logoText').innerHTML = '<span style="color: #10B981; font-weight: bold;">✅ Saved Image Active</span><br>Click to overwrite';
+                    if (book.headshot_path) document.getElementById('headshotText').innerHTML = '<span style="color: #10B981; font-weight: bold;">✅ Saved Image Active</span><br>Click to overwrite';
                     
                     // Note: file inputs cannot be prefilled programmatically for security reasons.
                     // We will just leave them empty and the backend will retain existing images if no new files are uploaded.

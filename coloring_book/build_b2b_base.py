@@ -138,7 +138,7 @@ def draw_intro(c):
                  "who did extraordinary things (most of them without a smartphone or a GPS). This coloring book isn't a history "
                  "test. It's a tour. We picked 20 moments, people, and places across 250 years that we think are genuinely worth "
                  "knowing, including a few you've probably never heard of. Grab your colored pencils. Or don't. Either way, the "
-                 "stories are worth reading. \n\nYour Company Name")
+                 "stories are worth reading.")
     
     y = PAGE_HEIGHT - 4.2 * inch
     c.setFont("OpenSans", 16)

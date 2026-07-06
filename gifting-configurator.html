@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>250PROUD™ | Send America 250 Bundle as a Gift</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=Oswald:wght@400;700&family=Outfit:wght@400;600;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --navy-dark: #07121e;
+            --navy-blue: #0b1a2b;
+            --burgundy: #4A1434;
+            --gold: #E7C97E;
+            --white: #ffffff;
+            --gray-light: rgba(255, 255, 255, 0.15);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, var(--navy-dark) 0%, var(--navy-blue) 100%);
+            color: var(--white);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .card {
+            background: rgba(74, 20, 52, 0.35);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 24px;
+            width: 100%;
+            max-width: 600px;
+            padding: 40px;
+            box-shadow: 0 30px 60px rgba(0, 0, 0, 0.4);
+            text-align: center;
+        }
+
+        .logo {
+            width: 140px;
+            margin-bottom: 25px;
+        }
+
+        h1 {
+            font-family: 'Outfit', sans-serif;
+            font-size: 2.2rem;
+            font-weight: 800;
+            color: var(--white);
+            margin-bottom: 10px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        h1 span {
+            color: var(--gold);
+        }
+
+        .subtitle {
+            font-size: 1.05rem;
+            color: rgba(255, 255, 255, 0.7);
+            margin-bottom: 35px;
+            line-height: 1.5;
+        }
+
+        form {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            text-align: left;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        label {
+            font-family: 'Outfit', sans-serif;
+            font-size: 0.95rem;
+            font-weight: 600;
+            color: var(--gold);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        input, textarea {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            border-radius: 12px;
+            padding: 15px 18px;
+            font-size: 1rem;
+            color: var(--white);
+            font-family: 'Inter', sans-serif;
+            transition: all 0.3s;
+            width: 100%;
+        }
+
+        input:focus, textarea:focus {
+            outline: none;
+            border-color: var(--gold);
+            background: rgba(255, 255, 255, 0.08);
+            box-shadow: 0 0 10px rgba(231, 201, 126, 0.15);
+        }
+
+        textarea {
+            resize: vertical;
+            min-height: 120px;
+        }
+
+        .submit-btn {
+            background: var(--gold);
+            color: var(--burgundy);
+            font-family: 'Outfit', sans-serif;
+            font-size: 1.2rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            border: none;
+            border-radius: 12px;
+            padding: 18px;
+            cursor: pointer;
+            box-shadow: 0 8px 25px rgba(231, 201, 126, 0.25);
+            transition: all 0.3s;
+            margin-top: 15px;
+            text-align: center;
+        }
+
+        .submit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 30px rgba(231, 201, 126, 0.35);
+        }
+
+        .back-link {
+            display: inline-block;
+            margin-top: 25px;
+            color: rgba(255, 255, 255, 0.5);
+            text-decoration: none;
+            font-size: 0.95rem;
+            transition: color 0.3s;
+        }
+
+        .back-link:hover {
+            color: var(--gold);
+        }
+    </style>
+</head>
+<body>
+
+    <div class="card">
+        <img src="nc_assets/img/logo.png" alt="250PROUD Logo" class="logo">
+        <h1>Send as a <span>Gift</span></h1>
+        <p class="subtitle">Personalize your order. After checkout, your recipient will receive a beautiful co-branded digital email card showing all the patriotic physical items headed to their mailbox!</p>
+
+        <form id="gifting-form">
+            <div class="form-group">
+                <label for="sender-name">Your Name</label>
+                <input type="text" id="sender-name" placeholder="E.g., Uncle Sam" required>
+            </div>
+
+            <div style="display: flex; gap: 20px; flex-wrap: wrap;">
+                <div class="form-group" style="flex: 1; min-width: 240px;">
+                    <label for="rec-name">Recipient's Name</label>
+                    <input type="text" id="rec-name" placeholder="E.g., Sarah Smith" required>
+                </div>
+                <div class="form-group" style="flex: 1; min-width: 240px;">
+                    <label for="rec-email">Recipient's Email</label>
+                    <input type="email" id="rec-email" placeholder="E.g., sarah@example.com" required>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="gift-message">Your Gift Message</label>
+                <textarea id="gift-message" placeholder="Write a short message to print on their digital delivery postcard..." required></textarea>
+            </div>
+
+            <button type="submit" class="submit-btn">Proceed to Secure Checkout</button>
+        </form>
+
+        <a href="/test-index.html" class="back-link">← Return to Main Page</a>
+    </div>
+
+    <script>
+        document.getElementById('gifting-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const senderName = document.getElementById('sender-name').value.trim();
+            const recName = document.getElementById('rec-name').value.trim();
+            const recEmail = document.getElementById('rec-email').value.trim();
+            const giftMsg = document.getElementById('gift-message').value.trim();
+            
+            // Shopify Variant ID for Celebration Bundle
+            // We use the cart permalink method to inject these as order attributes
+            const shopifyUrl = `https://lauralai-one.myshopify.com/cart/add?id=celebration-bundle&quantity=1` +
+                `&attributes[Gift_Sender]=${encodeURIComponent(senderName)}` +
+                `&attributes[Gift_Recipient_Name]=${encodeURIComponent(recName)}` +
+                `&attributes[Gift_Recipient_Email]=${encodeURIComponent(recEmail)}` +
+                `&attributes[Gift_Message]=${encodeURIComponent(giftMsg)}`;
+                
+            window.location.href = shopifyUrl;
+        });
+    </script>
+</body>
+</html>

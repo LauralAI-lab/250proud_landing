@@ -197,10 +197,7 @@
             const recEmail = document.getElementById('rec-email').value.trim();
             const giftMsg = document.getElementById('gift-message').value.trim();
             
-            // TODO: Once you create the Celebration Bundle in your Shopify Admin,
-            // replace 'REPLACE_WITH_YOUR_NUMERIC_VARIANT_ID' below with the actual numeric Variant ID.
-            // E.g., const variantId = "456123789999";
-            const variantId = "REPLACE_WITH_YOUR_NUMERIC_VARIANT_ID"; 
+            const variantId = "46731111727303"; 
             
             // We use the cart permalink method to inject these as order attributes
             const shopifyUrl = `https://lauralai-one.myshopify.com/cart/add?id=${variantId}&quantity=1` +

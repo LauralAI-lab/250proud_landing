@@ -804,33 +804,28 @@
     <!-- SLIDE 9: MAGNOLIA CHARM -->
     <section class="slide" id="slide-9">
       <div class="slide-card">
-        <h1 class="slide-title"><span class="number">08</span> Magnolia Charm</h1>
+        <h1 class="slide-title"><span class="number">08</span> Cash Engines: Magnolia Charm</h1>
         <div class="slide-content two-col">
           <div>
             <img src="/socials/magnolia_charm_final_dark.png" alt="Magnolia Charm Logo" style="max-width: 180px; margin-bottom: 20px; display: block;">
-            <span class="badge badge-primary">Live & Web Commerce</span>
-            <span class="badge badge-blue">Procured & Ready</span>
+            <span class="badge badge-primary">Infrastructure & PaaS Proof</span>
+            <span class="badge badge-blue">Model Validated</span>
             <p style="margin-top: 15px; margin-bottom: 20px; font-size: 22px; color: var(--text-main); font-weight: 300;">
-              Capture the Moment. Keep the Memory.
+              A high-margin, zero-touch production engine that validates our Sovereign stack in the real world.
             </p>
-            <p style="font-size: 17px; margin-bottom: 25px;">
-              A high-velocity magnet venture for live events and B2B orders. All physical production equipment and raw supplies have already been procured. Powered by a custom-developed web app enabling instant photo uploads and ordering on-site or online.
-            </p>
-            <div class="metrics-grid">
-              <div class="metrics-card">
-                <div class="metric-value">Procured</div>
-                <div class="metric-label">Equipment & Supplies</div>
-              </div>
-              <div class="metric-card">
-                <div class="metric-value">Custom App</div>
-                <div class="metric-label">Web & Live Uploads</div>
-              </div>
+            <div style="cursor: pointer; margin-top: 25px; padding: 20px; background: rgba(255,255,255,0.02); border: 1px dashed rgba(212, 175, 55, 0.4); border-radius: 16px; transition: all 0.3s;" onclick="openModal('mc-modal')" onmouseover="this.style.background='rgba(212, 175, 55, 0.05)'" onmouseout="this.style.background='rgba(255, 255, 255, 0.02)'">
+              <h3 style="color: var(--primary); font-size: 16px; margin-bottom: 5px; font-weight: 600;">Operational Pillars</h3>
+              <p style="color: var(--text-muted); font-size: 14px; margin: 0;">Automated routing, high-margin velocity, and infrastructure proof. Click to explore pillars →</p>
             </div>
           </div>
           <div class="project-meta">
             <div class="meta-box">
-              <h3>Market Opportunity</h3>
-              <p>Combines immediate, high-margin cash flow at festivals/weddings with robust B2B corporate branding orders and online direct-to-door sales.</p>
+              <h3>Infrastructure Proof</h3>
+              <p>Our proof of concept for the Sovereign Hearth headless production stack. We are transitioning a high-velocity physical asset venture into a generalized Platform as a Service (PaaS) blueprint.</p>
+            </div>
+            <div class="meta-box">
+              <h3>PaaS Scaling Model</h3>
+              <p>Moving from a single localized business to a turnkey event-tech platform. Local operators license our automated order-routing, raw supply chains, and co-branded storefronts.</p>
             </div>
           </div>
         </div>
@@ -1042,6 +1037,55 @@
         }
       }
     });
+
+    // Modal Control Functions
+    window.openModal = function(id) {
+      const modal = document.getElementById(id);
+      if (modal) {
+        modal.style.display = 'flex';
+      }
+    };
+
+    window.closeModal = function(id) {
+      const modal = document.getElementById(id);
+      if (modal) {
+        modal.style.display = 'none';
+      }
+    };
   </script>
+
+  <!-- Modal Overlay for Magnolia Charm -->
+  <div id="mc-modal" style="display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(7, 11, 20, 0.85); z-index: 1000; justify-content: center; align-items: center; backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px);" onclick="closeModal('mc-modal')">
+    <div style="background: rgba(15, 23, 42, 0.95); border: 1px solid rgba(255, 255, 255, 0.1); padding: 45px 55px; border-radius: 24px; max-width: 750px; width: 90%; position: relative; box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5); font-family: 'Outfit', sans-serif;" onclick="event.stopPropagation()">
+      
+      <!-- Top gradient border accent -->
+      <div style="position: absolute; top: 0; left: 0; width: 100%; height: 6px; background: linear-gradient(90deg, var(--accent-blue), var(--primary), var(--electric-blue)); border-top-left-radius: 24px; border-top-right-radius: 24px;"></div>
+      
+      <button onclick="closeModal('mc-modal')" style="position: absolute; top: 20px; right: 25px; background: none; border: none; color: var(--text-muted); cursor: pointer; font-size: 28px; font-weight: 300; transition: color 0.2s;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='var(--text-muted)'">&times;</button>
+      
+      <h2 style="color: var(--primary); font-size: 28px; font-weight: 800; letter-spacing: -0.5px; margin-bottom: 25px; display: flex; align-items: center; gap: 10px;">
+        Magnolia Charm Operational Pillars
+      </h2>
+      
+      <div style="display: grid; gap: 20px; margin-bottom: 30px; text-align: left;">
+        <div style="border-bottom: 1px solid rgba(255,255,255,0.06); padding-bottom: 15px;">
+          <h4 style="color: #fff; font-size: 17px; margin-bottom: 6px; font-weight: 600; display: flex; align-items: center; gap: 8px;">⚡ Automated Routing</h4>
+          <p style="color: var(--text-muted); font-size: 15px; margin: 0; line-height: 1.5;">Raw customer uploads transformed into production-ready output with zero human intervention.</p>
+        </div>
+        <div style="border-bottom: 1px solid rgba(255,255,255,0.06); padding-bottom: 15px;">
+          <h4 style="color: #fff; font-size: 17px; margin-bottom: 6px; font-weight: 600; display: flex; align-items: center; gap: 8px;">📈 High-Margin Velocity</h4>
+          <p style="color: var(--text-muted); font-size: 15px; margin: 0; line-height: 1.5;">Rapid, high-ROI physical asset delivery powered by real-world, high-traffic event intelligence.</p>
+        </div>
+        <div>
+          <h4 style="color: #fff; font-size: 17px; margin-bottom: 6px; font-weight: 600; display: flex; align-items: center; gap: 8px;">🛠️ Infrastructure Proof</h4>
+          <p style="color: var(--text-muted); font-size: 15px; margin: 0; line-height: 1.5;">The live stress-test for the Sovereign Hearth headless production stack, proving out automated routing systems before commercialization.</p>
+        </div>
+      </div>
+      
+      <div style="text-align: center; border-top: 1px solid rgba(255,255,255,0.06); padding-top: 25px;">
+        <a href="https://lauralai.llc/schedule" target="_blank" style="display: inline-block; padding: 12px 30px; background: var(--primary); color: #000; text-decoration: none; font-weight: 600; border-radius: 30px; font-size: 15px; transition: all 0.3s; box-shadow: 0 4px 15px rgba(212, 175, 55, 0.2);" onmouseover="this.style.opacity='0.9'; this.style.boxShadow='0 4px 20px rgba(212, 175, 55, 0.4)'" onmouseout="this.style.opacity='1'; this.style.boxShadow='0 4px 15px rgba(212, 175, 55, 0.2)'">Book an Executive Briefing</a>
+      </div>
+    </div>
+  </div>
 </body>
 </html>

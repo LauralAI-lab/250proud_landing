@@ -980,88 +980,23 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            margin-top: 4rem;
+            margin-top: 2rem;
             position: relative;
-            height: 450px;
-            perspective: 1000px;
             max-width: 1000px;
             margin-left: auto;
             margin-right: auto;
         }
-
-        .bundle-item {
-            position: absolute;
-        }
-
-        .bundle-magnets {
-            width: 220px;
-            height: 300px;
-            left: 50%;
-            transform: translateX(-130%) translateY(40px) rotate(-10deg);
-            z-index: 1;
-            position: absolute;
-        }
-        .mag-item {
-            position: absolute;
-            width: 100px;
+        .hero-composite-img {
+            width: 100%;
+            max-width: 900px;
             height: auto;
-            border-radius: 4px;
-            box-shadow: 0 8px 20px rgba(0,0,0,0.4);
-            border: 2px solid white;
-            transition: all 0.4s cubic-bezier(0.25, 1, 0.5, 1);
+            display: block;
+            filter: drop-shadow(0 20px 45px rgba(0,0,0,0.5));
         }
-        .mag-landscape {
-            width: 130px;
-        }
-        .mag-1 { transform: rotate(-12deg) translate(-10px, 0); z-index: 4; }
-        .mag-2 { transform: rotate(4deg) translate(5px, 15px); z-index: 3; }
-        .mag-3 { transform: rotate(-10deg) translate(-5px, 110px); z-index: 2; }
-        .mag-4 { transform: rotate(8deg) translate(30px, 120px); z-index: 1; }
-
-        .hero-bundle-stack:hover .mag-1 { transform: rotate(-22deg) translate(-30px, -20px); }
-        .hero-bundle-stack:hover .mag-2 { transform: rotate(-5deg) translate(-10px, -10px); }
-        .hero-bundle-stack:hover .mag-3 { transform: rotate(-8deg) translate(-25px, 15px); }
-        .hero-bundle-stack:hover .mag-4 { transform: rotate(15deg) translate(15px, 10px); }
-
-        .bundle-sticker {
-            width: 200px;
-            right: 50%;
-            transform: translateX(130%) translateY(40px) rotate(12deg);
-            z-index: 1;
-            position: absolute;
-        }
-        .bundle-sticker img {
-            width: 100%;
-            filter: drop-shadow(0 10px 20px rgba(0,0,0,0.5));
-            transition: all 0.4s cubic-bezier(0.25, 1, 0.5, 1);
-        }
-        .hero-bundle-stack:hover .bundle-sticker img {
-            transform: rotate(18deg) scale(1.05);
-        }
-
-        .bundle-book {
-            width: 320px;
-            left: 50%;
-            transform: translateX(-50%) translateY(-20px);
-            z-index: 2;
-            position: absolute;
-        }
-        .bundle-book img {
-            width: 100%;
-            filter: drop-shadow(0 20px 40px rgba(0,0,0,0.6));
-            transition: all 0.4s cubic-bezier(0.25, 1, 0.5, 1);
-        }
-        .hero-bundle-stack:hover .bundle-book img {
-            transform: translateY(-20px) scale(1.03);
-        }
-
         @media (max-width: 900px) {
-            .hero-bundle-stack { height: 280px; margin-top: 2rem; }
-            .bundle-magnets { width: 150px; transform: translateX(-95%) translateY(30px) rotate(-10deg); }
-            .mag-item { width: 65px; }
-            .mag-landscape { width: 85px; }
-            .bundle-sticker { width: 130px; transform: translateX(95%) translateY(30px) rotate(12deg); }
-            .bundle-book { width: 220px; transform: translateX(-50%) translateY(0); }
+            .hero-composite-img {
+                max-width: 650px;
+            }
         }
 
         /* Shop Now Button styles */
@@ -1170,20 +1105,7 @@
         
         <!-- CSS Tilted Bundle Stack -->
         <div class="hero-bundle-stack">
-            <div class="bundle-item bundle-magnets">
-                <img src="nc_assets/img/magnet/mag_001.jpg" class="mag-item mag-1" alt="Old Glory Magnet">
-                <img src="nc_assets/img/magnet/mag_002.jpg" class="mag-item mag-2" alt="Eagle Magnet">
-                <img src="nc_assets/img/magnet/mag_003.jpg" class="mag-item mag-landscape mag-3" alt="Gadsden Magnet">
-                <img src="nc_assets/img/magnet/mag_004.jpg" class="mag-item mag-landscape mag-4" alt="Home of the Brave Magnet">
-            </div>
-            
-            <div class="bundle-item bundle-sticker">
-                <img src="nc_assets/img/free_eagle_sticker_asset.png" alt="250Proud Heritage Eagle Sticker">
-            </div>
-            
-            <div class="bundle-item bundle-book">
-                <img src="nc_assets/img/generated_true_cover.png" alt="250PROUD Coloring Book">
-            </div>
+            <img src="nc_assets/img/hero_bundle_composite.png" alt="250PROUD Celebration Bundle" class="hero-composite-img">
         </div>
     </section>
 

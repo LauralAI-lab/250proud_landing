@@ -980,59 +980,23 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            margin-top: 4rem;
+            margin-top: 2rem;
             position: relative;
-            height: 450px;
-            perspective: 1000px;
             max-width: 1000px;
             margin-left: auto;
             margin-right: auto;
         }
-
-        .bundle-item {
-            position: absolute;
-        }
-
-        .bundle-cap {
-            width: 250px;
-            left: 50%;
-            transform: translateX(-140%) translateY(40px) rotate(-12deg);
-            z-index: 1;
-            background: #fff;
-            padding: 10px;
-            border-radius: 8px;
-            box-shadow: 0 15px 35px rgba(0,0,0,0.4);
-        }
-        .bundle-cap img { width: 100%; border-radius: 4px; }
-
-        .bundle-tee {
-            width: 250px;
-            right: 50%;
-            transform: translateX(140%) translateY(40px) rotate(12deg);
-            z-index: 1;
-            background: #fff;
-            padding: 10px;
-            border-radius: 8px;
-            box-shadow: 0 15px 35px rgba(0,0,0,0.4);
-        }
-        .bundle-tee img { width: 100%; border-radius: 4px; }
-
-        .bundle-book {
-            width: 340px;
-            left: 50%;
-            transform: translateX(-50%) translateY(-20px);
-            z-index: 2;
-        }
-        .bundle-book img {
+        .hero-composite-img {
             width: 100%;
-            filter: drop-shadow(0 30px 50px rgba(0,0,0,0.7));
+            max-width: 900px;
+            height: auto;
+            display: block;
+            filter: drop-shadow(0 20px 45px rgba(0,0,0,0.5));
         }
-
         @media (max-width: 900px) {
-            .hero-bundle-stack { height: 280px; margin-top: 2rem; }
-            .bundle-cap { width: 150px; transform: translateX(-100%) translateY(30px) rotate(-12deg); }
-            .bundle-tee { width: 150px; transform: translateX(100%) translateY(30px) rotate(12deg); }
-            .bundle-book { width: 220px; transform: translateX(-50%) translateY(0); }
+            .hero-composite-img {
+                max-width: 650px;
+            }
         }
 
         /* Shop Now Button styles */
@@ -1122,19 +1086,26 @@
 
     <section class="hero">
         <h1>THE OFFICIAL <span>250PROUD™</span> COLLECTION</h1>
-        <p class="urgency-text">Celebrate America's Semiquincentennial with the official 250PROUD™ Coloring Book and Apparel Collection. Sign up for our VIP list to receive a free digital coloring book today. Don't miss out on your opportunity to customize it for your digital marketing. The White Label program comes with free access to a full digital marketing center that includes scripts, graphics and much more!</p>
+        <p class="urgency-text" style="max-width: 900px; margin: 1.5rem auto 2.5rem; font-size: 1.25rem; line-height: 1.6; color: rgba(255,255,255,0.9); font-family: 'Inter', sans-serif;">
+            Celebrate America's Semiquincentennial with the official <strong>250PROUD™ Celebration Bundle</strong>—featuring our digital coloring book, premium USA-made magnets, and heritage sticker. 
+            <span style="display: block; margin-top: 10px; font-size: 1.15rem; color: #E7C97E;">
+                <strong>Looking to grow your business?</strong> White-label our digital coloring book to capture high-value local leads and build lasting goodwill.
+            </span>
+        </p>
+        
+        <!-- Dual CTAs directly in Hero -->
+        <div class="hero-ctas" style="display: flex; justify-content: center; gap: 20px; margin-bottom: 3rem; flex-wrap: wrap;">
+            <a href="#celebration-bundle" style="text-align: center; text-decoration: none; padding: 16px 32px; border-radius: 8px; font-weight: bold; background: #E7C97E; color: #4A1434; font-family: 'Outfit', sans-serif; font-size: 1.1rem; box-shadow: 0 4px 15px rgba(231, 201, 126, 0.3); transition: all 0.3s;">
+                Get the Celebration Bundle ($29)
+            </a>
+            <a href="#white-label-section" style="text-align: center; text-decoration: none; padding: 14px 30px; border-radius: 8px; font-weight: bold; background: transparent; color: #E7C97E; border: 2px solid #E7C97E; font-family: 'Outfit', sans-serif; font-size: 1.1rem; transition: all 0.3s;">
+                White-Label for Business
+            </a>
+        </div>
         
         <!-- CSS Tilted Bundle Stack -->
         <div class="hero-bundle-stack">
-            <div class="bundle-item bundle-cap" style="transform: translateX(-140%) translateY(40px) rotate(-12deg);">
-                <img src="nc_assets/img/eagle_claw_cap_live.jpg" alt="Eagle Claw Cap">
-            </div>
-            <div class="bundle-item bundle-tee" style="transform: translateX(140%) translateY(40px) rotate(12deg);">
-                <img src="nc_assets/img/eagle_blueprint_tee_live.jpg" alt="Blueprint T-Shirt">
-            </div>
-            <div class="bundle-item bundle-book" style="transform: translateX(-50%) translateY(-20px);">
-                <img src="nc_assets/img/generated_true_cover.png" alt="250PROUD Coloring Book">
-            </div>
+            <img src="nc_assets/img/hero_bundle_composite.png" alt="250PROUD Celebration Bundle" class="hero-composite-img">
         </div>
     </section>
 
@@ -1196,7 +1167,7 @@
 
                 <!-- CTAs -->
                 <div style="display: flex; flex-direction: column; gap: 15px;">
-                    <a href="https://magnoliacharm.net/cart/add?id=celebration-bundle&quantity=1" class="giveaway-submit-btn" style="text-align: center; text-decoration: none; width: 100%; display: block; font-family: 'Outfit', sans-serif; font-weight: bold; background: #E7C97E; color: #4A1434; padding: 18px; border-radius: 12px; font-size: 1.2rem; transition: all 0.3s; border: none; box-shadow: 0 4px 15px rgba(231, 201, 126, 0.3);">
+                    <a href="https://magnoliacharm.net/cart/add?id=46731111727303&quantity=1" class="giveaway-submit-btn" style="text-align: center; text-decoration: none; width: 100%; display: block; font-family: 'Outfit', sans-serif; font-weight: bold; background: #E7C97E; color: #4A1434; padding: 18px; border-radius: 12px; font-size: 1.2rem; transition: all 0.3s; border: none; box-shadow: 0 4px 15px rgba(231, 201, 126, 0.3);">
                         Order Celebration Bundle
                     </a>
                     
@@ -1206,7 +1177,7 @@
                 </div>
 
                 <p class="preview-disclaimer" style="margin-top: 20px; font-size: 0.8rem; color: rgba(255,255,255,0.4); text-align: center; line-height: 1.4;">
-                    100% Satisfaction Guarantee. Physical products ship within 2 business days. For support, contact orders@250proud.com.
+                    100% Satisfaction Guarantee. Physical products ship within 2 business days. For support, contact info@250proud.net.
                 </p>
             </div>
         </div>
@@ -1271,7 +1242,7 @@
         </div>
     </section>
 
-    <section class="usecases-section">
+    <section class="usecases-section" id="white-label-section">
         <h2 style="font-size: 2.5rem; color: var(--navy-dark); font-family: 'Oswald', sans-serif; text-transform: uppercase;">The Ultimate Digital Lead Magnet</h2>
         <p style="max-width: 800px; margin: 1rem auto; font-size: 1.15rem; color: #555; font-family: 'Inter', sans-serif;">Turn the 250PROUD™ coloring book into a lead generation machine for your business. White-label the digital PDF and distribute it instantly to your audience to drive massive engagement.</p>
         

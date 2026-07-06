@@ -417,34 +417,6 @@
 </head>
 <body>
 
-    <!-- STICKY COUNTDOWN BAR -->
-    <div class="mc-sticky-bar" id="mcsb-countdown">
-        <div class="mc-sticky-container">
-            <div class="mc-message">Celebrate 250 Years of Freedom</div>
-            
-            <div class="mc-countdown-wrapper">
-                <div class="mc-countdown-block">
-                    <span class="mc-number" id="mc-days">000</span>
-                    <span class="mc-label">d</span>
-                </div>
-                <div class="mc-countdown-block">
-                    <span class="mc-number" id="mc-hours">00</span>
-                    <span class="mc-label">h</span>
-                </div>
-                <div class="mc-countdown-block">
-                    <span class="mc-number" id="mc-minutes">00</span>
-                    <span class="mc-label">m</span>
-                </div>
-                <div class="mc-countdown-block">
-                    <span class="mc-number" id="mc-seconds">00</span>
-                    <span class="mc-label">s</span>
-                </div>
-            </div>
-
-            <a href="index.html" class="mc-btn-small">Get Early Access</a>
-        </div>
-    </div>
-
     <!-- MAIN HEADER -->
     <header>
         <div class="logo-container">
@@ -476,7 +448,7 @@
                     <p class="tih-fact" id="tih-fact-text">Loading the story...</p>
                     
                     <div style="display: flex; gap: 15px; flex-wrap: wrap; margin-top: 2rem;">
-                        <a href="index.html" class="tih-btn tih-btn-secondary">Claim Free Gift</a>
+                        <a href="index.html#celebration-bundle" class="tih-btn tih-btn-secondary">Get Your Bundle</a>
                         <a href="b2b-configurator.html" class="tih-btn tih-btn-primary">Co-Brand Your Book</a>
                     </div>
                 </div>
@@ -498,236 +470,458 @@
         <p style="font-size: 0.8rem; margin-top: 0.5rem; color: #888;">Lauralai LLC | 515 Cypress Dr, Long Beach MS, 39560</p>
     </footer>
 
-    <!-- LIVE COUNTDOWN SCRIPT -->
-    <script>
-        (function() {
-            const daysEl = document.getElementById('mc-days');
-            const hoursEl = document.getElementById('mc-hours');
-            const minutesEl = document.getElementById('mc-minutes');
-            const secondsEl = document.getElementById('mc-seconds');
-
-            function updateCountdown() {
-                const targetDate = new Date('July 4, 2026 00:00:00').getTime();
-                const now = new Date().getTime();
-                const distance = targetDate - now;
-
-                if (distance < 0) {
-                    daysEl.innerText = "000";
-                    hoursEl.innerText = "00";
-                    minutesEl.innerText = "00";
-                    secondsEl.innerText = "00";
-                    clearInterval(interval);
-                    return;
-                }
-
-                const days = Math.floor(distance / (1000 * 60 * 60 * 24));
-                const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-                const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
-                const seconds = Math.floor((distance % (1000 * 60)) / 1000);
-
-                daysEl.innerText = days.toString().padStart(3, '0');
-                hoursEl.innerText = hours.toString().padStart(2, '0');
-                minutesEl.innerText = minutes.toString().padStart(2, '0');
-                secondsEl.innerText = seconds.toString().padStart(2, '0');
-            }
-
-            updateCountdown();
-            const interval = setInterval(updateCountdown, 1000);
-        })();
-    </script>
-
     <!-- TODAY IN HISTORY RESOLVER SCRIPT -->
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             const historyFacts = {
-                "1-1": {
-                    "year": "1863",
-                    "text": "President Abraham Lincoln issued the Emancipation Proclamation, declaring that all persons held as slaves within the rebellious states are, and henceforward shall be free."
-                },
-                "5-19": {
-                    "year": "1780",
-                    "text": "The sky over New England went dark by mid-morning. Candles burned at noon, roosters returned to roost, and many believed Judgment Day had arrived. Modern science traces it to massive wildfires in Ontario combined with thick fog — but the awe stuck with a generation.",
-                    "supabase_image": "https://iohdigyivypgyphcliuo.supabase.co/storage/v1/object/public/daily_cards/1780-05-19_dark-day.png"
-                },
-                "5-20": {
-                    "year": "1862",
-                    "text": "Lincoln signed the Homestead Act, opening 160 acres of public land to any citizen willing to settle and improve it for five years. Between 1863 and 1900, roughly 400,000 claims moved 80 million acres into private hands — and reshaped the American West, for better and worse.",
-                    "supabase_image": "https://iohdigyivypgyphcliuo.supabase.co/storage/v1/object/public/daily_cards/1862-05-20_homestead-act.png"
-                },
-                "5-21": {
-                    "year": "1881",
-                    "text": "After watching the Civil War chew through soldiers without organized relief, Clara Barton spent twelve years lobbying for an American chapter of the Red Cross. On May 21, 1881, she founded it in Washington. Today it runs on roughly 300,000 volunteers — the system she built by refusing to be told no.",
-                    "supabase_image": "https://iohdigyivypgyphcliuo.supabase.co/storage/v1/object/public/daily_cards/1881-05-21_clara-barton.png"
-                },
-                "5-22": {
-                    "year": "1872",
-                    "text": "Seven years after Appomattox, President Grant signed the Amnesty Act, restoring full civil and political rights to nearly all former Confederates. The intent was to stitch the country back together. The reality was more complicated — but the act marked a deliberate national choice to choose reconciliation over permanent punishment.",
-                    "supabase_image": "https://iohdigyivypgyphcliuo.supabase.co/storage/v1/object/public/daily_cards/1872-05-22_amnesty-act.png?v=1779450245972"
-                },
-                "5-23": {
-                    "year": "1788",
-                    "text": "South Carolina became the eighth state to ratify the U.S. Constitution, leaving just one more needed to make it the law of the land. The vote came after weeks of hard debate in Charleston — proof that the document survived by argument, not consensus. New Hampshire would push it over the line a month later.",
-                    "supabase_image": "https://iohdigyivypgyphcliuo.supabase.co/storage/v1/object/public/daily_cards/1788-05-23_sc-ratification.png"
-                },
-                "5-24": {
-                    "year": "1844",
-                    "text": "Samuel Morse sat in the Capitol and tapped out a message in code. Forty miles away in Baltimore, his partner received it: \"What hath God wrought.\" The telegraph turned distance into a non-issue and rewired how America did business, war, and news. The world got smaller that morning.",
-                    "supabase_image": "https://iohdigyivypgyphcliuo.supabase.co/storage/v1/object/public/daily_cards/1844-05-24_morse.png"
-                },
-                "5-25": {
-                    "year": "1868",
-                    "text": "Three years after the Civil War ended, General John A. Logan called for a national day to decorate the graves of the Union dead. On the first Decoration Day, May 30, 1868, flowers were laid at Arlington for both Union and Confederate soldiers. The name became Memorial Day. The duty didn't change.",
-                    "supabase_image": "https://iohdigyivypgyphcliuo.supabase.co/storage/v1/object/public/daily_cards/1868-05-25_decoration-day.png"
-                },
-                "5-26": {
-                    "year": "1927",
-                    "text": "Henry Ford and his son Edsel drove the 15 millionth Model T off the assembly line in Dearborn, Michigan, marking the end of the car that put America on wheels. The \"Tin Lizzie\" had revolutionized manufacturing, slashed prices, and reshaped the physical landscape of the nation.",
-                    "supabase_image": "https://iohdigyivypgyphcliuo.supabase.co/storage/v1/object/public/daily_cards/1927-05-26_model-t-ends.png"
-                },
-                "5-27": {
-                    "year": "1937",
-                    "text": "San Francisco's Golden Gate Bridge opened to pedestrian traffic, drawing 200,000 people who walked, ran, and roller-skated across the span. Completed ahead of schedule during the Great Depression, the engineering marvel stood as a soaring symbol of American ambition, resilience, and industrial capacity.",
-                    "supabase_image": "https://iohdigyivypgyphcliuo.supabase.co/storage/v1/object/public/daily_cards/1937-05-27_golden-gate-pedestrians.png"
-                },
-                "5-28": {
-                    "year": "1863",
-                    "text": "The 54th Massachusetts Volunteer Infantry, the first regiment of free Black soldiers raised in the North, marched through the streets of Boston to board transport ships for the Southern front. Led by Colonel Robert Gould Shaw, the men stepped off to cheers from a crowd of twenty thousand, carrying the hopes of a nation.",
-                    "supabase_image": "https://iohdigyivypgyphcliuo.supabase.co/storage/v1/object/public/daily_cards/1863-05-28_54th-massachusetts.png"
-                },
-                "5-29": {
-                    "year": "1790",
-                    "text": "Rhode Island became the thirteenth and final of the original colonies to ratify the U.S. Constitution. Fearing a strong central government, the state held out for more than a year until Congress formally drafted the Bill of Rights, demonstrating early on the power of dissent in American democracy.",
-                    "supabase_image": "https://iohdigyivypgyphcliuo.supabase.co/storage/v1/object/public/daily_cards/1790-05-29_ri-ratification.png"
-                },
-                "5-30": {
-                    "year": "1922",
-                    "text": "Before a crowd of fifty thousand, the Lincoln Memorial was dedicated in Washington, D.C. Taft presented the temple-like monument to Harding as a symbol of national reconciliation, though the day's event remained segregated. Over the next century, the monument would become a stage for the civil rights movement.",
-                    "supabase_image": "https://iohdigyivypgyphcliuo.supabase.co/storage/v1/object/public/daily_cards/1922-05-30_lincoln-memorial.png"
-                },
-                "5-31": {
-                    "year": "1889",
-                    "text": "A catastrophic dam failure sent twenty million tons of water roaring into Johnstown, Pennsylvania, killing over two thousand people. Clara Barton arrived five days later with the newly formed American Red Cross, mounting their first major peacetime disaster relief effort and cementing the organization's role in national emergencies.",
-                    "supabase_image": "https://iohdigyivypgyphcliuo.supabase.co/storage/v1/object/public/daily_cards/1889-05-31_johnstown-relief.png"
-                },
-                "6-1": {
-                    "year": "1796",
-                    "text": "Tennessee was admitted to the Union as the sixteenth state. Led by frontiersman John Sevier, the former Southwest Territory became the first state created out of a federal territory, establishing a path for future western expansion and bringing a distinct Appalachian voice into the halls of Congress.",
-                    "supabase_image": "https://iohdigyivypgyphcliuo.supabase.co/storage/v1/object/public/daily_cards/1796-06-01_tennessee-statehood.png"
-                },
-                "6-2": {
-                    "year": "1924",
-                    "text": "President Calvin Coolidge signed the Indian Citizenship Act, granting citizenship to all Native Americans born in the United States. While the measure did not immediately guarantee voting rights in every state, it marked a historic, formal recognition of Native peoples as full citizens of the republic.",
-                    "supabase_image": "https://iohdigyivypgyphcliuo.supabase.co/storage/v1/object/public/daily_cards/1924-06-02_indian-citizenship.png"
-                },
-                "6-3": {
-                    "year": "1965",
-                    "text": "During the Gemini 4 mission, astronaut Edward White stepped out of his spacecraft and became the first American to walk in space. Tethered to the capsule, he floated 100 miles above Earth for twenty-three minutes, demonstrating the technology that made the moon landings possible.",
-                    "supabase_image": "https://iohdigyivypgyphcliuo.supabase.co/storage/v1/object/public/daily_cards/1965-06-03_first-spacewalk.png"
-                },
-                "6-4": {
-                    "year": "1896",
-                    "text": "In the early morning hours, Henry Ford wheeled his first experimental automobile, the Quadricycle, onto the streets of Detroit. Tapping on a carriage bell for warning, he successfully drove the light, gasoline-powered vehicle through the damp dawn, launching a lifetime of automotive innovation.",
-                    "supabase_image": "https://iohdigyivypgyphcliuo.supabase.co/storage/v1/object/public/daily_cards/1896-06-04_ford-quadricycle.png"
-                },
-                "6-5": {
-                    "year": "1851",
-                    "text": "The first installment of Harriet Beecher Stowe's anti-slavery novel, \"Uncle Tom's Cabin,\" was published in the abolitionist newspaper The National Era. The story quickly captured the public imagination, selling hundreds of thousands of copies and intensifying the national debate over the morality of slavery.",
-                    "supabase_image": "https://iohdigyivypgyphcliuo.supabase.co/storage/v1/object/public/daily_cards/1851-06-05_uncle-toms-cabin.png"
-                },
-                "6-6": {
-                    "year": "1944",
-                    "text": "Under the command of General Dwight D. Eisenhower, Allied forces launched the largest amphibious invasion in history on the beaches of Normandy. Thousands of American soldiers waded through heavy gunfire to secure the coast, beginning the liberation of Western Europe and marking a decisive turning point in World War II.",
-                    "supabase_image": "https://iohdigyivypgyphcliuo.supabase.co/storage/v1/object/public/daily_cards/1944-06-06_dday-landings.png"
-                },
-                "6-7": {
-                    "year": "1776",
-                    "text": "Virginia delegate Richard Henry Lee introduced a resolution to the Second Continental Congress declaring that the United Colonies were, and of right ought to be, free and independent states. The proposal set off intense debates in Philadelphia, leading directly to the drafting of the Declaration of Independence.",
-                    "supabase_image": "https://iohdigyivypgyphcliuo.supabase.co/storage/v1/object/public/daily_cards/1776-06-07_lee-resolution.png"
-                },
-                "6-8": {
-                    "year": "1789",
-                    "text": "Representative James Madison introduced twelve proposed amendments to the U.S. Constitution before the House of Representatives. Designed to protect individual liberties and limit government power, ten of these articles were later ratified by the states, becoming the foundational cornerstone of American civil liberties.",
-                    "supabase_image": "https://iohdigyivypgyphcliuo.supabase.co/storage/v1/object/public/daily_cards/1789-06-08_bill-of-rights.png"
-                },
-                                "6-18": {
-                    "year": "1812",
-                    "text": "The United States declares war on Great Britain, beginning the War of 1812 and asserting its sovereignty as an independent nation.",
-                    "supabase_image": "https://iohdigyivypgyphcliuo.supabase.co/storage/v1/object/public/daily_cards/1812-06-18_war_of_1812.png"
-                },
-                                "6-19": {
-                    "year": "1865",
-                    "text": "Juneteenth - Union General Gordon Granger arrives in Galveston, Texas, and issues General Order No. 3, proclaiming the end of slavery in the state.",
-                    "supabase_image": "https://iohdigyivypgyphcliuo.supabase.co/storage/v1/object/public/daily_cards/1865-06-19_juneteenth.png"
-                },
-                                "6-20": {
-                    "year": "1863",
-                    "text": "West Virginia is admitted to the Union as the 35th U.S. state, born out of the turbulent separation from Virginia during the American Civil War.",
-                    "supabase_image": "https://iohdigyivypgyphcliuo.supabase.co/storage/v1/object/public/daily_cards/1863-06-20_wv_statehood.png"
-                },
-                                "6-21": {
-                    "year": "1788",
-                    "text": "New Hampshire becomes the ninth state to ratify the United States Constitution, officially making it the supreme law of the land.",
-                    "supabase_image": "https://iohdigyivypgyphcliuo.supabase.co/storage/v1/object/public/daily_cards/1788-06-21_nh_ratification.png"
-                },
-                                "6-22": {
-                    "year": "1944",
-                    "text": "President Franklin D. Roosevelt signs the G.I. Bill into law, providing immense educational and housing benefits for returning World War II veterans.",
-                    "supabase_image": "https://iohdigyivypgyphcliuo.supabase.co/storage/v1/object/public/daily_cards/1944-06-22_gi_bill.png"
-                },
-                                "6-23": {
-                    "year": "1972",
-                    "text": "Title IX of the Education Amendments is signed into law, guaranteeing equal opportunity for women in any educational program receiving federal funds.",
-                    "supabase_image": "https://iohdigyivypgyphcliuo.supabase.co/storage/v1/object/public/daily_cards/1972-06-23_title_ix.png"
-                },
-                                "6-24": {
-                    "year": "1948",
-                    "text": "The Berlin Airlift begins as the United States and its allies start dropping massive amounts of supplies into blockaded West Berlin.",
-                    "supabase_image": "https://iohdigyivypgyphcliuo.supabase.co/storage/v1/object/public/daily_cards/1948-06-24_berlin_airlift.png"
-                },
-                                "6-25": {
-                    "year": "1876",
-                    "text": "The Battle of the Little Bighorn begins in the Montana Territory, where Lt. Col. George Custer and the 7th Cavalry clash with Lakota and Cheyenne warriors.",
-                    "supabase_image": "https://iohdigyivypgyphcliuo.supabase.co/storage/v1/object/public/daily_cards/1876-06-25_little_bighorn.png"
-                },
-                                "6-26": {
-                    "year": "1917",
-                    "text": "The first United States combat troops arrive in France during World War I, marking America's entry onto the battlefields of Europe.",
-                    "supabase_image": "https://iohdigyivypgyphcliuo.supabase.co/storage/v1/object/public/daily_cards/1917-06-26_ww1_france.png"
-                },
-                                "6-27": {
-                    "year": "1844",
-                    "text": "Joseph Smith, the founder of the Latter Day Saint movement, and his brother Hyrum are killed by a mob at the Carthage Jail in Illinois.",
-                    "supabase_image": "https://iohdigyivypgyphcliuo.supabase.co/storage/v1/object/public/daily_cards/1844-06-27_carthage_jail.png"
-                },
-                                "6-28": {
-                    "year": "1778",
-                    "text": "The Battle of Monmouth takes place during the intense summer heat, as George Washington rallies the Continental Army against British forces in New Jersey.",
-                    "supabase_image": "https://iohdigyivypgyphcliuo.supabase.co/storage/v1/object/public/daily_cards/1778-06-28_battle_of_monmouth.png"
-                },
-                                "6-29": {
-                    "year": "1956",
-                    "text": "President Dwight D. Eisenhower signs the Federal-Aid Highway Act, authorizing the creation of the massive 41,000-mile Interstate Highway System.",
-                    "supabase_image": "https://iohdigyivypgyphcliuo.supabase.co/storage/v1/object/public/daily_cards/1956-06-29_highway_act.png"
-                },
-                                "6-30": {
-                    "year": "1906",
-                    "text": "President Theodore Roosevelt signs the Pure Food and Drug Act into law, creating federal regulations to protect consumers and ensure truth in labeling.",
-                    "supabase_image": "https://iohdigyivypgyphcliuo.supabase.co/storage/v1/object/public/daily_cards/1906-06-30_food_drug_act.png"
-                },
-                                "7-1": {
-                    "year": "1863",
-                    "text": "The Battle of Gettysburg begins. It becomes the largest battle ever fought in North America and a major turning point of the American Civil War.",
-                    "supabase_image": "https://iohdigyivypgyphcliuo.supabase.co/storage/v1/object/public/daily_cards/1863-07-01_gettysburg.png"
-                },
-                "7-4": {
-                    "year": "1776",
-                    "text": "The Continental Congress officially adopted the Declaration of Independence, proclaiming the American colonies' separation from Great Britain."
-                },
-                "12-25": {
-                    "year": "1776",
-                    "text": "George Washington and the Continental Army crossed the icy Delaware River in a daring nighttime maneuver to attack Hessian forces at Trenton."
-                }
-            };
+    "1-1": {
+        "year": "1863",
+        "text": "President Abraham Lincoln issued the Emancipation Proclamation, declaring that all persons held as slaves within the rebellious states are, and henceforward shall be free."
+    },
+    "5-19": {
+        "year": "1780",
+        "text": "The sky over New England went dark by mid-morning. Candles burned at noon, roosters returned to roost, and many believed Judgment Day had arrived. Modern science traces it to massive wildfires in Ontario combined with thick fog \u2014 but the awe stuck with a generation.",
+        "supabase_image": "https://iohdigyivypgyphcliuo.supabase.co/storage/v1/object/public/daily_cards/1780-05-19_dark-day.png"
+    },
+    "5-20": {
+        "year": "1862",
+        "text": "Lincoln signed the Homestead Act, opening 160 acres of public land to any citizen willing to settle and improve it for five years. Between 1863 and 1900, roughly 400,000 claims moved 80 million acres into private hands \u2014 and reshaped the American West, for better and worse.",
+        "supabase_image": "https://iohdigyivypgyphcliuo.supabase.co/storage/v1/object/public/daily_cards/1862-05-20_homestead-act.png"
+    },
+    "5-21": {
+        "year": "1881",
+        "text": "After watching the Civil War chew through soldiers without organized relief, Clara Barton spent twelve years lobbying for an American chapter of the Red Cross. On May 21, 1881, she founded it in Washington. Today it runs on roughly 300,000 volunteers \u2014 the system she built by refusing to be told no.",
+        "supabase_image": "https://iohdigyivypgyphcliuo.supabase.co/storage/v1/object/public/daily_cards/1881-05-21_clara-barton.png"
+    },
+    "5-22": {
+        "year": "1872",
+        "text": "Seven years after Appomattox, President Grant signed the Amnesty Act, restoring full civil and political rights to nearly all former Confederates. The intent was to stitch the country back together. The reality was more complicated \u2014 but the act marked a deliberate national choice to choose reconciliation over permanent punishment.",
+        "supabase_image": "https://iohdigyivypgyphcliuo.supabase.co/storage/v1/object/public/daily_cards/1872-05-22_amnesty-act.png?v=1779450245972"
+    },
+    "5-23": {
+        "year": "1788",
+        "text": "South Carolina became the eighth state to ratify the U.S. Constitution, leaving just one more needed to make it the law of the land. The vote came after weeks of hard debate in Charleston \u2014 proof that the document survived by argument, not consensus. New Hampshire would push it over the line a month later.",
+        "supabase_image": "https://iohdigyivypgyphcliuo.supabase.co/storage/v1/object/public/daily_cards/1788-05-23_sc-ratification.png"
+    },
+    "5-24": {
+        "year": "1844",
+        "text": "Samuel Morse sat in the Capitol and tapped out a message in code. Forty miles away in Baltimore, his partner received it: \"What hath God wrought.\" The telegraph turned distance into a non-issue and rewired how America did business, war, and news. The world got smaller that morning.",
+        "supabase_image": "https://iohdigyivypgyphcliuo.supabase.co/storage/v1/object/public/daily_cards/1844-05-24_morse.png"
+    },
+    "5-25": {
+        "year": "1868",
+        "text": "Three years after the Civil War ended, General John A. Logan called for a national day to decorate the graves of the Union dead. On the first Decoration Day, May 30, 1868, flowers were laid at Arlington for both Union and Confederate soldiers. The name became Memorial Day. The duty didn't change.",
+        "supabase_image": "https://iohdigyivypgyphcliuo.supabase.co/storage/v1/object/public/daily_cards/1868-05-25_decoration-day.png"
+    },
+    "5-26": {
+        "year": "1927",
+        "text": "Henry Ford and his son Edsel drove the 15 millionth Model T off the assembly line in Dearborn, Michigan, marking the end of the car that put America on wheels. The \"Tin Lizzie\" had revolutionized manufacturing, slashed prices, and reshaped the physical landscape of the nation.",
+        "supabase_image": "https://iohdigyivypgyphcliuo.supabase.co/storage/v1/object/public/daily_cards/1927-05-26_model-t-ends.png"
+    },
+    "5-27": {
+        "year": "1937",
+        "text": "San Francisco's Golden Gate Bridge opened to pedestrian traffic, drawing 200,000 people who walked, ran, and roller-skated across the span. Completed ahead of schedule during the Great Depression, the engineering marvel stood as a soaring symbol of American ambition, resilience, and industrial capacity.",
+        "supabase_image": "https://iohdigyivypgyphcliuo.supabase.co/storage/v1/object/public/daily_cards/1937-05-27_golden-gate-pedestrians.png"
+    },
+    "5-28": {
+        "year": "1863",
+        "text": "The 54th Massachusetts Volunteer Infantry, the first regiment of free Black soldiers raised in the North, marched through the streets of Boston to board transport ships for the Southern front. Led by Colonel Robert Gould Shaw, the men stepped off to cheers from a crowd of twenty thousand, carrying the hopes of a nation.",
+        "supabase_image": "https://iohdigyivypgyphcliuo.supabase.co/storage/v1/object/public/daily_cards/1863-05-28_54th-massachusetts.png"
+    },
+    "5-29": {
+        "year": "1790",
+        "text": "Rhode Island became the thirteenth and final of the original colonies to ratify the U.S. Constitution. Fearing a strong central government, the state held out for more than a year until Congress formally drafted the Bill of Rights, demonstrating early on the power of dissent in American democracy.",
+        "supabase_image": "https://iohdigyivypgyphcliuo.supabase.co/storage/v1/object/public/daily_cards/1790-05-29_ri-ratification.png"
+    },
+    "5-30": {
+        "year": "1922",
+        "text": "Before a crowd of fifty thousand, the Lincoln Memorial was dedicated in Washington, D.C. Taft presented the temple-like monument to Harding as a symbol of national reconciliation, though the day's event remained segregated. Over the next century, the monument would become a stage for the civil rights movement.",
+        "supabase_image": "https://iohdigyivypgyphcliuo.supabase.co/storage/v1/object/public/daily_cards/1922-05-30_lincoln-memorial.png"
+    },
+    "5-31": {
+        "year": "1889",
+        "text": "A catastrophic dam failure sent twenty million tons of water roaring into Johnstown, Pennsylvania, killing over two thousand people. Clara Barton arrived five days later with the newly formed American Red Cross, mounting their first major peacetime disaster relief effort and cementing the organization's role in national emergencies.",
+        "supabase_image": "https://iohdigyivypgyphcliuo.supabase.co/storage/v1/object/public/daily_cards/1889-05-31_johnstown-relief.png"
+    },
+    "6-1": {
+        "year": "1796",
+        "text": "Tennessee was admitted to the Union as the sixteenth state. Led by frontiersman John Sevier, the former Southwest Territory became the first state created out of a federal territory, establishing a path for future western expansion and bringing a distinct Appalachian voice into the halls of Congress.",
+        "supabase_image": "https://iohdigyivypgyphcliuo.supabase.co/storage/v1/object/public/daily_cards/1796-06-01_tennessee-statehood.png"
+    },
+    "6-2": {
+        "year": "1924",
+        "text": "President Calvin Coolidge signed the Indian Citizenship Act, granting citizenship to all Native Americans born in the United States. While the measure did not immediately guarantee voting rights in every state, it marked a historic, formal recognition of Native peoples as full citizens of the republic.",
+        "supabase_image": "https://iohdigyivypgyphcliuo.supabase.co/storage/v1/object/public/daily_cards/1924-06-02_indian-citizenship.png"
+    },
+    "6-3": {
+        "year": "1965",
+        "text": "During the Gemini 4 mission, astronaut Edward White stepped out of his spacecraft and became the first American to walk in space. Tethered to the capsule, he floated 100 miles above Earth for twenty-three minutes, demonstrating the technology that made the moon landings possible.",
+        "supabase_image": "https://iohdigyivypgyphcliuo.supabase.co/storage/v1/object/public/daily_cards/1965-06-03_first-spacewalk.png"
+    },
+    "6-4": {
+        "year": "1896",
+        "text": "In the early morning hours, Henry Ford wheeled his first experimental automobile, the Quadricycle, onto the streets of Detroit. Tapping on a carriage bell for warning, he successfully drove the light, gasoline-powered vehicle through the damp dawn, launching a lifetime of automotive innovation.",
+        "supabase_image": "https://iohdigyivypgyphcliuo.supabase.co/storage/v1/object/public/daily_cards/1896-06-04_ford-quadricycle.png"
+    },
+    "6-5": {
+        "year": "1851",
+        "text": "The first installment of Harriet Beecher Stowe's anti-slavery novel, \"Uncle Tom's Cabin,\" was published in the abolitionist newspaper The National Era. The story quickly captured the public imagination, selling hundreds of thousands of copies and intensifying the national debate over the morality of slavery.",
+        "supabase_image": "https://iohdigyivypgyphcliuo.supabase.co/storage/v1/object/public/daily_cards/1851-06-05_uncle-toms-cabin.png"
+    },
+    "6-6": {
+        "year": "1944",
+        "text": "Under the command of General Dwight D. Eisenhower, Allied forces launched the largest amphibious invasion in history on the beaches of Normandy. Thousands of American soldiers waded through heavy gunfire to secure the coast, beginning the liberation of Western Europe and marking a decisive turning point in World War II.",
+        "supabase_image": "https://iohdigyivypgyphcliuo.supabase.co/storage/v1/object/public/daily_cards/1944-06-06_dday-landings.png"
+    },
+    "6-7": {
+        "year": "1776",
+        "text": "Virginia delegate Richard Henry Lee introduced a resolution to the Second Continental Congress declaring that the United Colonies were, and of right ought to be, free and independent states. The proposal set off intense debates in Philadelphia, leading directly to the drafting of the Declaration of Independence.",
+        "supabase_image": "https://iohdigyivypgyphcliuo.supabase.co/storage/v1/object/public/daily_cards/1776-06-07_lee-resolution.png"
+    },
+    "6-8": {
+        "year": "1789",
+        "text": "Representative James Madison introduced twelve proposed amendments to the U.S. Constitution before the House of Representatives. Designed to protect individual liberties and limit government power, ten of these articles were later ratified by the states, becoming the foundational cornerstone of American civil liberties.",
+        "supabase_image": "https://iohdigyivypgyphcliuo.supabase.co/storage/v1/object/public/daily_cards/1789-06-08_bill-of-rights.png"
+    },
+    "6-18": {
+        "year": "1812",
+        "text": "The United States declares war on Great Britain, beginning the War of 1812 and asserting its sovereignty as an independent nation.",
+        "supabase_image": "https://iohdigyivypgyphcliuo.supabase.co/storage/v1/object/public/daily_cards/1812-06-18_war_of_1812.png"
+    },
+    "6-19": {
+        "year": "1865",
+        "text": "Juneteenth - Union General Gordon Granger arrives in Galveston, Texas, and issues General Order No. 3, proclaiming the end of slavery in the state.",
+        "supabase_image": "https://iohdigyivypgyphcliuo.supabase.co/storage/v1/object/public/daily_cards/1865-06-19_juneteenth.png"
+    },
+    "6-20": {
+        "year": "1863",
+        "text": "West Virginia is admitted to the Union as the 35th U.S. state, born out of the turbulent separation from Virginia during the American Civil War.",
+        "supabase_image": "https://iohdigyivypgyphcliuo.supabase.co/storage/v1/object/public/daily_cards/1863-06-20_wv_statehood.png"
+    },
+    "6-21": {
+        "year": "1788",
+        "text": "New Hampshire becomes the ninth state to ratify the United States Constitution, officially making it the supreme law of the land.",
+        "supabase_image": "https://iohdigyivypgyphcliuo.supabase.co/storage/v1/object/public/daily_cards/1788-06-21_nh_ratification.png"
+    },
+    "6-22": {
+        "year": "1944",
+        "text": "President Franklin D. Roosevelt signs the G.I. Bill into law, providing immense educational and housing benefits for returning World War II veterans.",
+        "supabase_image": "https://iohdigyivypgyphcliuo.supabase.co/storage/v1/object/public/daily_cards/1944-06-22_gi_bill.png"
+    },
+    "6-23": {
+        "year": "1972",
+        "text": "Title IX of the Education Amendments is signed into law, guaranteeing equal opportunity for women in any educational program receiving federal funds.",
+        "supabase_image": "https://iohdigyivypgyphcliuo.supabase.co/storage/v1/object/public/daily_cards/1972-06-23_title_ix.png"
+    },
+    "6-24": {
+        "year": "1948",
+        "text": "The Berlin Airlift begins as the United States and its allies start dropping massive amounts of supplies into blockaded West Berlin.",
+        "supabase_image": "https://iohdigyivypgyphcliuo.supabase.co/storage/v1/object/public/daily_cards/1948-06-24_berlin_airlift.png"
+    },
+    "6-25": {
+        "year": "1876",
+        "text": "The Battle of the Little Bighorn begins in the Montana Territory, where Lt. Col. George Custer and the 7th Cavalry clash with Lakota and Cheyenne warriors.",
+        "supabase_image": "https://iohdigyivypgyphcliuo.supabase.co/storage/v1/object/public/daily_cards/1876-06-25_little_bighorn.png"
+    },
+    "6-26": {
+        "year": "1917",
+        "text": "The first United States combat troops arrive in France during World War I, marking America's entry onto the battlefields of Europe.",
+        "supabase_image": "https://iohdigyivypgyphcliuo.supabase.co/storage/v1/object/public/daily_cards/1917-06-26_ww1_france.png"
+    },
+    "6-27": {
+        "year": "1844",
+        "text": "Joseph Smith, the founder of the Latter Day Saint movement, and his brother Hyrum are killed by a mob at the Carthage Jail in Illinois.",
+        "supabase_image": "https://iohdigyivypgyphcliuo.supabase.co/storage/v1/object/public/daily_cards/1844-06-27_carthage_jail.png"
+    },
+    "6-28": {
+        "year": "1778",
+        "text": "The Battle of Monmouth takes place during the intense summer heat, as George Washington rallies the Continental Army against British forces in New Jersey.",
+        "supabase_image": "https://iohdigyivypgyphcliuo.supabase.co/storage/v1/object/public/daily_cards/1778-06-28_battle_of_monmouth.png"
+    },
+    "6-29": {
+        "year": "1956",
+        "text": "President Dwight D. Eisenhower signs the Federal-Aid Highway Act, authorizing the creation of the massive 41,000-mile Interstate Highway System.",
+        "supabase_image": "https://iohdigyivypgyphcliuo.supabase.co/storage/v1/object/public/daily_cards/1956-06-29_highway_act.png"
+    },
+    "6-30": {
+        "year": "1906",
+        "text": "President Theodore Roosevelt signs the Pure Food and Drug Act into law, creating federal regulations to protect consumers and ensure truth in labeling.",
+        "supabase_image": "https://iohdigyivypgyphcliuo.supabase.co/storage/v1/object/public/daily_cards/1906-06-30_food_drug_act.png"
+    },
+    "7-1": {
+        "year": "1863",
+        "text": "The Battle of Gettysburg begins. It becomes the largest battle ever fought in North America and a major turning point of the American Civil War.",
+        "supabase_image": "https://iohdigyivypgyphcliuo.supabase.co/storage/v1/object/public/daily_cards/1863-07-01_gettysburg.png"
+    },
+    "7-4": {
+        "year": "1776",
+        "text": "The Continental Congress officially adopted the Declaration of Independence, proclaiming the American colonies' separation from Great Britain."
+    },
+    "12-25": {
+        "year": "1776",
+        "text": "George Washington and the Continental Army crossed the icy Delaware River in a daring nighttime maneuver to attack Hessian forces at Trenton."
+    },
+    "7-5": {
+        "year": "1935",
+        "text": "President Franklin D. Roosevelt signed the National Labor Relations Act (Wagner Act), establishing the federal government as a key protector of collective bargaining and labor rights."
+    },
+    "7-6": {
+        "year": "1854",
+        "text": "The first formal convention of the Republican Party met in Jackson, Michigan, bringing together anti-slavery Whigs, Democrats, and Free Soilers to unite under a common banner."
+    },
+    "7-7": {
+        "year": "1898",
+        "text": "President William McKinley signed the Newlands Resolution, annexing Hawaii as a territory of the United States and initiating a strategic shift in the Pacific."
+    },
+    "7-8": {
+        "year": "1776",
+        "text": "The Liberty Bell was rung in Philadelphia to summon citizens for the first public reading of the Declaration of Independence by Colonel John Nixon."
+    },
+    "7-9": {
+        "year": "1868",
+        "text": "The Fourteenth Amendment was officially ratified, securing citizenship, due process, and equal protection under the law for all persons born or naturalized in the United States."
+    },
+    "7-10": {
+        "year": "1890",
+        "text": "Wyoming was admitted to the Union as the 44th state, notable for entering with a constitution that guaranteed women the right to vote\u2014a first in American history."
+    },
+    "7-11": {
+        "year": "1804",
+        "text": "Vice President Aaron Burr fatally shot former Treasury Secretary Alexander Hamilton in a legendary duel on the cliffs of Weehawken, New Jersey."
+    },
+    "7-12": {
+        "year": "1862",
+        "text": "President Abraham Lincoln signed the legislation creating the Medal of Honor, establishing the nation's highest decoration for military valor."
+    },
+    "7-13": {
+        "year": "1787",
+        "text": "The Continental Congress passed the Northwest Ordinance, establishing a structured government for the Western territory and outlawing slavery within its boundaries."
+    },
+    "7-14": {
+        "year": "1798",
+        "text": "Congress passed the Sedition Act, making it a federal crime to publish \"false, scandalous, and malicious writing\" against the government, sparking early free-speech debates."
+    },
+    "7-15": {
+        "year": "1975",
+        "text": "The Apollo\u2013Soyuz Test Project launched, culminating in the first joint space flight and historic orbital handshake between American astronauts and Soviet cosmonauts."
+    },
+    "7-16": {
+        "year": "1945",
+        "text": "The Manhattan Project detonated the world's first nuclear weapon at the Trinity test site near Alamogordo, New Mexico, ushering in the Atomic Age."
+    },
+    "7-17": {
+        "year": "1955",
+        "text": "Disneyland officially opened in Anaheim, California, transforming the amusement park industry and establishing a cornerstone of modern American popular culture."
+    },
+    "7-18": {
+        "year": "1947",
+        "text": "President Harry S. Truman signed the Presidential Succession Act, codifying the line of succession to include the Speaker of the House and President Pro Tempore of the Senate."
+    },
+    "7-19": {
+        "year": "1848",
+        "text": "The Seneca Falls Convention opened in New York. Organized by Elizabeth Cady Stanton and Lucretia Mott, it was the first national convention dedicated to women's rights."
+    },
+    "7-20": {
+        "year": "1969",
+        "text": "Apollo 11 astronauts Neil Armstrong and Buzz Aldrin landed the Lunar Module Eagle on the Moon, marking mankind's first historic steps on another celestial body."
+    },
+    "7-21": {
+        "year": "1861",
+        "text": "The First Battle of Bull Run (Manassas) was fought in Virginia, ending in a Confederate victory and proving to both sides that the Civil War would be long and costly."
+    },
+    "7-22": {
+        "year": "1934",
+        "text": "Notorious bank robber John Dillinger was shot and killed by federal agents outside Chicago's Biograph Theater, ending a massive nationwide manhunt."
+    },
+    "7-23": {
+        "year": "1903",
+        "text": "The newly incorporated Ford Motor Company sold its first commercial automobile, a two-cylinder Model A, to a Chicago dentist, marking the start of a new industrial era."
+    },
+    "7-24": {
+        "year": "1969",
+        "text": "The Apollo 11 spacecraft splashed down safely in the Pacific Ocean, successfully completing President Kennedy's mandate of landing a man on the Moon and returning him home."
+    },
+    "7-25": {
+        "year": "1956",
+        "text": "The Italian ocean liner Andrea Doria collided with the Stockholm in dense fog off Nantucket, prompting a historic sea rescue operation coordinated by American ships."
+    },
+    "7-26": {
+        "year": "1948",
+        "text": "President Harry S. Truman signed Executive Order 9981, officially abolishing racial discrimination and desegregating the United States Armed Forces."
+    },
+    "7-27": {
+        "year": "1953",
+        "text": "The Korean Armistice Agreement was signed at Panmunjom, establishing the Demilitarized Zone (DMZ) and bringing an end to three years of active combat."
+    },
+    "7-28": {
+        "year": "1868",
+        "text": "Secretary of State William Seward issued a formal proclamation certifying the ratification of the 14th Amendment, making its equal protection clauses active."
+    },
+    "7-29": {
+        "year": "1958",
+        "text": "President Dwight D. Eisenhower signed the National Aeronautics and Space Act, officially establishing NASA to lead America's civilian space exploration."
+    },
+    "7-30": {
+        "year": "1965",
+        "text": "President Lyndon B. Johnson signed the Social Security Amendments, establishing the landmark Medicare and Medicaid programs to provide healthcare for millions."
+    },
+    "7-31": {
+        "year": "1790",
+        "text": "The U.S. Patent Office issued the first patent in American history to Samuel Hopkins of Vermont for a new process of making potash, an essential ingredient in fertilizer."
+    },
+    "8-1": {
+        "year": "1946",
+        "text": "President Harry S. Truman signed the Atomic Energy Act of 1946, establishing the Atomic Energy Commission (AEC) and placing nuclear tech under civilian control."
+    },
+    "8-2": {
+        "year": "1776",
+        "text": "Fifty-six members of the Second Continental Congress began signing the official parchment copy of the Declaration of Independence in Philadelphia."
+    },
+    "8-3": {
+        "year": "1882",
+        "text": "Congress passed the Immigration Act of 1882, establishing a federal immigration head tax and creating the nation's first structured federal immigration guidelines."
+    },
+    "8-4": {
+        "year": "1790",
+        "text": "President George Washington signed the Tariff Act, authorizing the creation of the Revenue Marine (now the U.S. Coast Guard) to combat maritime smuggling."
+    },
+    "8-5": {
+        "year": "1861",
+        "text": "To fund the Union war effort, the federal government imposed the first income tax in U.S. history via the Revenue Act of 1861, taxing incomes over $800."
+    },
+    "8-6": {
+        "year": "1965",
+        "text": "President Lyndon B. Johnson signed the Voting Rights Act of 1965, outlawing discriminatory literacy tests and securing voting rights for millions of Black Americans."
+    },
+    "8-7": {
+        "year": "1782",
+        "text": "General George Washington established the Badge of Military Merit, a heart made of purple cloth, which was later revived in 1932 as the modern Purple Heart."
+    },
+    "8-8": {
+        "year": "1974",
+        "text": "In a nationally televised address, President Richard Nixon announced his resignation in the wake of the Watergate scandal, becoming the first president to step down."
+    },
+    "8-9": {
+        "year": "1945",
+        "text": "The United States dropped a second atomic bomb, code-named \"Fat Man,\" on Nagasaki, Japan, leading directly to the end of World War II in the Pacific."
+    },
+    "8-10": {
+        "year": "1846",
+        "text": "Congress passed the legislation establishing the Smithsonian Institution in Washington, D.C., funded by a bequest from British scientist James Smithson."
+    },
+    "8-11": {
+        "year": "1965",
+        "text": "The Watts Riots erupted in Los Angeles after a police traffic stop, sparking six days of civil unrest that exposed deep-seated racial inequality and urban neglect."
+    },
+    "8-12": {
+        "year": "1898",
+        "text": "The United States and Spain signed a peace protocol in Washington, D.C., ending hostilities in the Spanish-American War and transferring Guam and Puerto Rico to the US."
+    },
+    "8-13": {
+        "year": "1981",
+        "text": "President Ronald Reagan signed the Economic Recovery Tax Act of 1981, enacting the largest tax cuts in U.S. history to stimulate economic growth."
+    },
+    "8-14": {
+        "year": "1935",
+        "text": "President Franklin D. Roosevelt signed the Social Security Act into law, creating a national system of old-age pensions, unemployment insurance, and social welfare."
+    },
+    "8-15": {
+        "year": "1914",
+        "text": "The Panama Canal officially opened to commercial traffic, connecting the Atlantic and Pacific oceans and completing one of history's greatest engineering feats."
+    },
+    "8-16": {
+        "year": "1954",
+        "text": "The first issue of Sports Illustrated magazine was published by Time Inc., reflecting a new era of sports coverage and expanding consumer culture in post-war America."
+    },
+    "8-17": {
+        "year": "1807",
+        "text": "Robert Fulton's steamboat, the Clermont, began its historic first commercial voyage up the Hudson River, proving the viability of steam-powered transportation."
+    },
+    "8-18": {
+        "year": "1920",
+        "text": "The Nineteenth Amendment was ratified as Tennessee became the 36th state to approve it, securing voting rights for women across the United States."
+    },
+    "8-19": {
+        "year": "1812",
+        "text": "The USS Constitution defeated the British frigate HMS Guerriere in the War of 1812. The enemy's cannonballs bounced off her oak hull, earning her the name \"Old Ironsides.\""
+    },
+    "8-20": {
+        "year": "1964",
+        "text": "President Lyndon B. Johnson signed the Economic Opportunity Act, launching the War on Poverty and creating programs like Job Corps and Head Start."
+    },
+    "8-21": {
+        "year": "1959",
+        "text": "President Dwight D. Eisenhower signed the official proclamation admitting Hawaii to the Union as the 50th state of the United States."
+    },
+    "8-22": {
+        "year": "1851",
+        "text": "The schooner America won the Royal Yacht Squadron's race around the Isle of Wight, claiming the trophy that would become the world-famous America's Cup."
+    },
+    "8-23": {
+        "year": "1914",
+        "text": "Following the outbreak of World War I in Europe, President Woodrow Wilson issued a formal declaration of U.S. neutrality, keeping the nation out of the conflict."
+    },
+    "8-24": {
+        "year": "1814",
+        "text": "British forces captured Washington, D.C. during the War of 1812, setting fire to the Capitol, the White House, and other federal buildings in retaliation."
+    },
+    "8-25": {
+        "year": "1916",
+        "text": "President Woodrow Wilson signed the National Park Service Organic Act, creating a federal agency to protect and manage the nation's national parks and monuments."
+    },
+    "8-26": {
+        "year": "1920",
+        "text": "Secretary of State Bainbridge Colby signed the proclamation certifying the 19th Amendment, officially adding women's suffrage to the United States Constitution."
+    },
+    "8-27": {
+        "year": "1962",
+        "text": "NASA launched Mariner 2, which successfully flew past Venus in December, becoming the world's first successful robotic space probe mission to another planet."
+    },
+    "8-28": {
+        "year": "1963",
+        "text": "Dr. Martin Luther King Jr. delivered his historic \"I Have a Dream\" speech from the steps of the Lincoln Memorial during the March on Washington for Jobs and Freedom."
+    },
+    "8-29": {
+        "year": "1965",
+        "text": "Gemini 5 astronauts Gordon Cooper and Pete Conrad landed safely in the Atlantic, setting a new space flight endurance record of nearly 8 days in orbit."
+    },
+    "8-30": {
+        "year": "1983",
+        "text": "Guion Bluford became the first African American astronaut in space, launching as a mission specialist aboard the Space Shuttle Challenger's STS-8 mission."
+    },
+    "8-31": {
+        "year": "1954",
+        "text": "Hurricane Carol made landfall in New England as a Category 3 storm, causing severe destruction and leading to significant improvements in national storm tracking."
+    },
+    "9-1": {
+        "year": "1807",
+        "text": "Former Vice President Aaron Burr was acquitted of treason charges in Richmond, Virginia, after Chief Justice John Marshall ruled that treason required an overt act of war."
+    },
+    "9-2": {
+        "year": "1945",
+        "text": "The formal instrument of surrender ending World War II was signed by Japanese delegates aboard the battleship USS Missouri in Tokyo Bay."
+    },
+    "9-3": {
+        "year": "1783",
+        "text": "The Treaty of Paris was signed in Paris by American and British representatives, officially ending the American Revolutionary War and recognizing U.S. independence."
+    },
+    "9-4": {
+        "year": "1957",
+        "text": "Arkansas Governor Orval Faubus deployed the National Guard to Little Rock Central High School to block nine Black students (the Little Rock Nine) from entering."
+    },
+    "9-5": {
+        "year": "1774",
+        "text": "The First Continental Congress convened at Carpenters' Hall in Philadelphia, bringing together delegates from twelve colonies to coordinate resistance to British laws."
+    },
+    "9-6": {
+        "year": "1901",
+        "text": "President William McKinley was shot and fatally wounded by anarchist Leon Czolgosz while attending the Pan-American Exposition in Buffalo, New York."
+    },
+    "9-7": {
+        "year": "1894",
+        "text": "The first official federal Labor Day was celebrated across the United States, following Congress passing a bill to honor American workers."
+    }
+};
 
             const months = ["JAN", "FEB", "MAR", "APR", "MAY", "JUN", "JUL", "AUG", "SEP", "OCT", "NOV", "DEC"];
             const today = new Date();

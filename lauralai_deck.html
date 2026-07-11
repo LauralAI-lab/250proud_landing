@@ -451,6 +451,241 @@
       border-radius: 4px;
       padding: 1px 6px;
     }
+
+    /* Responsive Media Queries for Mobile/Tablet */
+    @media (max-width: 992px) {
+      body {
+        overflow-y: auto !important;
+        overflow-x: hidden !important;
+        height: auto !important;
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+      }
+
+      header {
+        padding: 15px 20px !important;
+      }
+
+      .logo-container svg {
+        width: 130px !important;
+        height: auto !important;
+      }
+
+      .meeting-tag {
+        font-size: 9px !important;
+        padding: 4px 10px !important;
+      }
+
+      .deck-container {
+        padding: 10px 15px !important;
+        flex: 1;
+        display: flex;
+        align-items: flex-start;
+        justify-content: center;
+        height: auto !important;
+        min-height: calc(100vh - 170px);
+      }
+
+      .slide {
+        position: relative !important;
+        display: none !important;
+        opacity: 0;
+        width: 100% !important;
+        transform: none !important;
+        pointer-events: none;
+      }
+
+      .slide.active {
+        display: flex !important;
+        opacity: 1 !important;
+        pointer-events: auto;
+      }
+
+      .slide-card {
+        padding: 25px 20px !important;
+        min-height: auto !important;
+        height: auto !important;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.3) !important;
+      }
+
+      h1.slide-title {
+        font-size: 26px !important;
+        line-height: 1.2 !important;
+        letter-spacing: -0.5px !important;
+        margin-bottom: 15px !important;
+        flex-wrap: wrap;
+        gap: 8px;
+      }
+
+      h1.slide-title span.number {
+        font-size: 16px !important;
+        padding: 1px 6px !important;
+      }
+
+      .slide-content {
+        font-size: 15px !important;
+      }
+
+      .two-col {
+        grid-template-columns: 1fr !important;
+        gap: 25px !important;
+        height: auto !important;
+      }
+
+      .grid-3 {
+        grid-template-columns: 1fr !important;
+        gap: 15px !important;
+      }
+
+      .portfolio-grid {
+        grid-template-columns: 1fr !important;
+        gap: 15px !important;
+      }
+
+      .project-meta {
+        gap: 15px !important;
+      }
+
+      .meta-box {
+        padding: 15px !important;
+      }
+
+      .meta-box h3 {
+        font-size: 14px !important;
+      }
+
+      .meta-box p {
+        font-size: 14px !important;
+      }
+
+      /* Slide-specific elements */
+      .slide-card h2, .slide-card [style*="font-size: 30px"] {
+        font-size: 22px !important;
+        line-height: 1.3 !important;
+      }
+
+      .slide-card p, 
+      .slide-card [style*="font-size: 18px"],
+      .slide-card [style*="font-size: 20px"] {
+        font-size: 15px !important;
+        line-height: 1.5 !important;
+        margin-bottom: 20px !important;
+      }
+
+      .slide-card [style*="font-size: 22px"] {
+        font-size: 17px !important;
+        line-height: 1.4 !important;
+      }
+
+      .slide-card [style*="font-size: 15.5px"] {
+        font-size: 14px !important;
+      }
+
+      /* Slide 3 Layout overrides */
+      .slide-card [style*="grid-template-columns: 1fr 1fr"] {
+        grid-template-columns: 1fr !important;
+        gap: 20px !important;
+      }
+
+      .slide-card [style*="border-right: 1px solid"] {
+        border-right: none !important;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.08) !important;
+        padding-right: 0 !important;
+        padding-bottom: 20px !important;
+      }
+
+      .slide-card [style*="display: flex; justify-content: space-between; align-items: center; font-size: 13.5px"] {
+        flex-direction: column !important;
+        align-items: flex-start !important;
+        gap: 15px !important;
+      }
+
+      .slide-card [style*="border-left: 1px solid"] {
+        border-left: none !important;
+        padding-left: 0 !important;
+      }
+
+      /* Slide 4 Layout overrides */
+      .slide-card [style*="grid-template-columns: 0.8fr 1.2fr"] {
+        grid-template-columns: 1fr !important;
+        gap: 20px !important;
+      }
+
+      /* Slide 11 Layout overrides */
+      .slide-card [style*="grid-template-columns: 1fr 1fr 1fr"] {
+        grid-template-columns: 1fr !important;
+        gap: 20px !important;
+      }
+
+      /* SVG logos scaling */
+      .slide-card svg {
+        max-width: 100% !important;
+      }
+
+      .slide-card img {
+        max-height: 100px !important;
+        width: auto !important;
+        margin-bottom: 15px !important;
+      }
+
+      /* Slide 8 Forge Logo adjustment */
+      .slide-card img[alt="Sovereign Forge Logo"] {
+        max-height: 100px !important;
+      }
+
+      /* Footer controls */
+      footer {
+        padding: 15px 20px !important;
+        flex-direction: column !important;
+        gap: 12px !important;
+        align-items: center !important;
+        position: relative !important;
+        background: rgba(7, 11, 20, 0.95);
+        border-top: 1px solid var(--border-color);
+      }
+
+      .progress-container {
+        width: 100% !important;
+        justify-content: space-between !important;
+        gap: 10px !important;
+      }
+
+      .progress-bar-bg {
+        flex: 1 !important;
+        width: auto !important;
+      }
+
+      .nav-buttons {
+        width: 100% !important;
+        justify-content: space-between !important;
+      }
+
+      .nav-btn {
+        flex: 1 !important;
+        justify-content: center !important;
+        padding: 10px !important;
+        font-size: 13px !important;
+      }
+
+      .keyboard-shortcut {
+        display: none !important;
+      }
+
+      /* Modal overlay scaling */
+      #mc-modal > div {
+        padding: 25px 20px !important;
+        margin: 15px !important;
+        width: calc(100% - 30px) !important;
+        max-height: 90vh;
+        overflow-y: auto;
+      }
+
+      #mc-modal h2 {
+        font-size: 20px !important;
+        margin-bottom: 15px !important;
+      }
+    }
   </style>
 </head>
 <body>
@@ -1064,7 +1299,7 @@
         </svg>
         <h2 style="font-size: 20px; font-weight: 300; letter-spacing: 4px; text-transform: uppercase; color: var(--primary); margin-bottom: 30px;">Let's Build Together</h2>
         
-        <div style="background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.05); border-radius: 20px; padding: 30px; display: inline-block; text-align: left; min-width: 340px; box-shadow: 0 10px 30px rgba(0,0,0,0.2);">
+        <div style="background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.05); border-radius: 20px; padding: 30px; display: inline-block; text-align: left; width: 100%; max-width: 340px; box-shadow: 0 10px 30px rgba(0,0,0,0.2);">
           <p style="font-size: 14px; color: var(--text-muted); margin-bottom: 2px; text-transform: uppercase; letter-spacing: 1px;">Founder &amp; Strategist</p>
           <p style="font-size: 19px; font-weight: 600; color: var(--text-main); margin-bottom: 20px;">Mike Price</p>
           

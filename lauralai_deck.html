@@ -1382,6 +1382,9 @@
       
       // Update indicator text
       slideIndicator.innerText = `Slide ${currentSlideIndex + 1} of ${totalSlides}`;
+
+      // Reset scroll to top when slide changes
+      window.scrollTo(0, 0);
     }
 
     // Event Listeners for buttons

@@ -477,6 +477,10 @@
         padding: 4px 10px !important;
       }
 
+      #header-briefing-tag {
+        display: none !important;
+      }
+
       .deck-container {
         padding: 10px 15px !important;
         flex: 1;
@@ -728,7 +732,10 @@
         <text x="178" y="60" font-family="'Outfit', sans-serif" font-weight="400" font-size="12px" fill="#94A3B8" letter-spacing="2.5px" text-anchor="end">LLC</text>
       </svg>
     </div>
-    <div class="meeting-tag">Strategic Briefing</div>
+    <div style="display: flex; align-items: center; gap: 10px;">
+      <a href="https://lauralai.llc/schedule" target="_blank" class="meeting-tag" style="text-decoration: none; background: var(--primary); color: #000; border-color: var(--primary); transition: all 0.3s;" onmouseover="this.style.background='transparent'; this.style.color='var(--primary)';" onmouseout="this.style.background='var(--primary)'; this.style.color='#000';">Book Briefing ↗</a>
+      <div class="meeting-tag" id="header-briefing-tag" style="background: rgba(255,255,255,0.03); border-color: rgba(255,255,255,0.1); color: var(--text-muted);">Strategic Briefing</div>
+    </div>
   </header>
 
   <!-- Presentation Canvas -->

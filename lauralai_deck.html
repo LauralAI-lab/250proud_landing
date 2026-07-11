@@ -1437,7 +1437,7 @@
   </script>
 
   <!-- Modal Overlay for Magnolia Charm -->
-  <div id="mc-modal" style="display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(7, 11, 20, 0.85); z-index: 1000; justify-content: center; align-items: center; backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px);" onclick="closeModal('mc-modal')">
+  <div id="mc-modal" style="display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(7, 11, 20, 0.85); z-index: 1000; justify-content: center; align-items: center; backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px);" onclick="if(event.target === this) closeModal('mc-modal')">
     <div style="background: rgba(15, 23, 42, 0.95); border: 1px solid rgba(255, 255, 255, 0.1); padding: 45px 55px; border-radius: 24px; max-width: 750px; width: 90%; position: relative; box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5); font-family: 'Outfit', sans-serif;" onclick="event.stopPropagation()">
       
       <!-- Top gradient border accent -->

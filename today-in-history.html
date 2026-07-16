@@ -283,7 +283,7 @@
             text-transform: uppercase;
             letter-spacing: 1px;
             color: var(--gold);
-            margin-bottom: 1.8rem;
+            margin-bottom: 0.5rem;
             font-weight: 700;
             line-height: 1.25;
             text-shadow: 0 2px 10px rgba(0,0,0,0.3);
@@ -364,19 +364,23 @@
             transform: translateY(-2px);
         }
 
-        .tih-btn-learn {
-            background: transparent;
-            color: var(--gold);
-            border: 1px solid var(--gold);
-            box-shadow: 0 4px 15px rgba(184, 146, 42, 0.1);
+        .tih-learn-more-link {
+            display: inline-block;
+            font-family: 'Inter', sans-serif;
+            font-size: 0.9rem;
+            color: rgba(255, 255, 255, 0.6);
+            text-decoration: none;
+            font-weight: 500;
+            margin-bottom: 2rem;
+            transition: all 0.2s ease;
+            border-bottom: 1px dashed rgba(255, 255, 255, 0.3);
+            padding-bottom: 2px;
         }
 
-        .tih-btn-learn:hover {
-            background: rgba(184, 146, 42, 0.1);
-            color: var(--gold-hover);
-            border-color: var(--gold-hover);
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(184, 146, 42, 0.25);
+        .tih-learn-more-link:hover {
+            color: var(--gold);
+            border-bottom-color: var(--gold);
+            opacity: 1;
         }
 
         /* --- FOOTER --- */
@@ -473,18 +477,23 @@
                 <div class="tih-content">
                     <span class="tih-label" id="tih-year-label">ON THIS DAY IN AMERICAN HISTORY</span>
                     <h3 class="tih-date-subheader" id="tih-date-subheader">Loading...</h3>
+                    <a href="#" id="tih-learn-more-link" target="_blank" class="tih-learn-more-link">Read Event Reference ↗</a>
                     <p class="tih-fact" id="tih-fact-text">Loading the story...</p>
                     
                     <div style="display: flex; gap: 15px; flex-wrap: wrap; margin-top: 2rem;">
                         <a href="index.html#celebration-bundle" class="tih-btn tih-btn-secondary">Get Your Bundle</a>
                         <a href="b2b-configurator.html" class="tih-btn tih-btn-primary">Co-Brand Your Book</a>
-                        <a href="#" id="tih-learn-more-btn" target="_blank" class="tih-btn tih-btn-learn">Learn More ↗</a>
                     </div>
                 </div>
                 
-                <div class="tih-visual">
-                    <!-- Premium fallback image if custom illustration fails to resolve (Statue of Liberty) -->
-                    <img id="tih-fact-image" src="https://upload.wikimedia.org/wikipedia/commons/d/d3/Statue_of_Liberty%2C_NY.jpg" alt="Historical Event Illustration" data-fallback="https://upload.wikimedia.org/wikipedia/commons/d/d3/Statue_of_Liberty%2C_NY.jpg">
+                <div style="display: flex; flex-direction: column; align-self: stretch; height: 100%;">
+                    <div class="tih-visual" style="flex: 1; margin-bottom: 0;">
+                        <!-- Premium fallback image if custom illustration fails to resolve (Statue of Liberty) -->
+                        <img id="tih-fact-image" src="https://upload.wikimedia.org/wikipedia/commons/d/d3/Statue_of_Liberty%2C_NY.jpg" alt="Historical Event Illustration" data-fallback="https://upload.wikimedia.org/wikipedia/commons/d/d3/Statue_of_Liberty%2C_NY.jpg">
+                    </div>
+                    <div class="tih-copyright" style="font-size: 0.72rem; color: rgba(255,255,255,0.35); font-family: 'Inter', sans-serif; text-align: right; letter-spacing: 0.5px; margin-top: 0.6rem; text-transform: uppercase; font-weight: 500;">
+                        Copyright 2026 - Under license from Lauralai LLC
+                    </div>
                 </div>
             </div>
         </div>
@@ -1989,14 +1998,13 @@
             document.getElementById('tih-year-label').innerText = "ON THIS DAY IN AMERICAN HISTORY";
             document.getElementById('tih-date-subheader').innerText = fullMonths[today.getMonth()] + " " + d + ", " + factData.year;
             document.getElementById('tih-fact-text').innerText = factData.text;
-            
             const factImage = document.getElementById('tih-fact-image');
             const fallbackSrc = factImage.getAttribute('data-fallback');
-            const learnMoreBtn = document.getElementById('tih-learn-more-btn');
+            const learnMoreLink = document.getElementById('tih-learn-more-link');
 
             // Generate fallback Google Search query
             const searchQuery = encodeURIComponent(factData.year + " " + fullMonths[today.getMonth()] + " " + d + " " + factData.text.split(',')[0].split('.')[0].trim());
-            learnMoreBtn.href = `https://www.google.com/search?q=${searchQuery}`;
+            learnMoreLink.href = `https://www.google.com/search?q=${searchQuery}`;
             
             if (factData.supabase_image) {
                 factImage.src = factData.supabase_image;
@@ -2033,10 +2041,10 @@
                             // Use Wikipedia's standard thumbnail URL (guaranteed to load)
                             factImage.src = pageWithThumb.thumbnail.source;
                             
-                            // Link the Learn More button directly to the exact Wikipedia article page
+                            // Link the Learn More link directly to the exact Wikipedia article page
                             const desktopUrl = pageWithThumb.content_urls && pageWithThumb.content_urls.desktop && pageWithThumb.content_urls.desktop.page;
                             if (desktopUrl) {
-                                learnMoreBtn.href = desktopUrl;
+                                learnMoreLink.href = desktopUrl;
                             }
                             return;
                         }

@@ -42,9 +42,10 @@ Welcome to the official internal guide for LauralAI. Use these verified details 
 ---
 
 ## 4. Shipping & Fulfillment FAQs
-*   **How long does printing take?** Since books are custom printed on-demand, printing and binding takes 2 to 4 business days.
-*   **What is the shipping timeline?** Standard shipping takes 5 to 7 business days once printed. Expedited/Priority shipping is available at checkout.
-*   **Can we print in bulk?** Yes! For orders of 500+ books or custom enterprise distributions, suggests they book a call on our calendar.
+*   **The $29 Celebration Bundle:** The digital coloring book and Resource Center access are delivered instantly upon purchase. Custom physical magnets and stickers are delivered in 3 to 8 business days.
+*   **Swag, Clothing & Apparel:** Swag, clothing, and apparel items take an average of 4 to 8 business days to arrive.
+*   **Co-Branded Books (B2B):** Automated physical printing via the Lulu API connector is temporarily paused while we finalize the connection (scheduled for Saturday/Sunday). Currently, partners receive their custom, print-ready co-branded PDFs instantly via email, and physical print distributions can be coordinated manually by contacting our team.
+*   **Can we print in bulk?** Yes! For custom bulk print distributions (500+ units), suggest they book a call on our calendar to coordinate details.
 
 ---
 

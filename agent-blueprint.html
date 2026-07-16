@@ -1,0 +1,1584 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Agent Blueprint Onboarding MVP — Aligned Agentics</title>
+  
+  <!-- Web App Manifest & Service Worker Meta -->
+  <link rel="manifest" href="/agent-blueprint-manifest.json">
+  <meta name="theme-color" content="#1A1A1A">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <link rel="apple-touch-icon" href="/socials/agent_blueprint_white.png">
+
+  <!-- Google Fonts: Outfit & Roboto Mono -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700;800&family=Roboto+Mono:wght@400;600&display=swap" rel="stylesheet">
+
+  <style>
+    /* CSS Variables following Sovereign Forge Brand Guidelines */
+    :root {
+      --bg-dark: #121212;
+      --bg-workspace: #1A1A1A;
+      --card-bg: rgba(0, 0, 0, 0.65);
+      --card-border: rgba(255, 255, 255, 0.08);
+      --primary: #D4AF37; /* Sovereign Gold */
+      --primary-light: #FFF2B2;
+      --primary-dark: #996E00;
+      --accent-plum: #3C1F3D;
+      --text-main: #FFFFFF;
+      --text-muted: #94A3B8;
+      --text-dark: #000000;
+      --error-color: #EF4444;
+      --success-color: #10B981;
+      --gold-gradient: linear-gradient(135deg, var(--primary-light) 0%, var(--primary) 50%, var(--primary-dark) 100%);
+      --glass-glow: 0 8px 32px 0 rgba(212, 175, 55, 0.08);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Outfit', sans-serif;
+      background-color: var(--bg-workspace);
+      color: var(--text-main);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      overflow-x: hidden;
+      position: relative;
+    }
+
+    /* Ambient Background Glows */
+    .ambient-glow-1 {
+      position: absolute;
+      top: -150px;
+      right: -150px;
+      width: 450px;
+      height: 450px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(212, 175, 55, 0.06) 0%, rgba(0, 0, 0, 0) 70%);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .ambient-glow-2 {
+      position: absolute;
+      bottom: -200px;
+      left: -200px;
+      width: 550px;
+      height: 550px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(60, 31, 61, 0.15) 0%, rgba(0, 0, 0, 0) 70%);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    /* Header Container */
+    header {
+      width: 100%;
+      background: rgba(0, 0, 0, 0.55);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--card-border);
+      padding: 15px 40px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    .header-logo {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      text-decoration: none;
+    }
+
+    .header-logo img {
+      height: 38px;
+      width: auto;
+    }
+
+    .header-logo-text {
+      font-weight: 800;
+      font-size: 20px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--text-main);
+    }
+
+    .header-logo-text span {
+      background: var(--gold-gradient);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    /* Navigation Tabs */
+    .tab-nav {
+      display: flex;
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid var(--card-border);
+      border-radius: 30px;
+      padding: 4px;
+    }
+
+    .tab-btn {
+      background: none;
+      border: none;
+      color: var(--text-muted);
+      padding: 8px 20px;
+      border-radius: 25px;
+      font-family: inherit;
+      font-weight: 600;
+      font-size: 14px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .tab-btn:hover {
+      color: var(--text-main);
+    }
+
+    .tab-btn.active {
+      background: var(--gold-gradient);
+      color: var(--text-dark);
+      box-shadow: 0 4px 15px rgba(212, 175, 55, 0.25);
+    }
+
+    /* Main Grid Layout */
+    .dashboard-container {
+      flex: 1;
+      width: 100%;
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 30px 40px;
+      display: grid;
+      grid-template-columns: 1.8fr 1.2fr;
+      gap: 30px;
+      position: relative;
+      z-index: 10;
+    }
+
+    /* Panel States */
+    .main-panel {
+      display: flex;
+      flex-direction: column;
+      gap: 25px;
+    }
+
+    .tab-content {
+      display: none;
+      animation: fadeIn 0.4s ease forwards;
+    }
+
+    .tab-content.active {
+      display: flex;
+      flex-direction: column;
+      gap: 25px;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Card styling following Sovereign Forge guidelines */
+    .glass-card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 20px;
+      padding: 30px;
+      box-shadow: var(--glass-glow);
+      position: relative;
+      overflow: hidden;
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+    }
+
+    .glass-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 4px;
+      background: var(--gold-gradient);
+    }
+
+    .card-title {
+      font-size: 24px;
+      font-weight: 800;
+      letter-spacing: -0.5px;
+      margin-bottom: 20px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .card-subtitle {
+      font-size: 14px;
+      color: var(--text-muted);
+      margin-top: -15px;
+      margin-bottom: 20px;
+      line-height: 1.5;
+    }
+
+    /* Form Fields & Sliders */
+    .section-group {
+      margin-bottom: 25px;
+    }
+
+    .section-title {
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--primary);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-bottom: 15px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+      padding-bottom: 6px;
+    }
+
+    .checkbox-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+      gap: 12px;
+    }
+
+    .checkbox-label {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      background: rgba(255, 255, 255, 0.02);
+      border: 1px solid var(--card-border);
+      padding: 12px 16px;
+      border-radius: 12px;
+      cursor: pointer;
+      font-size: 14px;
+      font-weight: 600;
+      transition: all 0.2s ease;
+    }
+
+    .checkbox-label:hover {
+      background: rgba(255, 255, 255, 0.05);
+      border-color: rgba(212, 175, 55, 0.3);
+    }
+
+    .checkbox-label input {
+      accent-color: var(--primary);
+      width: 16px;
+      height: 16px;
+    }
+
+    .checkbox-label.checked {
+      border-color: var(--primary);
+      background: rgba(212, 175, 55, 0.05);
+    }
+
+    /* Sliders */
+    .slider-container {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      margin-bottom: 20px;
+    }
+
+    .slider-header {
+      display: flex;
+      justify-content: space-between;
+      font-size: 14px;
+      font-weight: 600;
+    }
+
+    .slider-title {
+      color: var(--text-main);
+    }
+
+    .slider-val {
+      color: var(--primary);
+      font-family: 'Roboto Mono', monospace;
+      font-weight: bold;
+    }
+
+    .slider-input {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 100%;
+      height: 6px;
+      border-radius: 3px;
+      background: rgba(255, 255, 255, 0.1);
+      outline: none;
+      transition: background 0.3s;
+    }
+
+    .slider-input::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      background: var(--gold-gradient);
+      cursor: pointer;
+      box-shadow: 0 0 10px rgba(212, 175, 55, 0.5);
+      transition: transform 0.1s;
+    }
+
+    .slider-input::-webkit-slider-thumb:hover {
+      transform: scale(1.2);
+    }
+
+    /* Calculator Sidebar Card */
+    .sidebar-panel {
+      display: flex;
+      flex-direction: column;
+      gap: 25px;
+    }
+
+    .calculator-card {
+      position: sticky;
+      top: 100px;
+    }
+
+    .calc-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 15px 0;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    }
+
+    .calc-row:last-child {
+      border-bottom: none;
+    }
+
+    .calc-label {
+      font-size: 14px;
+      color: var(--text-muted);
+      max-width: 60%;
+      line-height: 1.4;
+    }
+
+    .calc-value {
+      font-size: 20px;
+      font-weight: 800;
+      font-family: 'Roboto Mono', monospace;
+      text-align: right;
+    }
+
+    .value-danger {
+      color: var(--error-color);
+      text-shadow: 0 0 10px rgba(239, 68, 68, 0.2);
+    }
+
+    .value-warning {
+      color: #F59E0B;
+      text-shadow: 0 0 10px rgba(245, 158, 11, 0.2);
+    }
+
+    .value-success {
+      color: var(--success-color);
+      text-shadow: 0 0 10px rgba(16, 185, 129, 0.2);
+    }
+
+    .calc-total-box {
+      background: rgba(212, 175, 55, 0.03);
+      border: 1px dashed rgba(212, 175, 55, 0.25);
+      border-radius: 12px;
+      padding: 20px;
+      margin-top: 15px;
+      text-align: center;
+    }
+
+    .calc-total-label {
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      color: var(--primary);
+      margin-bottom: 5px;
+      font-weight: bold;
+    }
+
+    .calc-total-value {
+      font-size: 32px;
+      font-weight: 800;
+      background: var(--gold-gradient);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      font-family: 'Roboto Mono', monospace;
+      text-shadow: var(--glass-glow);
+    }
+
+    /* Living Guide Tab Elements */
+    .prompt-block {
+      background: rgba(0, 0, 0, 0.4);
+      border: 1px solid rgba(255, 255, 255, 0.05);
+      border-radius: 14px;
+      padding: 20px;
+      margin-bottom: 20px;
+      position: relative;
+    }
+
+    .prompt-title-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+    }
+
+    .prompt-badge {
+      background: rgba(212, 175, 55, 0.08);
+      border: 1px solid rgba(212, 175, 55, 0.2);
+      color: var(--primary);
+      padding: 3px 10px;
+      border-radius: 20px;
+      font-size: 11px;
+      font-weight: bold;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .copy-btn {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid var(--card-border);
+      color: var(--text-main);
+      padding: 6px 12px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-family: inherit;
+      font-size: 12px;
+      font-weight: 600;
+      transition: all 0.2s ease;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    .copy-btn:hover {
+      background: var(--primary);
+      color: var(--text-dark);
+      border-color: var(--primary);
+    }
+
+    .prompt-code {
+      font-family: 'Roboto Mono', monospace;
+      font-size: 13px;
+      line-height: 1.5;
+      color: #E2E8F0;
+      background: rgba(0,0,0,0.5);
+      padding: 15px;
+      border-radius: 8px;
+      border: 1px solid rgba(255,255,255,0.03);
+      overflow-x: auto;
+      white-space: pre-wrap;
+    }
+
+    /* Premium Blurred Overlays */
+    .premium-gate {
+      position: relative;
+    }
+
+    .blur-overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(26, 26, 26, 0.45);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      z-index: 10;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+      border-radius: 14px;
+      padding: 30px;
+      text-align: center;
+      transition: opacity 0.5s ease, pointer-events 0.5s ease;
+    }
+
+    .lock-icon-circle {
+      width: 50px;
+      height: 50px;
+      background: rgba(212, 175, 55, 0.1);
+      border: 1px solid var(--primary);
+      border-radius: 50%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      color: var(--primary);
+      font-size: 20px;
+      margin-bottom: 15px;
+      box-shadow: 0 0 15px rgba(212, 175, 55, 0.2);
+    }
+
+    .premium-gate-title {
+      font-size: 18px;
+      font-weight: 800;
+      margin-bottom: 8px;
+    }
+
+    .premium-gate-desc {
+      font-size: 13px;
+      color: var(--text-muted);
+      max-width: 320px;
+      margin-bottom: 20px;
+      line-height: 1.4;
+    }
+
+    /* Mini Inline Waitlist Form */
+    .mini-form {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      width: 100%;
+      max-width: 300px;
+    }
+
+    .form-input {
+      background: rgba(0, 0, 0, 0.5);
+      border: 1px solid var(--card-border);
+      padding: 10px 14px;
+      border-radius: 8px;
+      color: var(--text-main);
+      font-family: inherit;
+      font-size: 13px;
+      outline: none;
+      transition: all 0.3s;
+      width: 100%;
+    }
+
+    .form-input:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 10px rgba(212, 175, 55, 0.15);
+    }
+
+    .submit-btn {
+      background: var(--gold-gradient);
+      color: var(--text-dark);
+      border: none;
+      padding: 11px;
+      border-radius: 8px;
+      font-family: inherit;
+      font-weight: 700;
+      font-size: 13px;
+      cursor: pointer;
+      transition: opacity 0.2s;
+    }
+
+    .submit-btn:hover {
+      opacity: 0.95;
+    }
+
+    /* Unlocked confirmation tag */
+    .unlocked-toast {
+      position: absolute;
+      top: 15px;
+      right: 15px;
+      background: rgba(16, 185, 129, 0.1);
+      border: 1px solid var(--success-color);
+      color: var(--success-color);
+      font-size: 11px;
+      font-weight: bold;
+      padding: 4px 10px;
+      border-radius: 12px;
+      text-transform: uppercase;
+      z-index: 15;
+    }
+
+    /* Engagement Loop Checklists */
+    .checklist-section {
+      display: grid;
+      grid-template-columns: 1fr 1.2fr;
+      gap: 25px;
+    }
+
+    .circle-progress-wrapper {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      background: rgba(0, 0, 0, 0.2);
+      border: 1px solid var(--card-border);
+      padding: 30px 20px;
+      border-radius: 16px;
+      text-align: center;
+    }
+
+    .progress-svg {
+      width: 140px;
+      height: 140px;
+      transform: rotate(-90deg);
+      margin-bottom: 15px;
+    }
+
+    .progress-bg-ring {
+      fill: none;
+      stroke: rgba(255, 255, 255, 0.05);
+      stroke-width: 8px;
+    }
+
+    .progress-fill-ring {
+      fill: none;
+      stroke: url(#gold-grad-svg);
+      stroke-width: 8px;
+      stroke-linecap: round;
+      stroke-dasharray: 376.99; /* 2 * PI * r (r=60) */
+      stroke-dashoffset: 376.99; /* Initially empty */
+      transition: stroke-dashoffset 0.6s ease;
+    }
+
+    .progress-text-center {
+      font-size: 26px;
+      font-weight: 800;
+      fill: var(--text-main);
+      font-family: 'Outfit', sans-serif;
+    }
+
+    .progress-status-desc {
+      font-size: 13px;
+      color: var(--text-muted);
+      line-height: 1.4;
+    }
+
+    .task-item-label {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      background: rgba(255, 255, 255, 0.01);
+      border: 1px solid var(--card-border);
+      padding: 16px;
+      border-radius: 12px;
+      cursor: pointer;
+      font-size: 14px;
+      font-weight: 600;
+      margin-bottom: 10px;
+      transition: all 0.2s ease;
+    }
+
+    .task-item-label:hover {
+      background: rgba(255, 255, 255, 0.03);
+      border-color: rgba(212, 175, 55, 0.25);
+    }
+
+    .task-item-label input {
+      accent-color: var(--primary);
+      width: 18px;
+      height: 18px;
+      margin-top: 2px;
+    }
+
+    .task-item-label.completed {
+      border-color: rgba(16, 185, 129, 0.3);
+      background: rgba(16, 185, 129, 0.02);
+      text-decoration: line-through;
+      color: var(--text-muted);
+    }
+
+    /* Congratulatory overlay */
+    .congrats-overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(7, 11, 20, 0.95);
+      border-radius: 20px;
+      z-index: 100;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+      text-align: center;
+      padding: 30px;
+      animation: scaleUp 0.3s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+    }
+
+    @keyframes scaleUp {
+      from { opacity: 0; transform: scale(0.95); }
+      to { opacity: 1; transform: scale(1); }
+    }
+
+    .congrats-title {
+      font-size: 32px;
+      font-weight: 800;
+      background: var(--gold-gradient);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      margin-bottom: 10px;
+      letter-spacing: -0.5px;
+    }
+
+    .congrats-desc {
+      font-size: 15px;
+      color: var(--text-muted);
+      max-width: 400px;
+      margin-bottom: 25px;
+      line-height: 1.5;
+    }
+
+    /* Skill Feed */
+    .feed-card {
+      margin-top: 10px;
+    }
+
+    .feed-item {
+      border-left: 3px solid var(--primary);
+      background: rgba(255, 255, 255, 0.02);
+      border: 1px solid var(--card-border);
+      border-left-width: 3px;
+      border-left-color: var(--primary);
+      border-radius: 12px;
+      padding: 20px;
+      margin-bottom: 15px;
+    }
+
+    .feed-header-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 8px;
+    }
+
+    .feed-title {
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--text-main);
+    }
+
+    .feed-date {
+      font-size: 11px;
+      color: var(--text-muted);
+      font-family: 'Roboto Mono', monospace;
+    }
+
+    .feed-desc {
+      font-size: 13.5px;
+      color: var(--text-muted);
+      line-height: 1.4;
+      margin-bottom: 12px;
+    }
+
+    /* Floating Support Widget */
+    .support-widget-btn {
+      position: fixed;
+      bottom: 30px;
+      right: 30px;
+      background: var(--gold-gradient);
+      color: var(--text-dark);
+      border: none;
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      cursor: pointer;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-size: 24px;
+      box-shadow: 0 4px 20px rgba(212, 175, 55, 0.4);
+      z-index: 500;
+      transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+
+    .support-widget-btn:hover {
+      transform: scale(1.1) rotate(10deg);
+    }
+
+    /* Slide-over Drawer Panel */
+    .drawer-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: rgba(0,0,0,0.6);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      z-index: 1000;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s ease;
+    }
+
+    .drawer-overlay.open {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .drawer-content {
+      position: absolute;
+      top: 0;
+      right: -420px;
+      width: 420px;
+      height: 100%;
+      background: rgba(18, 18, 18, 0.98);
+      border-left: 1px solid var(--card-border);
+      box-shadow: -10px 0 35px rgba(0,0,0,0.5);
+      z-index: 1001;
+      padding: 40px 30px;
+      display: flex;
+      flex-direction: column;
+      gap: 25px;
+      transition: right 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+    }
+
+    .drawer-overlay.open .drawer-content {
+      right: 0;
+    }
+
+    .drawer-close {
+      position: absolute;
+      top: 25px;
+      right: 25px;
+      background: none;
+      border: none;
+      color: var(--text-muted);
+      cursor: pointer;
+      font-size: 28px;
+    }
+
+    .drawer-close:hover {
+      color: var(--text-main);
+    }
+
+    .drawer-title {
+      font-size: 22px;
+      font-weight: 800;
+      color: var(--primary);
+      letter-spacing: -0.5px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .drawer-desc {
+      font-size: 14px;
+      color: var(--text-muted);
+      line-height: 1.5;
+    }
+
+    .schedule-btn {
+      background: var(--gold-gradient);
+      color: var(--text-dark);
+      text-decoration: none;
+      padding: 14px;
+      border-radius: 30px;
+      font-weight: 700;
+      font-size: 15px;
+      text-align: center;
+      transition: all 0.3s;
+      box-shadow: 0 4px 15px rgba(212, 175, 55, 0.2);
+    }
+
+    .schedule-btn:hover {
+      opacity: 0.95;
+      box-shadow: 0 4px 20px rgba(212, 175, 55, 0.4);
+    }
+
+    .feature-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .feature-list-item {
+      display: flex;
+      gap: 10px;
+      font-size: 13.5px;
+      line-height: 1.4;
+    }
+
+    /* Responsiveness for Tablets and Mobile */
+    @media (max-width: 1080px) {
+      .dashboard-container {
+        grid-template-columns: 1fr;
+        padding: 20px;
+      }
+
+      .calculator-card {
+        position: relative;
+        top: 0;
+      }
+    }
+
+    @media (max-width: 768px) {
+      header {
+        padding: 15px 20px;
+        flex-direction: column;
+        gap: 15px;
+      }
+
+      .tab-nav {
+        width: 100%;
+        justify-content: center;
+      }
+
+      .dashboard-container {
+        padding: 15px;
+      }
+
+      .checklist-section {
+        grid-template-columns: 1fr;
+      }
+
+      .drawer-content {
+        width: 100%;
+        right: -100%;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="ambient-glow-1"></div>
+  <div class="ambient-glow-2"></div>
+
+  <!-- Header -->
+  <header>
+    <a href="/" class="header-logo">
+      <img src="/socials/agent_blueprint_white.png" alt="Agent Blueprint Logo">
+      <div class="header-logo-text">Agent<span>Blueprint</span></div>
+    </a>
+    
+    <!-- Tab Nav controls -->
+    <div class="tab-nav">
+      <button class="tab-btn active" onclick="switchTab('intake-tab', this)">Intake Wizard</button>
+      <button class="tab-btn" onclick="switchTab('guide-tab', this)">Living Guide</button>
+      <button class="tab-btn" onclick="switchTab('loop-tab', this)">Engagement Loop</button>
+    </div>
+  </header>
+
+  <!-- Dashboard Container -->
+  <main class="dashboard-container">
+    
+    <!-- Left Main Content Column -->
+    <div class="main-panel">
+      
+      <!-- TAB 1: DIAGNOSTIC INTAKE -->
+      <div id="intake-tab" class="tab-content active">
+        
+        <!-- Ecosystem Mapping -->
+        <div class="glass-card">
+          <h2 class="card-title">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+            1. Ecosystem Integration Mapping
+          </h2>
+          <p class="card-subtitle">Select the CRM, marketing, and lead-routing pipelines powering your current real estate business. We map these parameters directly to Claude/Gemini model contexts.</p>
+          
+          <div class="section-group">
+            <div class="section-title">Customer Relationship Management (CRM)</div>
+            <div class="checkbox-grid">
+              <label class="checkbox-label checked">
+                <input type="checkbox" checked value="Follow Up Boss" onchange="toggleCheckbox(this)"> Follow Up Boss
+              </label>
+              <label class="checkbox-label">
+                <input type="checkbox" value="kvCORE" onchange="toggleCheckbox(this)"> kvCORE
+              </label>
+              <label class="checkbox-label">
+                <input type="checkbox" value="LionDesk" onchange="toggleCheckbox(this)"> LionDesk
+              </label>
+            </div>
+          </div>
+
+          <div class="section-group">
+            <div class="section-title">Lead Channels & Portals</div>
+            <div class="checkbox-grid">
+              <label class="checkbox-label checked">
+                <input type="checkbox" checked value="Zillow Premier Agent" onchange="toggleCheckbox(this)"> Zillow Premier Agent
+              </label>
+              <label class="checkbox-label">
+                <input type="checkbox" value="Realtor.com" onchange="toggleCheckbox(this)"> Realtor.com
+              </label>
+              <label class="checkbox-label checked">
+                <input type="checkbox" checked value="Organic referrals" onchange="toggleCheckbox(this)"> Organic referrals
+              </label>
+            </div>
+          </div>
+
+          <div class="section-group">
+            <div class="section-title">Transaction Management</div>
+            <div class="checkbox-grid">
+              <label class="checkbox-label checked">
+                <input type="checkbox" checked value="Dotloop" onchange="toggleCheckbox(this)"> Dotloop
+              </label>
+              <label class="checkbox-label">
+                <input type="checkbox" value="DocuSign Rooms" onchange="toggleCheckbox(this)"> DocuSign Rooms
+              </label>
+            </div>
+          </div>
+        </div>
+
+        <!-- Operational Sliders -->
+        <div class="glass-card">
+          <h2 class="card-title">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M4 21v-7M4 10V3M12 21v-9M12 8V3M20 21v-5M20 12V3M1 14h6M9 8h6M17 16h6"/></svg>
+            2. Operational Friction Profiler
+          </h2>
+          <p class="card-subtitle">Slide parameters to match your honest weekly operating experience. These calculate baseline financial overhead leaks and past client referral erosion.</p>
+          
+          <div class="slider-container">
+            <div class="slider-header">
+              <span class="slider-title">Weekly Admin Friction (Logging, notes, templates)</span>
+              <span class="slider-val"><span id="admin-hours-val">13</span> Hours/wk</span>
+            </div>
+            <input type="range" min="1" max="30" value="13" class="slider-input" id="admin-hours-slider" oninput="updateSliders()">
+          </div>
+
+          <div class="slider-container">
+            <div class="slider-header">
+              <span class="slider-title">Lead Latency (Average window to respond to portal leads)</span>
+              <span class="slider-val" id="latency-display-val">15 mins</span>
+            </div>
+            <input type="range" min="1" max="720" value="15" class="slider-input" id="latency-slider" oninput="updateSliders()">
+          </div>
+
+          <div class="slider-container">
+            <div class="slider-header">
+              <span class="slider-title">Client Retention Dropoff (Past clients without structured automated checkins)</span>
+              <span class="slider-val"><span id="retention-val">91</span>% Dropoff</span>
+            </div>
+            <input type="range" min="0" max="100" value="91" class="slider-input" id="retention-slider" oninput="updateSliders()">
+          </div>
+        </div>
+
+        <!-- Strategic Priorities -->
+        <div class="glass-card">
+          <h2 class="card-title">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/></svg>
+            3. Tactical Leverage Goals
+          </h2>
+          <p class="card-subtitle">Choose which agent systems to target for immediate deployment. This filters prompt generation order and milestones checklist.</p>
+          
+          <div class="checkbox-grid">
+            <label class="checkbox-label checked">
+              <input type="checkbox" checked value="Triage" onchange="toggleCheckbox(this)"> Lead Latency Triage
+            </label>
+            <label class="checkbox-label checked">
+              <input type="checkbox" checked value="PostClose" onchange="toggleCheckbox(this)"> Post-Closing Referral Loop
+            </label>
+            <label class="checkbox-label">
+              <input type="checkbox" value="Marketing" onchange="toggleCheckbox(this)"> Hyperlocal Marketing
+            </label>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- TAB 2: LIVING GUIDE -->
+      <div id="guide-tab" class="tab-content">
+        
+        <!-- Live Generated Prompts -->
+        <div class="glass-card">
+          <h2 class="card-title">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6M16 13H8M16 17H8M10 9H8"/></svg>
+            Tailored Prompts & System Rules
+          </h2>
+          <p class="card-subtitle">These are custom system instructions designed to inject operational guidelines directly into Claude, ChatGPT, or your backend API wrapper.</p>
+
+          <!-- PROMPT 1: UNLOCKED FREE SAMPLE -->
+          <div class="prompt-block">
+            <div class="prompt-title-row">
+              <span class="prompt-badge">UNLOCKED SAMPLE: Lead Latency Triage</span>
+              <button class="copy-btn" onclick="copyPrompt('prompt-code-1', this)">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+                Copy Prompt
+              </button>
+            </div>
+            <pre class="prompt-code" id="prompt-code-1">You are an Aligned Agentics Triage Agent. Your job is to monitor incoming lead notifications from Zillow Premier Agent and Follow Up Boss, then instantly construct an empathetic, hyper-specific text response.
+
+RULES:
+1. Always reference the exact property address in the first sentence.
+2. Formulate one clear question asking if they would like a walk-through video tour or a private showing scheduled for this weekend.
+3. Keep the entire response under 140 characters for SMS text delivery.
+4. Tone: approachable, warm, responsive. Contractions allowed. No corporate jargon.</pre>
+          </div>
+
+          <!-- PROMPT 2: PREMIUM LOCKED SECTION -->
+          <div class="prompt-block premium-gate" id="premium-block-1">
+            <div class="unlocked-toast" style="display:none;" id="toast-1">Unlocked</div>
+            <div class="blur-overlay" id="blur-1">
+              <div class="lock-icon-circle">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+              </div>
+              <div class="premium-gate-title">Post-Closing Referral Loop Prompt</div>
+              <div class="premium-gate-desc">Unlock this tactical prompt and map it automatically to your Dotloop closing data by joining the Sovereign Forge waitlist below.</div>
+              
+              <!-- Waitlist Form -->
+              <form class="mini-form" onsubmit="unlockPremium(event)">
+                <input type="text" placeholder="Your Name" class="form-input" required id="wl-name">
+                <input type="email" placeholder="Email Address" class="form-input" required id="wl-email">
+                <input type="text" placeholder="Brokerage (e.g. Compass)" class="form-input" required id="wl-brokerage">
+                <button type="submit" class="submit-btn">Unlock Blueprint & Join Waitlist</button>
+              </form>
+            </div>
+
+            <div class="prompt-title-row">
+              <span class="prompt-badge">PREMIUM: Post-Closing Client Care Agent</span>
+              <button class="copy-btn" onclick="copyPrompt('prompt-code-2', this)">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+                Copy Prompt
+              </button>
+            </div>
+            <pre class="prompt-code" id="prompt-code-2">You are a Client Care Agent acting on behalf of Mike Price. Your primary function is to monitor home close dates inside Dotloop and draft personal, warm text outreach 14 days post-closing.
+
+RULES:
+1. Reference the specific neighborhood and transaction completion.
+2. Ask how they are settling in, and offer a casual coffee catch-up.
+3. NEVER pitch services, ask for referrals, or mention real estate business directly. Focus entirely on relationship building.
+4. Tone: approachably warm, genuine, grateful ("Grateful Dude"). Keep it short.</pre>
+          </div>
+
+          <!-- PROMPT 3: PREMIUM LOCKED SECTION -->
+          <div class="prompt-block premium-gate" id="premium-block-2">
+            <div class="unlocked-toast" style="display:none;" id="toast-2">Unlocked</div>
+            <div class="blur-overlay" id="blur-2">
+              <div class="lock-icon-circle">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+              </div>
+              <div class="premium-gate-title">Hyperlocal SEO Listing Prompt</div>
+              <div class="premium-gate-desc">Unlock this tactical prompt and map it automatically to your MLS listing data by joining the Sovereign Forge waitlist.</div>
+              
+              <!-- Waitlist Form (Linked to same action) -->
+              <form class="mini-form" onsubmit="unlockPremium(event)">
+                <input type="text" placeholder="Your Name" class="form-input" required id="wl-name-2">
+                <input type="email" placeholder="Email Address" class="form-input" required id="wl-email-2">
+                <input type="text" placeholder="Brokerage (e.g. Compass)" class="form-input" required id="wl-brokerage-2">
+                <button type="submit" class="submit-btn">Unlock Blueprint & Join Waitlist</button>
+              </form>
+            </div>
+
+            <div class="prompt-title-row">
+              <span class="prompt-badge">PREMIUM: Hyperlocal SEO & Social Listing Writer</span>
+              <button class="copy-btn" onclick="copyPrompt('prompt-code-3', this)">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+                Copy Prompt
+              </button>
+            </div>
+            <pre class="prompt-code" id="prompt-code-3">You are a Hyperlocal SEO Writer. Your objective is to compile MLS data points into highly engaging, story-driven blog posts and local social content.
+
+RULES:
+1. Write in the first person: human, conversational, storytelling style.
+2. Feature neighborhood history, school scores, walkability ratings, and local coffee shops over property dimensions.
+3. Incorporate local search terms organically without keyword stuffing.
+4. Structure: Hook introduction, clear content headers, and a welcoming CTA inviting local comments.</pre>
+          </div>
+
+        </div>
+
+        <!-- MCP Claude Console -->
+        <div class="glass-card">
+          <h2 class="card-title">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg>
+            Model Context Protocol (MCP) Setup
+          </h2>
+          <p class="card-subtitle">Connect Claude Desktop directly to your CRM or local database to execute search queries and compile logs autonomously.</p>
+          <div class="prompt-title-row">
+            <span class="prompt-badge">CLAUDE_DESKTOP_CONFIG.JSON</span>
+          </div>
+          <pre class="prompt-code">{
+  "mcpServers": {
+    "followupboss-mcp": {
+      "command": "npx",
+      "args": ["-y", "@aligned-agentics/mcp-followupboss"],
+      "env": {
+        "FUB_API_KEY": "your_api_key_here",
+        "FUB_SYSTEM_USER_ID": "Mike Price"
+      }
+    }
+  }
+}</pre>
+        </div>
+
+      </div>
+
+      <!-- TAB 3: ENGAGEMENT LOOP -->
+      <div id="loop-tab" class="tab-content">
+        
+        <!-- Checklist and Progress Circle -->
+        <div class="glass-card">
+          <h2 class="card-title">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+            Daily Checklist & Milestones
+          </h2>
+          <p class="card-subtitle">Work through your onboarding checkpoints to fire the forge and claim your credentials.</p>
+          
+          <!-- Congrats Overlay (hidden by default) -->
+          <div class="congrats-overlay" id="first-forge-overlay" style="display: none;">
+            <div class="lock-icon-circle" style="background: rgba(16, 185, 129, 0.1); border-color: var(--success-color); color: var(--success-color);">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+            </div>
+            <h3 class="congrats-title">First Forge Fired!</h3>
+            <p class="congrats-desc">Congratulations, you've completed your Aligned Agentics Setup. Your blueprint is officially active. You're ready to deploy custom systems.</p>
+            <button class="submit-btn" style="width: auto; padding: 12px 30px; border-radius: 30px;" onclick="closeCongrats()">Review Milestones</button>
+          </div>
+
+          <div class="checklist-section">
+            <div class="circle-progress-wrapper">
+              <svg class="progress-svg">
+                <defs>
+                  <linearGradient id="gold-grad-svg" x1="0%" y1="0%" x2="100%" y2="100%">
+                    <stop offset="0%" stop-color="#FFF2B2"/>
+                    <stop offset="50%" stop-color="#D4AF37"/>
+                    <stop offset="100%" stop-color="#996E00"/>
+                  </linearGradient>
+                </defs>
+                <circle class="progress-bg-ring" cx="70" cy="70" r="60"></circle>
+                <circle class="progress-fill-ring" id="progress-fill" cx="70" cy="70" r="60"></circle>
+                <text class="progress-text-center" id="progress-percentage" x="70" y="79" text-anchor="middle">0%</text>
+              </svg>
+              <div class="progress-status-desc" id="progress-status-label">Begin Intake to track onboarding progress.</div>
+            </div>
+
+            <div>
+              <label class="task-item-label">
+                <input type="checkbox" onchange="toggleTask(this)" id="task-1"> <span>Ecosystem Diagnostic Completed</span>
+              </label>
+              <label class="task-item-label">
+                <input type="checkbox" onchange="toggleTask(this)" id="task-2"> <span>Generate Claude Triage Prompts</span>
+              </label>
+              <label class="task-item-label">
+                <input type="checkbox" onchange="toggleTask(this)" id="task-3"> <span>Install MCP Claude Configuration</span>
+              </label>
+              <label class="task-item-label">
+                <input type="checkbox" onchange="toggleTask(this)" id="task-4"> <span>Run Lead Routing Search API</span>
+              </label>
+              <label class="task-item-label">
+                <input type="checkbox" onchange="toggleTask(this)" id="task-5"> <span>Trigger Post-Closing Care Agent</span>
+              </label>
+            </div>
+          </div>
+        </div>
+
+        <!-- Daily Skill Feed -->
+        <div class="glass-card feed-card">
+          <h2 class="card-title">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+            Aligned Agentics Skill Feed
+          </h2>
+          <p class="card-subtitle">Daily mini-deployments detailing open-source Model Context Protocol server additions and scripting tricks for real estate operators.</p>
+          
+          <div class="feed-item">
+            <div class="feed-header-row">
+              <span class="feed-title">🏡 Zillow Listing Agent Analyzer MCP</span>
+              <span class="feed-date">JULY 12, 2026</span>
+            </div>
+            <p class="feed-desc">Automate active house listing analyses. Pull active MLS properties by school district, compile average sale-to-list statistics, and output targeted brochure outlines.</p>
+            <pre class="prompt-code">npx -y @aligned-agentics/mcp-zillow-analyzer --zip-code 30309</pre>
+          </div>
+
+          <div class="feed-item">
+            <div class="feed-header-row">
+              <span class="feed-title">✉️ Post-Close Referral Agent SMS Script</span>
+              <span class="feed-date">JULY 09, 2026</span>
+            </div>
+            <p class="feed-desc">A micro-agent script that connects to Twilio and checks Dotloop completed contracts every morning. If a deal is 60 days post-close, it logs a task and draft-composes a follow-up.</p>
+            <pre class="prompt-code">node deploy_post_close_check.js --days 60</pre>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+
+    <!-- Right Sidebar Panel: Intake ROI Calculator -->
+    <div class="sidebar-panel">
+      <div class="glass-card calculator-card" id="calculator-sidebar">
+        <h2 class="card-title">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><line x1="9" y1="9" x2="15" y2="9"/><line x1="9" y1="13" x2="15" y2="13"/><line x1="9" y1="17" x2="15" y2="17"/><line x1="10" y1="9" x2="10" y2="17"/></svg>
+          Ecosystem ROI & Loss Calculator
+        </h2>
+        <p class="card-subtitle">Evaluates live financial overhead leaks based on slider metrics.</p>
+
+        <div class="calc-row">
+          <div class="calc-label">
+            <strong>Annual Administrative Loss:</strong>
+            <div style="font-size: 11px; margin-top:2px;">Calculated at $50/hour standard agent service value.</div>
+          </div>
+          <div class="calc-value value-danger" id="admin-loss-val">$33,800</div>
+        </div>
+
+        <div class="calc-row">
+          <div class="calc-label">
+            <strong>Lead Latency Triage Risk:</strong>
+            <div style="font-size: 11px; margin-top:2px;" id="latency-desc-label">Friction spikes beyond 5 minutes response.</div>
+          </div>
+          <div class="calc-value value-warning" id="latency-risk-val">HIGH RISK</div>
+        </div>
+
+        <div class="calc-row">
+          <div class="calc-label">
+            <strong>Referral Retention Gap:</strong>
+            <div style="font-size: 11px; margin-top:2px;">Estimated yearly transactions lost to follow-up leakage.</div>
+          </div>
+          <div class="calc-value value-danger" id="retention-loss-val">$21,840</div>
+        </div>
+
+        <div class="calc-total-box">
+          <div class="calc-total-label">Total Realizable Agent Leakage</div>
+          <div class="calc-total-value" id="calc-total-loss">$55,640<span>/yr</span></div>
+        </div>
+      </div>
+    </div>
+
+  </main>
+
+  <!-- Floating Support Button -->
+  <button class="support-widget-btn" onclick="toggleDrawer(true)">
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+  </button>
+
+  <!-- Sliding Drawer Overlay -->
+  <div class="drawer-overlay" id="support-drawer" onclick="if(event.target === this) toggleDrawer(false)">
+    <div class="drawer-content" onclick="event.stopPropagation()">
+      <button class="drawer-close" onclick="toggleDrawer(false)">&times;</button>
+      <div class="drawer-title">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+        Lauralai Custom Engineering Support
+      </div>
+      <p class="drawer-desc">
+        We build bespoke Sovereign Forge automation backends for top-tier agents, teams, and brokerages. Stop losing commissions to system gaps.
+      </p>
+
+      <ul class="feature-list">
+        <li class="feature-list-item">⚡ <strong>Custom CRM Pipelines:</strong> Bidirectional syncing between FUB, kvCORE, Dotloop, and custom Claude agents.</li>
+        <li class="feature-list-item">👥 <strong>Multi-Agent Coordination:</strong> Coordinate lead responders, contract auditors, and follow-up cron tasks in a single interface.</li>
+        <li class="feature-list-item">📈 <strong>Production Scale:</strong> Headless deployment on Vercel Node stacks with PostgreSQL relational validation.</li>
+      </ul>
+
+      <a href="https://lauralai.llc/schedule" target="_blank" class="schedule-btn">Book an Executive Briefing ↗</a>
+    </div>
+  </div>
+
+  <!-- JavaScript -->
+  <script>
+    // Tab switching logic
+    function switchTab(tabId, btn) {
+      // Deactivate all tabs
+      document.querySelectorAll('.tab-content').forEach(tab => {
+        tab.classList.remove('active');
+      });
+      document.querySelectorAll('.tab-btn').forEach(button => {
+        button.classList.remove('active');
+      });
+
+      // Activate selected tab
+      document.getElementById(tabId).classList.add('active');
+      btn.classList.add('active');
+
+      // Adjust visibility of sidebar calculator card
+      const calcSidebar = document.getElementById('calculator-sidebar');
+      if (tabId === 'intake-tab') {
+        calcSidebar.style.opacity = '1';
+        calcSidebar.style.pointerEvents = 'auto';
+      } else {
+        calcSidebar.style.opacity = '0.7';
+      }
+    }
+
+    // Toggle checked styles on checkboxes
+    function toggleCheckbox(checkbox) {
+      const label = checkbox.closest('.checkbox-label');
+      if (checkbox.checked) {
+        label.classList.add('checked');
+      } else {
+        label.classList.remove('checked');
+      }
+      updateSliders();
+    }
+
+    // Live ROI Calculations
+    function updateSliders() {
+      // Fetch element values
+      const adminHours = parseInt(document.getElementById('admin-hours-slider').value);
+      const latencyMinutes = parseInt(document.getElementById('latency-slider').value);
+      const retentionDropoff = parseInt(document.getElementById('retention-slider').value);
+
+      // Update slider visual counters
+      document.getElementById('admin-hours-val').innerText = adminHours;
+      document.getElementById('retention-val').innerText = retentionDropoff;
+
+      // Handle custom latency displays
+      let latencyDisplay = '';
+      if (latencyMinutes < 60) {
+        latencyDisplay = `${latencyMinutes} mins`;
+      } else {
+        const hours = Math.round(latencyMinutes / 60);
+        latencyDisplay = `${hours} hr${hours > 1 ? 's' : ''}`;
+      }
+      document.getElementById('latency-display-val').innerText = latencyDisplay;
+
+      // Calculations
+      // 1. Admin Hours Loss: $50/hour value, 52 weeks/yr
+      const annualAdminLoss = adminHours * 50 * 52;
+      document.getElementById('admin-loss-val').innerText = `$${annualAdminLoss.toLocaleString()}`;
+
+      // 2. Latency Triage Risk: threshold 5 minutes
+      const riskVal = document.getElementById('latency-risk-val');
+      const riskDesc = document.getElementById('latency-desc-label');
+      if (latencyMinutes <= 5) {
+        riskVal.innerText = 'OPTIMIZED';
+        riskVal.className = 'calc-value value-success';
+        riskDesc.innerText = 'Real-time response keeps client conversions high.';
+      } else if (latencyMinutes <= 30) {
+        riskVal.innerText = 'MODERATE';
+        riskVal.className = 'calc-value value-warning';
+        riskDesc.innerText = 'Response times delay leads to competitor capture.';
+      } else {
+        riskVal.innerText = 'HIGH RISK';
+        riskVal.className = 'calc-value value-danger';
+        riskDesc.innerText = 'Portal leads decay by 391% in conversion probability.';
+      }
+
+      // 3. Referral Retention Gap:
+      // Volume estimate of 20 deals a year * average side value of $12,000 * attrition percentage
+      const transactionsLost = (retentionDropoff / 100) * 20 * 0.1; // assuming 10% of neglected leads would refer per year
+      const annualRetentionLoss = Math.round(transactionsLost * 12000);
+      document.getElementById('retention-loss-val').innerText = `$${annualRetentionLoss.toLocaleString()}`;
+
+      // 4. Combined Loss
+      const combinedTotalLoss = annualAdminLoss + (latencyMinutes > 5 ? 12000 : 0) + annualRetentionLoss; // add flat $12k penalty if latency high
+      document.getElementById('calc-total-loss').innerHTML = `$${combinedTotalLoss.toLocaleString()}<span>/yr</span>`;
+    }
+
+    // Copy Prompt text codeblocks
+    function copyPrompt(elementId, btn) {
+      const codeElement = document.getElementById(elementId);
+      const textToCopy = codeElement.innerText;
+      
+      navigator.clipboard.writeText(textToCopy).then(() => {
+        const originalText = btn.innerHTML;
+        btn.innerHTML = `✓ Copied!`;
+        btn.style.background = 'var(--success-color)';
+        btn.style.color = '#fff';
+        
+        setTimeout(() => {
+          btn.innerHTML = originalText;
+          btn.style.background = 'rgba(255,255,255,0.05)';
+          btn.style.color = 'var(--text-main)';
+          btn.style.borderColor = 'var(--card-border)';
+        }, 2000);
+      }).catch(err => {
+        console.error('Could not copy text: ', err);
+      });
+    }
+
+    // Waitlist Form & Unlock Code
+    function unlockPremium(event) {
+      event.preventDefault();
+      
+      // Store waitlist details to localStorage to simulate database signup
+      const wlName = document.getElementById('wl-name').value;
+      const wlEmail = document.getElementById('wl-email').value;
+      const wlBrokerage = document.getElementById('wl-brokerage').value;
+      
+      const subscriber = { name: wlName, email: wlEmail, brokerage: wlBrokerage, date: new Date().toISOString() };
+      localStorage.setItem('agent_blueprint_waitlist', JSON.stringify(subscriber));
+
+      performUnlockVisuals();
+    }
+
+    function performUnlockVisuals() {
+      // Fade out blur overlays
+      document.getElementById('blur-1').style.opacity = '0';
+      document.getElementById('blur-1').style.pointerEvents = 'none';
+      document.getElementById('blur-2').style.opacity = '0';
+      document.getElementById('blur-2').style.pointerEvents = 'none';
+
+      // Show unlocked tags
+      document.getElementById('toast-1').style.display = 'block';
+      document.getElementById('toast-2').style.display = 'block';
+
+      // Update milestone status (toggles task 2 completed)
+      const task2 = document.getElementById('task-2');
+      if (task2 && !task2.checked) {
+        task2.checked = true;
+        toggleTask(task2);
+      }
+    }
+
+    // Checklist Progress Ring Logic
+    const progressFill = document.getElementById('progress-fill');
+    const progressPercentage = document.getElementById('progress-percentage');
+    const progressStatusLabel = document.getElementById('progress-status-label');
+    const firstForgeOverlay = document.getElementById('first-forge-overlay');
+
+    const totalTasks = 5;
+    
+    function toggleTask(checkbox) {
+      const label = checkbox.closest('.task-item-label');
+      if (checkbox.checked) {
+        label.classList.add('completed');
+      } else {
+        label.classList.remove('completed');
+      }
+
+      // Calculate new percentage
+      const checkedCount = document.querySelectorAll('.task-item-label.completed').length;
+      const percent = Math.round((checkedCount / totalTasks) * 100);
+      
+      // Update circle animation
+      const r = 60;
+      const circ = 2 * Math.PI * r;
+      const offset = circ - (percent / 100) * circ;
+      progressFill.style.strokeDashoffset = offset;
+      progressPercentage.textContent = `${percent}%`;
+
+      // Update message status
+      if (percent === 0) {
+        progressStatusLabel.textContent = "Begin Intake to track onboarding progress.";
+      } else if (percent < 50) {
+        progressStatusLabel.textContent = "Intake completed. Proceed to setup custom instructions.";
+      } else if (percent < 100) {
+        progressStatusLabel.textContent = "MCP configuration mapped. Finalize automated routing.";
+      } else {
+        progressStatusLabel.textContent = "Checkpoints complete. Firing the first forge!";
+        setTimeout(() => {
+          firstForgeOverlay.style.display = 'flex';
+        }, 500);
+      }
+    }
+
+    function closeCongrats() {
+      firstForgeOverlay.style.display = 'none';
+    }
+
+    // Support Drawer toggle logic
+    function toggleDrawer(isOpen) {
+      const drawer = document.getElementById('support-drawer');
+      if (isOpen) {
+        drawer.classList.add('open');
+      } else {
+        drawer.classList.remove('open');
+      }
+    }
+
+    // Check localStorage status on load
+    window.addEventListener('DOMContentLoaded', () => {
+      // Check if already subscribed to waitlist
+      if (localStorage.getItem('agent_blueprint_waitlist')) {
+        performUnlockVisuals();
+      }
+      
+      // Initialise default calculator state
+      updateSliders();
+    });
+
+    // PWA Service Worker Registration
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('/agent-blueprint-sw.js')
+          .then(reg => console.log('Service Worker registered', reg))
+          .catch(err => console.error('Service Worker registration failed', err));
+      });
+    }
+  </script>
+</body>
+</html>

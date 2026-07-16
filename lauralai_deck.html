@@ -452,8 +452,8 @@
       padding: 1px 6px;
     }
 
-    /* Responsive Media Queries for Mobile/Tablet */
-    @media (max-width: 1120px), (max-height: 800px) {
+    /* Responsive Media Queries for Mobile/Tablet/iPad Pro */
+    @media (max-width: 1368px), (max-height: 960px) {
       body {
         overflow-y: auto !important;
         overflow-x: hidden !important;
@@ -465,20 +465,6 @@
 
       header {
         padding: 15px 20px !important;
-      }
-
-      .logo-container svg {
-        width: 130px !important;
-        height: auto !important;
-      }
-
-      .meeting-tag {
-        font-size: 9px !important;
-        padding: 4px 10px !important;
-      }
-
-      #header-briefing-tag {
-        display: none !important;
       }
 
       .deck-container {
@@ -513,9 +499,101 @@
         box-shadow: 0 10px 30px rgba(0,0,0,0.3) !important;
       }
 
+      /* Scale down slide-card titles slightly on smaller laptops/iPads */
+      h1.slide-title {
+        font-size: 32px !important;
+        line-height: 1.2 !important;
+        margin-bottom: 20px !important;
+      }
+
+      /* Scale down logos to save vertical height */
+      .slide-card img {
+        max-height: 120px !important;
+        width: auto !important;
+        margin-bottom: 12px !important;
+      }
+
+      /* Slide 8 Forge Logo adjustment */
+      .slide-card img[alt="Sovereign Forge Logo"] {
+        max-height: 100px !important;
+      }
+
+      /* Slide 7 Blueprint Logo adjustment */
+      .slide-card img[alt="Agent Blueprint Logo"] {
+        max-height: 120px !important;
+      }
+
+      /* Footer controls */
+      footer {
+        padding: 15px 20px !important;
+        flex-direction: column !important;
+        gap: 12px !important;
+        align-items: center !important;
+        position: relative !important;
+        background: rgba(7, 11, 20, 0.95);
+        border-top: 1px solid var(--border-color);
+      }
+
+      .progress-container {
+        width: 100% !important;
+        justify-content: space-between !important;
+        gap: 10px !important;
+      }
+
+      .progress-bar-bg {
+        flex: 1 !important;
+        width: auto !important;
+      }
+
+      .nav-buttons {
+        width: 100% !important;
+        justify-content: space-between !important;
+      }
+
+      .nav-btn {
+        flex: 1 !important;
+        justify-content: center !important;
+        padding: 10px !important;
+        font-size: 13px !important;
+      }
+
+      .keyboard-shortcut {
+        display: none !important;
+      }
+
+      /* Modal overlay scaling */
+      #mc-modal > div {
+        padding: 25px 20px !important;
+        margin: 15px !important;
+        width: calc(100% - 30px) !important;
+        max-height: 90vh;
+        overflow-y: auto;
+      }
+
+      #mc-modal h2 {
+        font-size: 20px !important;
+        margin-bottom: 15px !important;
+      }
+    }
+
+    /* Narrow viewport layout overrides (Mobile & Tablet Portrait) */
+    @media (max-width: 1120px) {
+      .logo-container svg {
+        width: 130px !important;
+        height: auto !important;
+      }
+
+      .meeting-tag {
+        font-size: 9px !important;
+        padding: 4px 10px !important;
+      }
+
+      #header-briefing-tag {
+        display: none !important;
+      }
+
       h1.slide-title {
         font-size: 26px !important;
-        line-height: 1.2 !important;
         letter-spacing: -0.5px !important;
         margin-bottom: 15px !important;
         flex-wrap: wrap;
@@ -622,72 +700,8 @@
         gap: 20px !important;
       }
 
-      /* SVG logos scaling */
-      .slide-card svg {
-        max-width: 100% !important;
-      }
-
       .slide-card img {
         max-height: 100px !important;
-        width: auto !important;
-        margin-bottom: 15px !important;
-      }
-
-      /* Slide 8 Forge Logo adjustment */
-      .slide-card img[alt="Sovereign Forge Logo"] {
-        max-height: 100px !important;
-      }
-
-      /* Footer controls */
-      footer {
-        padding: 15px 20px !important;
-        flex-direction: column !important;
-        gap: 12px !important;
-        align-items: center !important;
-        position: relative !important;
-        background: rgba(7, 11, 20, 0.95);
-        border-top: 1px solid var(--border-color);
-      }
-
-      .progress-container {
-        width: 100% !important;
-        justify-content: space-between !important;
-        gap: 10px !important;
-      }
-
-      .progress-bar-bg {
-        flex: 1 !important;
-        width: auto !important;
-      }
-
-      .nav-buttons {
-        width: 100% !important;
-        justify-content: space-between !important;
-      }
-
-      .nav-btn {
-        flex: 1 !important;
-        justify-content: center !important;
-        padding: 10px !important;
-        font-size: 13px !important;
-      }
-
-      .keyboard-shortcut {
-        display: none !important;
-      }
-
-      /* Modal overlay scaling */
-      #mc-modal > div {
-        padding: 25px 20px !important;
-        margin: 15px !important;
-        width: calc(100% - 30px) !important;
-        max-height: 90vh;
-        overflow-y: auto;
-      }
-
-      #mc-modal h2 {
-        font-size: 20px !important;
-        margin-bottom: 15px !important;
       }
     }
   </style>

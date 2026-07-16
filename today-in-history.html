@@ -267,14 +267,26 @@
         }
 
         .tih-label {
-            font-family: 'Oswald', sans-serif;
-            font-size: 2.2rem;
+            font-family: 'Inter', sans-serif;
+            font-size: 0.95rem;
             text-transform: uppercase;
-            letter-spacing: 2px;
-            color: var(--gold);
-            margin-bottom: 1.5rem;
+            letter-spacing: 3px;
+            color: rgba(255, 255, 255, 0.55);
+            margin-bottom: 0.5rem;
             display: block;
             font-weight: 700;
+        }
+
+        .tih-date-subheader {
+            font-family: 'Oswald', sans-serif;
+            font-size: 2.8rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--gold);
+            margin-bottom: 1.8rem;
+            font-weight: 700;
+            line-height: 1.25;
+            text-shadow: 0 2px 10px rgba(0,0,0,0.3);
         }
 
         .tih-fact {
@@ -350,6 +362,21 @@
             border-color: #ffffff;
             background: rgba(255, 255, 255, 0.05);
             transform: translateY(-2px);
+        }
+
+        .tih-btn-learn {
+            background: transparent;
+            color: var(--gold);
+            border: 1px solid var(--gold);
+            box-shadow: 0 4px 15px rgba(184, 146, 42, 0.1);
+        }
+
+        .tih-btn-learn:hover {
+            background: rgba(184, 146, 42, 0.1);
+            color: var(--gold-hover);
+            border-color: var(--gold-hover);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(184, 146, 42, 0.25);
         }
 
         /* --- FOOTER --- */
@@ -444,12 +471,14 @@
                 <div class="tih-bg-date" id="tih-bg-date">TODAY</div>
                 
                 <div class="tih-content">
-                    <span class="tih-label" id="tih-year-label">On this day in History</span>
+                    <span class="tih-label" id="tih-year-label">ON THIS DAY IN AMERICAN HISTORY</span>
+                    <h3 class="tih-date-subheader" id="tih-date-subheader">Loading...</h3>
                     <p class="tih-fact" id="tih-fact-text">Loading the story...</p>
                     
                     <div style="display: flex; gap: 15px; flex-wrap: wrap; margin-top: 2rem;">
                         <a href="index.html#celebration-bundle" class="tih-btn tih-btn-secondary">Get Your Bundle</a>
                         <a href="b2b-configurator.html" class="tih-btn tih-btn-primary">Co-Brand Your Book</a>
+                        <a href="#" id="tih-learn-more-btn" target="_blank" class="tih-btn tih-btn-learn">Learn More ↗</a>
                     </div>
                 </div>
                 
@@ -925,6 +954,7 @@
 };
 
             const months = ["JAN", "FEB", "MAR", "APR", "MAY", "JUN", "JUL", "AUG", "SEP", "OCT", "NOV", "DEC"];
+            const fullMonths = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
             const today = new Date();
             const m = today.getMonth() + 1;
             const d = today.getDate();
@@ -937,11 +967,18 @@
                 "text": "The American experiment began—a country built on the radical idea that ordinary people could govern themselves. A story still being written today." 
             };
 
-            document.getElementById('tih-year-label').innerText = "On this day in " + factData.year;
+            // Set section label and date subheader
+            document.getElementById('tih-year-label').innerText = "ON THIS DAY IN AMERICAN HISTORY";
+            document.getElementById('tih-date-subheader').innerText = fullMonths[today.getMonth()] + " " + d + ", " + factData.year;
             document.getElementById('tih-fact-text').innerText = factData.text;
             
             const factImage = document.getElementById('tih-fact-image');
             const fallbackSrc = factImage.getAttribute('data-fallback');
+            const learnMoreBtn = document.getElementById('tih-learn-more-btn');
+
+            // Generate fallback Google Search query
+            const searchQuery = encodeURIComponent(factData.year + " " + fullMonths[today.getMonth()] + " " + d + " " + factData.text.split(',')[0].split('.')[0].trim());
+            learnMoreBtn.href = `https://www.google.com/search?q=${searchQuery}`;
             
             if (factData.supabase_image) {
                 factImage.src = factData.supabase_image;
@@ -950,7 +987,50 @@
                     factImage.onerror = null;
                 };
             } else {
-                factImage.src = fallbackSrc;
+                // Dynamic fallback: Fetch historical image and link directly from Wikipedia API
+                const padMonth = m.toString().padStart(2, '0');
+                const padDay = d.toString().padStart(2, '0');
+                const wikiUrl = `https://en.wikipedia.org/api/rest_v1/feed/onthisday/events/${padMonth}/${padDay}`;
+                
+                fetch(wikiUrl, {
+                    headers: {
+                        'User-Agent': '250PROUD Today-in-History Card Widget (info@250proud.com)'
+                    }
+                })
+                .then(response => {
+                    if (!response.ok) throw new Error('Wikipedia API error');
+                    return response.json();
+                })
+                .then(data => {
+                    const events = data.events || [];
+                    // Match by year
+                    const matchEvent = events.find(e => e.year && e.year.toString() === factData.year.toString());
+                    
+                    if (matchEvent && matchEvent.pages && matchEvent.pages.length > 0) {
+                        // Find the first page with a valid thumbnail
+                        const pageWithThumb = matchEvent.pages.find(p => p.thumbnail && p.thumbnail.source);
+                        if (pageWithThumb) {
+                            let thumbUrl = pageWithThumb.thumbnail.source;
+                            // Scale thumbnail to higher resolution for card presentation
+                            if (thumbUrl.includes('/thumb/') && thumbUrl.match(/\/(\d+)px-/)) {
+                                thumbUrl = thumbUrl.replace(/\/(\d+)px-/, '/640px-');
+                            }
+                            factImage.src = thumbUrl;
+                            
+                            // Link the Learn More button directly to the exact Wikipedia article page
+                            const desktopUrl = pageWithThumb.content_urls && pageWithThumb.content_urls.desktop && pageWithThumb.content_urls.desktop.page;
+                            if (desktopUrl) {
+                                learnMoreBtn.href = desktopUrl;
+                            }
+                            return;
+                        }
+                    }
+                    factImage.src = fallbackSrc;
+                })
+                .catch(err => {
+                    console.error('Wikipedia image/link resolution error:', err);
+                    factImage.src = fallbackSrc;
+                });
             }
         });
     </script>

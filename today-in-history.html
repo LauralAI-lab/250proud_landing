@@ -2010,11 +2010,7 @@
                 const padDay = d.toString().padStart(2, '0');
                 const wikiUrl = `https://en.wikipedia.org/api/rest_v1/feed/onthisday/events/${padMonth}/${padDay}`;
                 
-                fetch(wikiUrl, {
-                    headers: {
-                        'User-Agent': '250PROUD Today-in-History Card Widget (info@250proud.com)'
-                    }
-                })
+                fetch(wikiUrl)
                 .then(response => {
                     if (!response.ok) throw new Error('Wikipedia API error');
                     return response.json();
@@ -2028,12 +2024,14 @@
                         // Find the first page with a valid thumbnail
                         const pageWithThumb = matchEvent.pages.find(p => p.thumbnail && p.thumbnail.source);
                         if (pageWithThumb) {
-                            let thumbUrl = pageWithThumb.thumbnail.source;
-                            // Scale thumbnail to higher resolution for card presentation
-                            if (thumbUrl.includes('/thumb/') && thumbUrl.match(/\/(\d+)px-/)) {
-                                thumbUrl = thumbUrl.replace(/\/(\d+)px-/, '/640px-');
-                            }
-                            factImage.src = thumbUrl;
+                            // Setup error fallback for the thumbnail loading
+                            factImage.onerror = function() {
+                                factImage.src = fallbackSrc;
+                                factImage.onerror = null;
+                            };
+                            
+                            // Use Wikipedia's standard thumbnail URL (guaranteed to load)
+                            factImage.src = pageWithThumb.thumbnail.source;
                             
                             // Link the Learn More button directly to the exact Wikipedia article page
                             const desktopUrl = pageWithThumb.content_urls && pageWithThumb.content_urls.desktop && pageWithThumb.content_urls.desktop.page;

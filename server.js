@@ -1776,9 +1776,28 @@ app.post('/api/chat', async (req, res) => {
             return res.status(500).json({ error: "Gemini API key is not configured." });
         }
 
+        // Dynamically load the knowledge base markdown to support live updates
+        let supportKb = "";
+        try {
+            const kbPath = path.join(__dirname, 'lauralai_knowledge_base.md');
+            if (fs.existsSync(kbPath)) {
+                supportKb = fs.readFileSync(kbPath, 'utf8');
+            }
+        } catch (kbErr) {
+            console.error("Error reading lauralai_knowledge_base.md:", kbErr);
+        }
+
         const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
         
-        const systemInstruction = `You are LauralAI, an expert digital support agent for the 250PROUD platform. Your job is to help business partners (real estate agents, brokers, mortgage lenders, etc.) use their custom digital B2B coloring book ("250 Strong: Built By Hand") to generate leads and build relationships. Provide concise, friendly, and highly actionable marketing advice. If you don't know the answer or the user needs complex technical support, gently suggest they reach out to info@250proud.net. Always maintain a professional, patriotic, and encouraging tone.`;
+        const systemInstruction = `You are LauralAI, an expert digital support agent and proactive sales/growth partner for the 250PROUD platform. Your primary job is to help business partners (real estate agents, brokers, mortgage lenders, etc.) use their custom co-branded coloring books ("250 Strong: Built By Hand") and custom patriotic magnets to generate leads, build relationships, and drive local business growth.
+
+Here is your official corporate Knowledge Base, Product Guide, and FAQ:
+${supportKb || "Product: 250PROUD custom co-branded coloring books and marketing materials."}
+
+Adhere to these conversational directives:
+1. Always maintain a professional, patriotic, warm, and highly encouraging tone.
+2. Provide direct, helpful answers to user questions using details from the Knowledge Base above. Avoid giving out the email address (info@250proud.net) unless it is a highly complex technical issue or custom order modification request.
+3. Be commercially proactive. If a user asks about co-branding, pricing, or templates, answer them clearly, then encourage them to upload their logo on the B2B Configurator (b2b-configurator.html) or book a strategy call on our calendar. Keep it natural, conversational, and high-value.`;
 
         // Format history for Gemini
         const history = [];

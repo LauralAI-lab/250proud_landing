@@ -3,7 +3,30 @@
   "cleanUrls": true,
   "headers": [
     {
-      "source": "/(.*)",
+      "source": "/tih-widget",
+      "headers": [
+        { "key": "Access-Control-Allow-Origin", "value": "*" },
+        { "key": "X-Content-Type-Options", "value": "nosniff" },
+        { "key": "Referrer-Policy", "value": "strict-origin-when-cross-origin" }
+      ]
+    },
+    {
+      "source": "/tih-widget.html",
+      "headers": [
+        { "key": "Access-Control-Allow-Origin", "value": "*" },
+        { "key": "X-Content-Type-Options", "value": "nosniff" },
+        { "key": "Referrer-Policy", "value": "strict-origin-when-cross-origin" }
+      ]
+    },
+    {
+      "source": "/tih-widget-loader.js",
+      "headers": [
+        { "key": "Access-Control-Allow-Origin", "value": "*" },
+        { "key": "X-Content-Type-Options", "value": "nosniff" }
+      ]
+    },
+    {
+      "source": "/((?!tih-widget|tih-widget-loader).*)",
       "headers": [
         { "key": "X-Frame-Options", "value": "DENY" },
         { "key": "X-Content-Type-Options", "value": "nosniff" },
@@ -91,6 +114,14 @@
     {
       "src": "/today-in-history",
       "dest": "/today-in-history.html"
+    },
+    {
+      "src": "/tih-widget",
+      "dest": "/tih-widget.html"
+    },
+    {
+      "src": "/tih-widget-builder",
+      "dest": "/tih-widget-builder.html"
     },
     {
       "src": "/rss.xml",

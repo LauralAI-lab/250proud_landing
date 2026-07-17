@@ -53,3 +53,51 @@ Welcome to the official internal guide for LauralAI. Use these verified details 
 *   **If a user asks about co-branding or how to start:** Give them a quick overview of the 3-step configurator process, then explicitly direct them: *"Head over to our B2B Configurator at b2b-configurator.html to upload your logo and preview your cover!"*
 *   **If a user asks about custom designs or bulk discounts (500+ units):** Recommend scheduling a call: *"We do custom bulk licensing for larger brokerages. Let's schedule a 10-minute strategy call on our calendar to get that sorted out."*
 *   **If a user has a complex billing issue, shipping delay, or custom technical problem:** Instruct them to email support: *"For order modifications or deep technical help, please drop a line to our team at info@250proud.net and we will sort it out immediately."*
+
+---
+
+## 6. Today In History Customizable Widget Integration & DIY Support Guide
+This section contains verified instructions for licensing and embedding the customizable, white-labeled "Today in History" widget. The widget is served from our platform and can be configured with custom themes (dark/light), custom accent colors, and a single custom CTA button.
+
+### A. Core Embedding Options
+1.  **Option 1: 1-Line Script Embed (Recommended)**
+    *   *HTML Snippet:* `<div id="tih-widget-container"></div><script src="https://250proud.net/tih-widget-loader.js" data-color="#D4AF37" data-cta-text="Find Your Home" data-cta-link="https://mybrokerage.com" data-theme="dark"></script>`
+    *   *Value:* Auto-resizes the height dynamically so the widget fits the host container on both desktop and mobile without cut-off margins or scrollbars.
+2.  **Option 2: HTML IFrame Embed**
+    *   *HTML Snippet:* `<iframe src="https://250proud.net/tih-widget.html?primaryColor=%23D4AF37&ctaText=Find%20Your%20Home&ctaLink=https%3A%2F%2Fmybrokerage.com&theme=dark" style="width:100%; height:550px; border:none; overflow:hidden; border-radius:16px;" scrolling="no"></iframe>`
+    *   *Value:* Useful for editors that block external script tags. Requires manual height adjustments if the layout content overflows.
+3.  **Option 3: Direct Standalone Link (Alternative Page)**
+    *   *URL:* `https://250proud.net/tih-widget.html?primaryColor=%23D4AF37&ctaText=Find%20Your%20Home&ctaLink=https%3A%2F%2Fmybrokerage.com&theme=dark`
+    *   *Value:* Used to create a dedicated link on a navigation menu or external button.
+
+### B. Platform-Specific Integration Steps
+*   **Wix Integration:**
+    1.  In the Wix Editor, click the **Add Elements (+)** button.
+    2.  Select **Embed Code** > choose **HTML Embed**.
+    3.  Click **Enter Code**, select **Code**, paste the *1-Line Script snippet*, and click **Update**.
+    4.  Stretch or resize the container box to fit the layout (recommended height: 550px).
+*   **GoDaddy Integration:**
+    1.  Edit your GoDaddy site.
+    2.  Scroll to the page section and click **Add Section**.
+    3.  Select **HTML** or **Custom Code** from the category list.
+    4.  Paste either the *1-Line Script snippet* or *HTML IFrame snippet* directly into the Custom Code field.
+    5.  Set height parameters to 600px, click **Done**, and Publish.
+*   **Squarespace Integration:**
+    1.  Edit a section on your Squarespace page and click **Add Block**.
+    2.  Select **Code** or **Embed** from the block options menu.
+    3.  Paste the *1-Line Script snippet* into the block settings.
+    4.  Ensure 'Display Source Code' is turned **off**.
+
+### C. Troubleshooting & Support Flow Directives (For Ask Lauralai Agent)
+*   **If a user complains the widget is cut off or shows scrollbars:**
+    *   Explain that this happens when the host container height is smaller than the widget layout (especially on mobile).
+    *   Direct them to use the **1-Line Script Embed (Option 1)** which handles auto-resizing.
+    *   If their platform restricts script tags and forces an iframe, instruct them to increase the `height` attribute in their iframe tag to `650px` or `700px` for mobile spacing.
+*   **If the button link does not work or loops back:**
+    *   Instruct them to verify that their `data-cta-link` or `ctaLink` parameter contains the full URL path, including `https://` (e.g. `https://mybrokerage.com` instead of just `mybrokerage.com`).
+*   **Support Escalation Policy:**
+    *   Do **NOT** offer email support (`support@250proud.net` or `info@250proud.net`) immediately. 
+    *   Walk the user through the Wix, GoDaddy, or Squarespace step-by-step instructions first.
+    *   Ask if they are using one of our three embedding options.
+    *   Only if the user indicates they have completed the steps and are still experiencing a system-level bug, provide the email contact: *"If you have followed these setup steps and the widget is still not loading, please email our support team at support@250proud.net with a link to your page and we will review the network logs."*
+

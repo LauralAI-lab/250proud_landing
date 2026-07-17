@@ -1,0 +1,615 @@
+<!-- Copyright © 2026 Today In History. All rights reserved. White-Label Distribution. -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Today In History Widget Builder</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Oswald:wght@500;700&family=Roboto+Mono:wght@400;600&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --navy: #0A3161;
+            --navy-dark: #071E3D;
+            --white: #FFFFFF;
+            --gold: #D4AF37;
+            --gray-light: #f8fafc;
+            --gray-border: #e2e8f0;
+            --text-dark: #0f172a;
+            --text-muted: #64748b;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--gray-light);
+            color: var(--text-dark);
+            line-height: 1.6;
+        }
+
+        header {
+            background-color: var(--white);
+            padding: 1.2rem 5%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 2px solid var(--navy);
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+
+        .logo {
+            height: 55px;
+        }
+
+        .header-title {
+            font-family: 'Oswald', sans-serif;
+            font-size: 1.6rem;
+            color: var(--navy-dark);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        main {
+            max-width: 1200px;
+            margin: 2.5rem auto;
+            padding: 0 1.5rem;
+        }
+
+        .builder-grid {
+            display: grid;
+            grid-template-columns: 1fr 1.2fr;
+            gap: 2.5rem;
+            margin-bottom: 3rem;
+        }
+
+        .panel {
+            background-color: var(--white);
+            border-radius: 12px;
+            border: 1px solid var(--gray-border);
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.02);
+            padding: 2rem;
+        }
+
+        .panel-title {
+            font-family: 'Oswald', sans-serif;
+            font-size: 1.3rem;
+            color: var(--navy-dark);
+            text-transform: uppercase;
+            margin-bottom: 1.5rem;
+            border-bottom: 2px solid var(--navy);
+            padding-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .form-group {
+            margin-bottom: 1.2rem;
+        }
+
+        label {
+            display: block;
+            font-weight: 600;
+            font-size: 0.9rem;
+            margin-bottom: 0.5rem;
+            color: var(--text-dark);
+        }
+
+        input[type="text"], input[type="url"], select {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid var(--gray-border);
+            border-radius: 6px;
+            font-family: 'Inter', sans-serif;
+            font-size: 0.95rem;
+            transition: border-color 0.2s ease;
+        }
+
+        input[type="text"]:focus, input[type="url"]:focus, select:focus {
+            border-color: var(--navy);
+            outline: none;
+        }
+
+        .color-picker-container {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        input[type="color"] {
+            -webkit-appearance: none;
+            border: none;
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            cursor: pointer;
+            overflow: hidden;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.15);
+        }
+
+        input[type="color"]::-webkit-color-swatch-wrapper {
+            padding: 0;
+        }
+
+        input[type="color"]::-webkit-color-swatch {
+            border: none;
+            border-radius: 50%;
+        }
+
+        .color-hex {
+            font-family: 'Roboto Mono', monospace;
+            font-size: 0.95rem;
+            text-transform: uppercase;
+        }
+
+        /* Preview Area */
+        .preview-pane {
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+            min-height: 520px;
+        }
+
+        .preview-frame-container {
+            flex: 1;
+            border: 1px solid var(--gray-border);
+            border-radius: 12px;
+            overflow: hidden;
+            background-color: #f1f5f9;
+            box-shadow: inset 0 2px 8px rgba(0,0,0,0.05);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .preview-frame {
+            width: 100%;
+            height: 100%;
+            border: none;
+            display: block;
+        }
+
+        /* Code snippets section */
+        .snippet-section {
+            margin-top: 2rem;
+            border-top: 1px solid var(--gray-border);
+            padding-top: 2rem;
+        }
+
+        .tabs-header {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+            border-bottom: 1px solid var(--gray-border);
+            padding-bottom: 0.5rem;
+        }
+
+        .tab-btn {
+            padding: 0.5rem 1.2rem;
+            border: none;
+            background: none;
+            font-family: 'Oswald', sans-serif;
+            font-size: 1rem;
+            text-transform: uppercase;
+            color: var(--text-muted);
+            cursor: pointer;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+        }
+
+        .tab-btn.active {
+            background-color: var(--navy);
+            color: var(--white);
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .code-block-container {
+            position: relative;
+            background-color: #0f172a;
+            border-radius: 8px;
+            padding: 1.2rem;
+            margin-top: 0.5rem;
+        }
+
+        .code-block {
+            font-family: 'Roboto Mono', monospace;
+            font-size: 0.88rem;
+            color: #38bdf8;
+            word-break: break-all;
+            white-space: pre-wrap;
+            overflow-x: auto;
+        }
+
+        .copy-btn {
+            position: absolute;
+            top: 0.75rem;
+            right: 0.75rem;
+            background-color: rgba(255,255,255,0.1);
+            border: none;
+            border-radius: 4px;
+            color: var(--white);
+            font-size: 0.78rem;
+            font-weight: 600;
+            padding: 0.4rem 0.8rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            text-transform: uppercase;
+        }
+
+        .copy-btn:hover {
+            background-color: rgba(255,255,255,0.2);
+        }
+
+        /* How to install section */
+        .guide-section {
+            background-color: var(--white);
+            border-radius: 12px;
+            border: 1px solid var(--gray-border);
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.02);
+            padding: 2rem;
+            margin-top: 3rem;
+        }
+
+        .guide-tabs {
+            display: flex;
+            gap: 1rem;
+            border-bottom: 2px solid var(--gray-border);
+            margin-bottom: 1.5rem;
+        }
+
+        .guide-tab-btn {
+            padding: 0.75rem 1.5rem;
+            background: none;
+            border: none;
+            font-family: 'Oswald', sans-serif;
+            font-size: 1.1rem;
+            text-transform: uppercase;
+            color: var(--text-muted);
+            cursor: pointer;
+            position: relative;
+            bottom: -2px;
+            transition: all 0.2s ease;
+        }
+
+        .guide-tab-btn.active {
+            color: var(--navy-dark);
+            border-bottom: 3px solid var(--navy);
+            font-weight: 700;
+        }
+
+        .guide-content {
+            display: none;
+        }
+
+        .guide-content.active {
+            display: block;
+        }
+
+        .guide-steps {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        .guide-steps li {
+            position: relative;
+            padding-left: 2rem;
+            margin-bottom: 1rem;
+            font-size: 0.98rem;
+        }
+
+        .guide-steps li::before {
+            content: attr(data-step);
+            position: absolute;
+            left: 0;
+            top: 2px;
+            width: 22px;
+            height: 22px;
+            background-color: var(--navy);
+            color: var(--white);
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 0.75rem;
+            font-weight: 700;
+        }
+
+        /* Footer style matching layout */
+        footer {
+            text-align: center;
+            padding: 3rem;
+            color: var(--text-muted);
+            font-size: 0.85rem;
+            border-top: 1px solid var(--gray-border);
+            margin-top: 4rem;
+            background-color: var(--white);
+        }
+
+        @media (max-width: 900px) {
+            .builder-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <a href="index.html">
+            <img src="nc_assets/img/logo.svg" alt="250PROUD™ Logo" class="logo">
+        </a>
+        <div class="header-title">Today In History Widget Builder</div>
+    </header>
+
+    <main>
+        <div class="builder-grid">
+            <!-- Left Side: Configurator -->
+            <div class="panel">
+                <h2 class="panel-title">Widget Configuration</h2>
+                
+                <div class="form-group">
+                    <label>Accent Primary Color</label>
+                    <div class="color-picker-container">
+                        <input type="color" id="primaryColor" value="#D4AF37">
+                        <input type="text" id="colorText" class="color-hex" value="#D4AF37" style="width: 100px; padding: 0.5rem; border: 1px solid var(--gray-border); border-radius: 4px;">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="ctaText">CTA Button Text</label>
+                    <input type="text" id="ctaText" value="Find Your Home" placeholder="e.g. Find Your Home, Contact Agent">
+                </div>
+
+                <div class="form-group">
+                    <label for="ctaLink">CTA Button Link</label>
+                    <input type="url" id="ctaLink" value="https://250proud.net" placeholder="https://yourbrokerage.com/listings">
+                </div>
+
+                <div class="form-group">
+                    <label for="theme">Widget Background Theme</label>
+                    <select id="theme">
+                        <option value="dark" selected>Sleek Dark Theme</option>
+                        <option value="light">Warm Light Theme</option>
+                    </select>
+                </div>
+
+                <!-- Embed Codes Tabs -->
+                <div class="snippet-section">
+                    <h3 style="font-family: 'Oswald', sans-serif; font-size: 1.1rem; color: var(--navy-dark); text-transform: uppercase; margin-bottom: 0.8rem;">Embed Snippet Output</h3>
+                    
+                    <div class="tabs-header">
+                        <button class="tab-btn active" onclick="switchSnippetTab('script-tab', this)">1-Line Script (Recommended)</button>
+                        <button class="tab-btn" onclick="switchSnippetTab('iframe-tab', this)">HTML IFrame</button>
+                        <button class="tab-btn" onclick="switchSnippetTab('link-tab', this)">Direct Page Link</button>
+                    </div>
+
+                    <!-- Script Tab -->
+                    <div id="script-tab" class="tab-content active">
+                        <p style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 0.5rem;">Copy and paste this snippet anywhere on your website page layout. It loads dynamically and manages height auto-scaling.</p>
+                        <div class="code-block-container">
+                            <button class="copy-btn" onclick="copySnippet('script-code', this)">Copy</button>
+                            <pre class="code-block" id="script-code"></pre>
+                        </div>
+                    </div>
+
+                    <!-- IFrame Tab -->
+                    <div id="iframe-tab" class="tab-content">
+                        <p style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 0.5rem;">For web editors that only support standard iframes.</p>
+                        <div class="code-block-container">
+                            <button class="copy-btn" onclick="copySnippet('iframe-code', this)">Copy</button>
+                            <pre class="code-block" id="iframe-code"></pre>
+                        </div>
+                    </div>
+
+                    <!-- Link Tab -->
+                    <div id="link-tab" class="tab-content">
+                        <p style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 0.5rem;">Link a custom button, image, or menu item directly to your customized widget page.</p>
+                        <div class="code-block-container">
+                            <button class="copy-btn" onclick="copySnippet('link-code', this)">Copy</button>
+                            <pre class="code-block" id="link-code"></pre>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Side: Live Preview -->
+            <div class="panel preview-pane">
+                <h2 class="panel-title">
+                    Live IFrame Preview
+                    <span style="font-size: 0.75rem; background-color: #22c55e; color: white; padding: 2px 8px; border-radius: 20px; font-family: 'Inter', sans-serif;">Live View</span>
+                </h2>
+                <div class="preview-frame-container">
+                    <iframe id="previewFrame" class="preview-frame" src=""></iframe>
+                </div>
+            </div>
+        </div>
+
+        <!-- Guide / How to Install Section -->
+        <div class="guide-section">
+            <h2 style="font-family: 'Oswald', sans-serif; font-size: 1.5rem; text-transform: uppercase; color: var(--navy-dark); margin-bottom: 1.5rem; border-bottom: 2px solid var(--navy); padding-bottom: 0.5rem;">
+                Step-by-Step Installation Guides
+            </h2>
+            
+            <div class="guide-tabs">
+                <button class="guide-tab-btn active" onclick="switchGuideTab('guide-wix', this)">Wix</button>
+                <button class="guide-tab-btn" onclick="switchGuideTab('guide-godaddy', this)">GoDaddy</button>
+                <button class="guide-tab-btn" onclick="switchGuideTab('guide-squarespace', this)">Squarespace</button>
+                <button class="guide-tab-btn" onclick="switchGuideTab('guide-other', this)">Other / New Page Link</button>
+            </div>
+
+            <!-- Wix Guide -->
+            <div id="guide-wix" class="guide-content active">
+                <ul class="guide-steps">
+                    <li data-step="1">In your Wix Editor, click the <strong>Add Elements (+)</strong> button on the left sidebar.</li>
+                    <li data-step="2">Navigate to <strong>Embed Code</strong> and select <strong>HTML Embed</strong>.</li>
+                    <li data-step="3">Click <strong>Enter Code</strong> above the placeholder box that appears on your screen.</li>
+                    <li data-step="4">Select <strong>Code</strong>, paste the <strong>1-Line Script snippet</strong> (copied from the builder above), and click <strong>Update</strong>.</li>
+                    <li data-step="5">Drag the borders of the embed box to size it cleanly on your page (recommended width: 100%, height: 550px).</li>
+                </ul>
+            </div>
+
+            <!-- GoDaddy Guide -->
+            <div id="guide-godaddy" class="guide-content">
+                <ul class="guide-steps">
+                    <li data-step="1">Open your GoDaddy Website Builder editor.</li>
+                    <li data-step="2">Scroll to the page section where you want the widget to appear, and click <strong>Add Section</strong>.</li>
+                    <li data-step="3">Search for <strong>HTML</strong> or <strong>Custom Code</strong> in the section category list.</li>
+                    <li data-step="4">Paste the <strong>HTML IFrame snippet</strong> or <strong>1-Line Script snippet</strong> directly into the <strong>Custom Code</strong> text area.</li>
+                    <li data-step="5">Set the section height to auto or set iframe height to 600px, click <strong>Done</strong>, and publish.</li>
+                </ul>
+            </div>
+
+            <!-- Squarespace Guide -->
+            <div id="guide-squarespace" class="guide-content">
+                <ul class="guide-steps">
+                    <li data-step="1">Edit the page on your Squarespace site, and click <strong>Add Block</strong> in the desired section.</li>
+                    <li data-step="2">Select <strong>Code</strong> or <strong>Embed</strong> from the block options menu.</li>
+                    <li data-step="3">Click the edit pencil icon on the block, choose <strong>HTML</strong> as the format, and paste the <strong>1-Line Script snippet</strong>.</li>
+                    <li data-step="4">Make sure the 'Display Source Code' option is toggled <strong>off</strong>.</li>
+                    <li data-step="5">Adjust the block dimensions to stretch across your column space cleanly.</li>
+                </ul>
+            </div>
+
+            <!-- Other Platforms Guide -->
+            <div id="guide-other" class="guide-content">
+                <p style="font-weight: 600; margin-bottom: 1rem;">Option 1: Inject Widget in Existing Page</p>
+                <ul class="guide-steps" style="margin-bottom: 2rem;">
+                    <li data-step="A">Add a custom HTML block, custom liquid section, or custom script container to your website builder.</li>
+                    <li data-step="B">Copy the <strong>1-Line Script</strong> snippet and paste it into the editor. It will render in-place.</li>
+                </ul>
+                <p style="font-weight: 600; margin-bottom: 1rem;">Option 2: Add as a Standalone New Page (Easiest Link)</p>
+                <ul class="guide-steps">
+                    <li data-step="A">In your website builder menu editor, add a new link item called <strong>"Today In History"</strong>.</li>
+                    <li data-step="B">Copy the <strong>Direct Page Link URL</strong> from the snippet output box above.</li>
+                    <li data-step="C">Set the new menu item to link directly to that URL. Clicking it will load your custom white-labeled page.</li>
+                </ul>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <p>&copy; 2026 Today In History. All rights reserved.</p>
+    </footer>
+
+    <script>
+        const primaryColorInput = document.getElementById('primaryColor');
+        const colorTextInput = document.getElementById('colorText');
+        const ctaTextInput = document.getElementById('ctaText');
+        const ctaLinkInput = document.getElementById('ctaLink');
+        const themeSelect = document.getElementById('theme');
+        const previewFrame = document.getElementById('previewFrame');
+
+        // Initialize and listen to inputs
+        function initBuilder() {
+            primaryColorInput.addEventListener('input', syncColorInputs);
+            colorTextInput.addEventListener('change', syncColorText);
+            ctaTextInput.addEventListener('input', updateWidgetEmbed);
+            ctaLinkInput.addEventListener('input', updateWidgetEmbed);
+            themeSelect.addEventListener('change', updateWidgetEmbed);
+            
+            updateWidgetEmbed();
+        }
+
+        function syncColorInputs() {
+            colorTextInput.value = primaryColorInput.value;
+            updateWidgetEmbed();
+        }
+
+        function syncColorText() {
+            let val = colorTextInput.value.trim();
+            if (!val.startsWith('#')) val = '#' + val;
+            // validate hex color regex
+            if (/^#[0-9A-F]{6}$/i.test(val)) {
+                primaryColorInput.value = val;
+                colorTextInput.value = val;
+                updateWidgetEmbed();
+            } else {
+                colorTextInput.value = primaryColorInput.value;
+            }
+        }
+
+        function updateWidgetEmbed() {
+            const color = encodeURIComponent(primaryColorInput.value);
+            const ctaText = encodeURIComponent(ctaTextInput.value.trim() || 'Find Your Home');
+            const ctaLink = encodeURIComponent(ctaLinkInput.value.trim() || 'https://250proud.net');
+            const theme = themeSelect.value;
+
+            // Generate direct url
+            const widgetUrl = `https://250proud.net/tih-widget.html?primaryColor=${color}&ctaText=${ctaText}&ctaLink=${ctaLink}&theme=${theme}`;
+            
+            // Update preview frame source (we check if it changed to prevent constant reloads)
+            if (previewFrame.src !== widgetUrl) {
+                previewFrame.src = widgetUrl;
+            }
+
+            // Generate snippets
+            const scriptSnippet = `<div id="tih-widget-container"></div>\n<script src="https://250proud.net/tih-widget-loader.js" data-color="${primaryColorInput.value}" data-cta-text="${ctaTextInput.value.trim() || 'Find Your Home'}" data-cta-link="${ctaLinkInput.value.trim() || 'https://250proud.net'}" data-theme="${theme}"><\/script>`;
+            
+            const iframeSnippet = `<iframe src="${widgetUrl}" style="width: 100%; height: 550px; border: none; overflow: hidden; border-radius: 16px;" scrolling="no"></iframe>`;
+
+            document.getElementById('script-code').innerText = scriptSnippet;
+            document.getElementById('iframe-code').innerText = iframeSnippet;
+            document.getElementById('link-code').innerText = widgetUrl;
+        }
+
+        // Snippet tabs switcher
+        function switchSnippetTab(tabId, btn) {
+            // Hide all tab contents
+            const contents = document.querySelectorAll('.snippet-section .tab-content');
+            contents.forEach(c => c.classList.remove('active'));
+            
+            // Deactivate all buttons
+            const btns = document.querySelectorAll('.snippet-section .tab-btn');
+            btns.forEach(b => b.classList.remove('active'));
+
+            // Show current
+            document.getElementById(tabId).classList.add('active');
+            btn.classList.add('active');
+        }
+
+        // Guide tabs switcher
+        function switchGuideTab(guideId, btn) {
+            const contents = document.querySelectorAll('.guide-section .guide-content');
+            contents.forEach(c => c.classList.remove('active'));
+            
+            const btns = document.querySelectorAll('.guide-section .guide-tab-btn');
+            btns.forEach(b => b.classList.remove('active'));
+
+            document.getElementById(guideId).classList.add('active');
+            btn.classList.add('active');
+        }
+
+        // Copy button
+        function copySnippet(elementId, btn) {
+            const text = document.getElementById(elementId).innerText;
+            navigator.clipboard.writeText(text).then(() => {
+                const originalText = btn.innerText;
+                btn.innerText = 'Copied!';
+                btn.style.backgroundColor = '#22c55e';
+                setTimeout(() => {
+                    btn.innerText = originalText;
+                    btn.style.backgroundColor = 'rgba(255, 255, 255, 0.1)';
+                }, 2000);
+            }).catch(err => {
+                console.error('Failed to copy text: ', err);
+            });
+        }
+
+        document.addEventListener('DOMContentLoaded', initBuilder);
+    </script>
+</body>
+</html>

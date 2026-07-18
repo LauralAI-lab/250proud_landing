@@ -461,12 +461,22 @@
 
             <!-- Shopify Guide -->
             <div id="guide-shopify" class="guide-content active">
+                <p style="font-weight: 600; margin-bottom: 0.8rem; color: var(--navy-dark);">Option 1: Add via Custom Liquid (Fastest, works on any theme)</p>
+                <ul class="guide-steps" style="margin-bottom: 1.5rem;">
+                    <li data-step="1">Open your Shopify Admin, go to <strong>Online Store > Themes</strong>, and click <strong>Customize</strong> on your active theme.</li>
+                    <li data-step="2">In the left-hand sidebar, click <strong>Add Section</strong> (or Add Block inside an existing section) and select <strong>Custom Liquid</strong>.</li>
+                    <li data-step="3">Copy the <strong>1-Line Script snippet</strong> from the configuration box above.</li>
+                    <li data-step="4">Paste the snippet directly into the **Custom Liquid** editor box on the right sidebar.</li>
+                    <li data-step="5">Click <strong>Save</strong>. The widget will load dynamically and automatically fit your layout.</li>
+                </ul>
+                
+                <p style="font-weight: 600; margin-bottom: 0.8rem; color: var(--navy-dark);">Option 2: Install as a Custom Theme Section (Native Drag & Drop)</p>
                 <ul class="guide-steps">
-                    <li data-step="1">Search for <strong>Today in History</strong> in the Shopify App Store and click <strong>Install</strong>.</li>
-                    <li data-step="2">Open your Shopify admin dashboard, click <strong>Online Store > Themes</strong>, and select <strong>Customize</strong> on your active theme.</li>
-                    <li data-step="3">Navigate to the template (e.g., Homepage or custom landing page) where you want the widget to appear.</li>
-                    <li data-step="4">In the left sidebar, click <strong>Add Section</strong> or <strong>Add Block</strong>, and select <strong>Today in History widget</strong> from the <strong>Apps</strong> tab.</li>
-                    <li data-step="5">Customize the accent colors, theme (light/dark), and CTA links directly inside the Shopify block panel, then click <strong>Save</strong>.</li>
+                    <li data-step="1">In Shopify Admin, go to <strong>Online Store > Themes</strong>, click the three dots <code>...</code> next to your theme, and select <strong>Edit Code</strong>.</li>
+                    <li data-step="2">Under the <strong>Sections</strong> folder on the left side, click <strong>Add a new section</strong>, name it <code>today-in-history</code>, and click <strong>Create</strong>.</li>
+                    <li data-step="3">Open the <code>today-in-history.liquid</code> file from your local workspace (located in <code>shopify_theme/sections/</code>) and copy all of its code.</li>
+                    <li data-step="4">Paste the code into your Shopify editor, replacing any default template code, and click <strong>Save</strong>.</li>
+                    <li data-step="5">Return to your Theme Customizer. You can now add the section <strong>Today in American History</strong> anywhere as a native, drag-and-drop block with built-in color controls.</li>
                 </ul>
             </div>
 

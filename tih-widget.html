@@ -346,6 +346,52 @@
             window.addEventListener('resize', sendHeight);
             document.getElementById('tih-fact-image').addEventListener('load', sendHeight);
             
+            function fetchFallbackWikiImage(searchText, fallbackSrc, factImage, learnMoreLink) {
+                const words = searchText.split(' ').slice(0, 7).join(' ').replace(/[^a-zA-Z0-9\s]/g, '').trim();
+                const searchUrl = `https://en.wikipedia.org/w/api.php?action=query&list=search&srsearch=${encodeURIComponent(words)}&format=json&origin=*`;
+                
+                fetch(searchUrl)
+                .then(res => {
+                    if (!res.ok) throw new Error("Search API error");
+                    return res.json();
+                })
+                .then(searchData => {
+                    const results = searchData.query && searchData.query.search;
+                    if (results && results.length > 0) {
+                        const firstTitle = results[0].title;
+                        const imgUrl = `https://en.wikipedia.org/w/api.php?action=query&titles=${encodeURIComponent(firstTitle)}&prop=pageimages&pithumbsize=500&format=json&origin=*`;
+                        
+                        return fetch(imgUrl)
+                        .then(res => res.json())
+                        .then(imgData => {
+                            const pages = imgData.query && imgData.query.pages;
+                            if (pages) {
+                                const pageKey = Object.keys(pages)[0];
+                                const page = pages[pageKey];
+                                if (page && page.thumbnail && page.thumbnail.source) {
+                                    factImage.onerror = function() {
+                                        factImage.src = fallbackSrc;
+                                        factImage.onerror = null;
+                                        sendHeight();
+                                    };
+                                    factImage.src = page.thumbnail.source;
+                                    learnMoreLink.href = `https://en.wikipedia.org/wiki/${encodeURIComponent(firstTitle)}`;
+                                    sendHeight();
+                                    return;
+                                }
+                            }
+                            throw new Error("No thumbnail found for page: " + firstTitle);
+                        });
+                    }
+                    throw new Error("No search results found");
+                })
+                .catch(err => {
+                    console.error("Wikipedia search image fallback failed:", err);
+                    factImage.src = fallbackSrc;
+                    sendHeight();
+                });
+            }
+
             // Trigger height checks after fetches complete
             fetch('/historyFacts.json')
             .then(res => {
@@ -365,7 +411,7 @@
                 const fallbackSrc = factImage.getAttribute('data-fallback');
                 const learnMoreLink = document.getElementById('tih-learn-more-link');
 
-                // Generate fallback Google Search query
+                // Generate fallback Google Search query (will be overridden if Wikipedia resolves)
                 const searchQuery = encodeURIComponent(factData.year + " " + fullMonths[today.getMonth()] + " " + d + " " + factData.text.split(',')[0].split('.')[0].trim());
                 learnMoreLink.href = `https://www.google.com/search?q=${searchQuery}`;
                 
@@ -410,13 +456,12 @@
                                 return;
                             }
                         }
-                        factImage.src = fallbackSrc;
-                        sendHeight();
+                        // Secondary fallback: search Wikipedia for the fact text directly
+                        fetchFallbackWikiImage(factData.text, fallbackSrc, factImage, learnMoreLink);
                     })
                     .catch(err => {
                         console.error('Wikipedia image resolution error:', err);
-                        factImage.src = fallbackSrc;
-                        sendHeight();
+                        fetchFallbackWikiImage(factData.text, fallbackSrc, factImage, learnMoreLink);
                     });
                 }
                 sendHeight();

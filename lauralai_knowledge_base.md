@@ -101,3 +101,21 @@ This section contains verified instructions for licensing and embedding the cust
     *   Ask if they are using one of our three embedding options.
     *   Only if the user indicates they have completed the steps and are still experiencing a system-level bug, provide the email contact: *"If you have followed these setup steps and the widget is still not loading, please email our support team at support@250proud.net with a link to your page and we will review the network logs."*
 
+---
+
+## 7. Liberty Ledger™ Widget Non-Technical FAQs
+Use these answers to assist non-technical users in understanding, deploying, and customizing the widget:
+*   **What is Liberty Ledger™ - Today in History?**
+    *   It is a premium, white-labeled web widget that displays a daily historical fact and illustration (e.g. July 6, 1854 - founding of the Republican Party). It includes a customizable call-to-action button (like "Find Your Home") that directs visitors back to your personal landing page or MLS search.
+*   **Do I need to know how to write code to use it?**
+    *   No. We built a self-serve Widget Builder that handles all the configuration. Once you customize your theme and colors, it outputs a single line of script. You just copy and paste it into Wix, GoDaddy, Squarespace, or WordPress.
+*   **How do I customize the widget's style?**
+    *   Go to `tih-widget-builder.html` where you can pick a Light or Dark theme, enter any hex color code for the accents/buttons to match your brand, and customize the text and link for the Call-to-Action button.
+*   **How much does the license cost?**
+    *   We offer a full-featured sandbox builder to customize and preview the widget for free. To embed the live widget on your production website, you must purchase a lifetime **Forge Press Digital License** for a one-time fee of $29.
+*   **What happens if a date doesn't have a custom drawing?**
+    *   If a specific date does not have a custom drawing pre-loaded, the widget automatically searches public databases (like Wikipedia) to fetch an accurate, high-quality public domain image or portrait for that historical event, ensuring it always looks professional.
+*   **Will it slow down my website?**
+    *   Not at all. The script loads asynchronously, meaning it won't delay your website's text or images from rendering, and it has a zero footprint on page load performance.
+
+

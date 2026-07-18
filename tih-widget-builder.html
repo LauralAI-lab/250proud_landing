@@ -330,13 +330,18 @@
 
         /* Footer style matching layout */
         footer {
+            background-color: var(--navy-dark);
+            color: var(--white);
             text-align: center;
-            padding: 3rem;
-            color: var(--text-muted);
-            font-size: 0.85rem;
-            border-top: 1px solid var(--gray-border);
+            padding: 3rem 5%;
             margin-top: 4rem;
-            background-color: var(--white);
+            font-size: 0.85rem;
+        }
+
+        .footer-logo {
+            filter: brightness(0) invert(1);
+            height: 180px;
+            margin-bottom: 1rem;
         }
 
         @media (max-width: 900px) {
@@ -345,6 +350,7 @@
             }
         }
     </style>
+    <link rel="stylesheet" href="/nc_assets/css/lauralai-assistant.css?v=4">
 </head>
 <body>
 
@@ -526,7 +532,14 @@
     </main>
 
     <footer>
-        <p>&copy; 2026 Liberty Ledger. All rights reserved.</p>
+        <a href="index.html"><img src="nc_assets/img/logo.svg" alt="250PROUD™ White Logo" class="footer-logo"></a>
+        <p>&copy; 2026 Lauralai LLC. All rights reserved. 250PROUD™ is a trademark of Lauralai LLC. Celebrating USA 1776 - 2026.</p>
+        <p style="font-size: 0.8rem; margin-top: 1rem; color: #888;">Lauralai LLC | 515 Cypress Dr, Long Beach MS, 39560</p>
+        <div style="margin-top: 1rem; font-size: 0.9rem;">
+            <a href="terms.html" style="color: var(--white); text-decoration: none; margin: 0 10px;">Terms of Service</a> |
+            <a href="privacy.html" style="color: var(--white); text-decoration: none; margin: 0 10px;">Privacy Policy</a> |
+            <a href="contact.html" style="color: var(--white); text-decoration: none; margin: 0 10px;">Contact Us</a>
+        </div>
     </footer>
 
     <script>
@@ -635,5 +648,6 @@
 
         document.addEventListener('DOMContentLoaded', initBuilder);
     </script>
+    <script src="/nc_assets/js/lauralai-assistant.js?v=4"></script>
 </body>
 </html>

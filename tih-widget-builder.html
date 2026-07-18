@@ -446,6 +446,7 @@
             
             <div class="guide-tabs">
                 <button class="guide-tab-btn active" onclick="switchGuideTab('guide-shopify', this)">Shopify App</button>
+                <button class="guide-tab-btn" onclick="switchGuideTab('guide-wordpress', this)">WordPress</button>
                 <button class="guide-tab-btn" onclick="switchGuideTab('guide-wix', this)">Wix</button>
                 <button class="guide-tab-btn" onclick="switchGuideTab('guide-godaddy', this)">GoDaddy</button>
                 <button class="guide-tab-btn" onclick="switchGuideTab('guide-squarespace', this)">Squarespace</button>
@@ -460,6 +461,17 @@
                     <li data-step="3">Navigate to the template (e.g., Homepage or custom landing page) where you want the widget to appear.</li>
                     <li data-step="4">In the left sidebar, click <strong>Add Section</strong> or <strong>Add Block</strong>, and select <strong>Today in History widget</strong> from the <strong>Apps</strong> tab.</li>
                     <li data-step="5">Customize the accent colors, theme (light/dark), and CTA links directly inside the Shopify block panel, then click <strong>Save</strong>.</li>
+                </ul>
+            </div>
+
+            <!-- WordPress Guide -->
+            <div id="guide-wordpress" class="guide-content">
+                <ul class="guide-steps">
+                    <li data-step="1">Search for <strong>Today in History</strong> in the WordPress Plugin Directory and click <strong>Install Now</strong>, then <strong>Activate</strong>.</li>
+                    <li data-step="2">To add to a post or page, insert the <strong>Today in History block</strong> in the Gutenberg Editor, or use the shortcode: <code>[today_in_history]</code>.</li>
+                    <li data-step="3">If embedding without the plugin: Edit your page/post, add a <strong>Custom HTML block</strong>, and paste the <strong>1-Line Script snippet</strong> from the builder above.</li>
+                    <li data-step="4">Alternatively, if using the Classic Editor, switch to <strong>Text view</strong> and paste the script snippet directly into the editor body.</li>
+                    <li data-step="5">Save or publish your page—the widget loads and adjusts height automatically on both desktop and mobile layouts.</li>
                 </ul>
             </div>
 

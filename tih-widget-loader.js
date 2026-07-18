@@ -1,4 +1,4 @@
-// Copyright © 2026 Today In History. All rights reserved. White-Label Distribution.
+// Copyright © 2026 Liberty Ledger. All rights reserved. White-Label Distribution.
 (function() {
     // 1. Locate the script element to extract configuration attributes
     const scripts = document.getElementsByTagName('script');

@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Today in History Web Widget License | 250PROUD™</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Oswald:wght@500;700&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --navy: #0A3161;
+            --navy-dark: #071E3D;
+            --white: #FFFFFF;
+            --off-white: #F8FAFC;
+            --gold: #D4AF37;
+            --gold-hover: #b8922a;
+            --text-dark: #0f172a;
+            --text-muted: #64748b;
+            --border-color: #e2e8f0;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--off-white);
+            color: var(--text-dark);
+            line-height: 1.6;
+        }
+
+        header {
+            background-color: var(--white);
+            padding: 1rem 5%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid var(--border-color);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .logo {
+            height: 50px;
+        }
+
+        .header-title {
+            font-family: 'Oswald', sans-serif;
+            font-size: 1.4rem;
+            color: var(--navy-dark);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 4rem 1.5rem;
+        }
+
+        .hero-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 4rem;
+            align-items: center;
+            margin-bottom: 5rem;
+        }
+
+        .hero-content h1 {
+            font-family: 'Oswald', sans-serif;
+            font-size: 3rem;
+            line-height: 1.2;
+            color: var(--navy-dark);
+            margin-bottom: 1.5rem;
+        }
+
+        .hero-content p {
+            font-size: 1.15rem;
+            color: var(--text-muted);
+            margin-bottom: 2.5rem;
+        }
+
+        .feature-list {
+            margin-bottom: 2.5rem;
+        }
+
+        .feature-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            margin-bottom: 1.2rem;
+            font-size: 1.05rem;
+        }
+
+        .feature-icon {
+            color: var(--gold);
+            font-size: 1.3rem;
+            font-weight: bold;
+            line-height: 1;
+        }
+
+        /* Mockup Card showing widget styles */
+        .mockup-container {
+            position: relative;
+            background: #121212;
+            border-radius: 16px;
+            padding: 2rem;
+            border: 1px solid rgba(255,255,255,0.08);
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+        }
+
+        .mockup-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid rgba(255,255,255,0.08);
+            padding-bottom: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .mockup-dots {
+            display: flex;
+            gap: 6px;
+        }
+
+        .mockup-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: #333;
+        }
+
+        .mockup-dot.red { background: #ef4444; }
+        .mockup-dot.yellow { background: #f59e0b; }
+        .mockup-dot.green { background: #10b981; }
+
+        .mockup-tag {
+            background: rgba(212, 175, 55, 0.1);
+            border: 1px solid rgba(212, 175, 55, 0.2);
+            color: var(--gold);
+            font-size: 0.75rem;
+            font-weight: bold;
+            padding: 2px 8px;
+            border-radius: 20px;
+            text-transform: uppercase;
+        }
+
+        /* simulated widget UI */
+        .simulated-widget {
+            display: grid;
+            grid-template-columns: 1.2fr 1fr;
+            gap: 1.5rem;
+            align-items: center;
+            color: #ffffff;
+        }
+
+        .simulated-widget h3 {
+            font-size: 1.6rem;
+            color: var(--gold);
+            margin-bottom: 0.5rem;
+        }
+
+        .simulated-widget p {
+            font-size: 0.95rem;
+            color: #94a3b8;
+            line-height: 1.5;
+            margin-bottom: 1rem;
+        }
+
+        .simulated-btn {
+            display: inline-block;
+            background: var(--gold);
+            color: #000;
+            padding: 0.6rem 1.2rem;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            font-weight: bold;
+            text-transform: uppercase;
+            text-decoration: none;
+        }
+
+        .simulated-img {
+            width: 100%;
+            height: 180px;
+            border-radius: 8px;
+            background: #222 url('https://upload.wikimedia.org/wikipedia/commons/d/d3/Statue_of_Liberty%2C_NY.jpg') center/cover no-repeat;
+            border: 1px solid rgba(255,255,255,0.05);
+            filter: grayscale(100%) contrast(1.1);
+        }
+
+        /* Shopify Buy Button Placement Card */
+        .buy-card {
+            background: var(--white);
+            border-radius: 12px;
+            border: 1px solid var(--border-color);
+            padding: 2.5rem;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.05);
+            text-align: center;
+            margin-top: 4rem;
+        }
+
+        .buy-card-title {
+            font-family: 'Oswald', sans-serif;
+            font-size: 1.6rem;
+            color: var(--navy-dark);
+            margin-bottom: 0.5rem;
+            text-transform: uppercase;
+        }
+
+        .buy-card-price {
+            font-family: 'Oswald', sans-serif;
+            font-size: 2.5rem;
+            color: var(--text-dark);
+            margin-bottom: 1.5rem;
+        }
+
+        .buy-card-price span {
+            font-size: 1rem;
+            color: var(--text-muted);
+            font-family: 'Inter', sans-serif;
+            text-transform: none;
+        }
+
+        /* Shopify Buy Button Embed Container */
+        .shopify-buy-button-placeholder {
+            margin: 2rem auto 0 auto;
+            max-width: 320px;
+            padding: 1.5rem;
+            border: 2px dashed #b8922a;
+            background: #fffcf4;
+            border-radius: 8px;
+            font-weight: 600;
+            color: #b8922a;
+            position: relative;
+        }
+
+        .shopify-buy-button-placeholder::after {
+            content: 'Shopify Buy Button Snippet Placeholder';
+            display: block;
+            font-size: 0.75rem;
+            font-weight: normal;
+            color: var(--text-muted);
+            margin-top: 0.5rem;
+        }
+
+        /* Real Button simulation until JS is injected */
+        .simulated-checkout-btn {
+            display: block;
+            width: 100%;
+            background: #10B981;
+            color: #ffffff;
+            text-align: center;
+            padding: 1rem;
+            border-radius: 6px;
+            text-decoration: none;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            transition: background 0.2s;
+            margin-top: 1rem;
+            box-shadow: 0 4px 6px -1px rgba(16, 185, 129, 0.2);
+        }
+
+        .simulated-checkout-btn:hover {
+            background: #059669;
+        }
+
+        footer {
+            text-align: center;
+            padding: 3rem;
+            color: var(--text-muted);
+            font-size: 0.85rem;
+            border-top: 1px solid var(--border-color);
+            background-color: var(--white);
+            margin-top: 5rem;
+        }
+
+        @media (max-width: 900px) {
+            .hero-grid {
+                grid-template-columns: 1fr;
+                gap: 2rem;
+            }
+            .simulated-widget {
+                grid-template-columns: 1fr;
+                gap: 1rem;
+            }
+            .simulated-img {
+                height: 150px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <a href="index.html">
+            <img src="nc_assets/img/logo.svg" alt="250PROUD™ Logo" class="logo">
+        </a>
+        <div class="header-title">Widget Licensing Portal</div>
+    </header>
+
+    <main class="container">
+        <!-- Hero Section -->
+        <div class="hero-grid">
+            <div class="hero-content">
+                <h1>Add Daily American History to Your Site</h1>
+                <p>Engage your audience, build authority, and keep visitors returning to your page day after day. Our fully white-labeled "Today in History" widget embeds seamlessly in minutes.</p>
+                
+                <div class="feature-list">
+                    <div class="feature-item">
+                        <span class="feature-icon">✓</span>
+                        <span><strong>100% White-Labeled:</strong> Complete brand control. Clean look, zero vendor signatures.</span>
+                    </div>
+                    <div class="feature-item">
+                        <span class="feature-icon">✓</span>
+                        <span><strong>Fully Customizable:</strong> Configure colors, custom CTA text, button links, and light/dark templates.</span>
+                    </div>
+                    <div class="feature-item">
+                        <span class="feature-icon">✓</span>
+                        <span><strong>Zero-Touch Responsive Embed:</strong> Script loader automatically manages mobile scaling.</span>
+                    </div>
+                    <div class="feature-item">
+                        <span class="feature-icon">✓</span>
+                        <span><strong>Universal Integration:</strong> Standard 1-line script or iframe supports Shopify, WordPress, Wix, and Squarespace.</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Live/Simulated Mockup Preview -->
+            <div>
+                <h3 style="font-family: 'Oswald', sans-serif; font-size: 1.1rem; text-transform: uppercase; color: var(--navy-dark); margin-bottom: 0.8rem; text-align: center;">Live Widget Specimen</h3>
+                <div class="mockup-container">
+                    <div class="mockup-header">
+                        <div class="mockup-dots">
+                            <span class="mockup-dot red"></span>
+                            <span class="mockup-dot yellow"></span>
+                            <span class="mockup-dot green"></span>
+                        </div>
+                        <span class="mockup-tag">Sleek Dark Theme</span>
+                    </div>
+                    <div class="simulated-widget">
+                        <div>
+                            <span style="font-size: 0.75rem; text-transform: uppercase; letter-spacing: 2px; color: #64748b; font-weight: 700; display: block; margin-bottom: 0.4rem;">On This Day in American History</span>
+                            <h3>July 18, 1947</h3>
+                            <p>President Harry S. Truman signs the Presidential Succession Act, placing the Speaker of the House and the President pro tempore of the Senate next in line after the Vice President.</p>
+                            <a href="#" class="simulated-btn">Find Your Home</a>
+                        </div>
+                        <div>
+                            <div class="simulated-img"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Shopify Buy Button Card -->
+        <div class="buy-card">
+            <h2 class="buy-card-title">Commercial Widget License</h2>
+            <p style="color: var(--text-muted); max-width: 500px; margin: 0 auto 1.5rem auto;">Unlock lifetime access to the widget customizer. Embed the loader on unlimited domains under your account.</p>
+            <div class="buy-card-price">$29 <span>/ one-time fee</span></div>
+
+            <!-- Shopify Buy Button Container -->
+            <!-- Once Shopify Buy Button is created in admin, paste the JS embed here -->
+            <div class="shopify-buy-button-placeholder" id="shopify-buy-button-container">
+                <a href="tih-widget-builder.html" class="simulated-checkout-btn">Proceed to Builder (Unlock Demo)</a>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <p>&copy; 2026 Lauralai LLC. All rights reserved. 250PROUD™ and Sovereign Forge™ are trademarks of Lauralai LLC.</p>
+    </footer>
+
+</body>
+</html>

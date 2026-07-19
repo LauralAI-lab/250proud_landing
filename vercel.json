@@ -113,7 +113,13 @@
     },
     {
       "src": "/blueprint",
-      "dest": "/agent-blueprint-coming-soon.html"
+      "status": 302,
+      "headers": { "Location": "/agent-blueprint-coming-soon" }
+    },
+    {
+      "src": "/agent-blueprint",
+      "status": 302,
+      "headers": { "Location": "/agent-blueprint-coming-soon" }
     },
     {
       "src": "/today-in-history",

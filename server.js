@@ -1990,6 +1990,51 @@ app.post('/api/admin/blog/comments/:id/approve', adminAuth, async (req, res) => 
     }
 });
 
+app.get('/api/briefings', async (req, res) => {
+    try {
+        const briefingsDir = path.join(__dirname, '..', 'board_comms', 'briefings');
+        
+        if (!fs.existsSync(briefingsDir)) {
+            return res.json([]);
+        }
+        
+        const files = fs.readdirSync(briefingsDir);
+        const briefings = [];
+        
+        for (const file of files) {
+            if (file.startsWith('briefing_') && file.endsWith('.md')) {
+                const filePath = path.join(briefingsDir, file);
+                const content = fs.readFileSync(filePath, 'utf8');
+                
+                const dateMatch = file.match(/briefing_(\d{4}-\d{2}-\d{2})\.md/);
+                const date = dateMatch ? dateMatch[1] : null;
+                
+                // Try to find subject in frontmatter, subject headers, or email lines
+                const subjectMatch = content.match(/Subject:\s*(.*)/i) || content.match(/#\s*(.*)/);
+                const subject = subjectMatch ? subjectMatch[1].replace(/#+\s*/, '').trim() : `Daily Briefing - ${date}`;
+                
+                briefings.push({
+                    filename: file,
+                    date: date,
+                    subject: subject,
+                    content: content
+                });
+            }
+        }
+        
+        briefings.sort((a, b) => {
+            if (!a.date) return 1;
+            if (!b.date) return -1;
+            return b.date.localeCompare(a.date);
+        });
+        
+        res.json(briefings);
+    } catch (err) {
+        console.error("Get Briefings Error:", err);
+        res.status(500).json({ error: "Failed to retrieve briefings" });
+    }
+});
+
 
 // Vercel requires exporting the app
 module.exports = app;

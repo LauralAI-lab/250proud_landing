@@ -934,6 +934,69 @@
         right: -100%;
       }
     }
+
+    /* Briefing Styles */
+    .briefing-card {
+      background: rgba(255, 255, 255, 0.02);
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      border-radius: 12px;
+      padding: 20px;
+      margin-bottom: 20px;
+      transition: all 0.3s ease;
+    }
+    
+    .briefing-card:hover {
+      background: rgba(255, 255, 255, 0.04);
+      border-color: rgba(212, 175, 55, 0.15);
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+    }
+    
+    .briefing-meta {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+      padding-bottom: 8px;
+    }
+    
+    .briefing-date {
+      font-family: 'Roboto Mono', monospace;
+      font-size: 13px;
+      color: var(--primary);
+      font-weight: 600;
+    }
+    
+    .briefing-subject {
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--text-main);
+    }
+    
+    .briefing-content-preview {
+      font-size: 14px;
+      color: var(--text-muted);
+      white-space: pre-wrap;
+      line-height: 1.6;
+      max-height: 350px;
+      overflow-y: auto;
+      padding-right: 5px;
+    }
+
+    .briefing-content-preview::-webkit-scrollbar {
+      width: 4px;
+    }
+    .briefing-content-preview::-webkit-scrollbar-track {
+      background: rgba(0, 0, 0, 0.1);
+    }
+    .briefing-content-preview::-webkit-scrollbar-thumb {
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 2px;
+    }
+    .briefing-content-preview li {
+      margin-left: 20px;
+      list-style-type: square;
+    }
   </style>
 </head>
 <body>
@@ -953,6 +1016,7 @@
       <button class="tab-btn active" onclick="switchTab('intake-tab', this)">Intake Wizard</button>
       <button class="tab-btn" onclick="switchTab('guide-tab', this)">Living Guide</button>
       <button class="tab-btn" onclick="switchTab('loop-tab', this)">Engagement Loop</button>
+      <button class="tab-btn" onclick="switchTab('briefings-tab', this)">Daily Briefings</button>
     </div>
   </header>
 
@@ -1286,6 +1350,36 @@ RULES:
 
       </div>
 
+      <!-- TAB 4: DAILY BRIEFINGS -->
+      <div id="briefings-tab" class="tab-content">
+        <div class="glass-card">
+          <h2 class="card-title" style="display: flex; justify-content: space-between; align-items: center;">
+            <span style="display: flex; align-items: center; gap: 8px;">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+              AI Chief of Staff Briefings
+            </span>
+            <button onclick="loadBriefings()" class="submit-btn" style="width: auto; padding: 6px 15px; font-size: 12px; margin: 0; background: rgba(212, 175, 55, 0.15); color: var(--primary); border: 1px solid var(--primary); border-radius: 20px;">
+              Refresh Log
+            </button>
+          </h2>
+          <p class="card-subtitle">Succinct daily progress logs, next-day planning items, and email dispatch records synchronized from board_comms/briefings.</p>
+
+          <div id="briefings-loading" style="text-align: center; padding: 40px; color: var(--text-muted);">
+            <div style="margin-bottom: 1rem; font-size: 1.2rem;">Loading latest briefings...</div>
+            <div style="font-size: 0.8rem; font-family: 'Roboto Mono', monospace;">GET /api/briefings</div>
+          </div>
+
+          <div id="briefings-empty" style="display: none; text-align: center; padding: 40px; color: var(--text-muted);">
+            <div style="margin-bottom: 1rem; font-size: 1.2rem;">No Daily Briefings Found</div>
+            <p style="font-size: 0.9rem; max-width: 400px; margin: 0 auto; line-height: 1.5;">Briefings are created automatically at 10 PM US Central Time and saved under <code>board_comms/briefings/briefing_YYYY-MM-DD.md</code>.</p>
+          </div>
+
+          <div id="briefings-container" class="briefing-logs-wrapper" style="display: flex; flex-direction: column; gap: 20px;">
+            <!-- Briefings list will render here -->
+          </div>
+        </div>
+      </div>
+
     </div>
 
     <!-- Right Sidebar Panel: Intake ROI Calculator -->
@@ -1381,6 +1475,77 @@ RULES:
       } else {
         calcSidebar.style.opacity = '0.7';
       }
+
+      // Fetch briefings on switch
+      if (tabId === 'briefings-tab' && !briefingsLoaded) {
+        loadBriefings();
+      }
+    }
+
+    let briefingsLoaded = false;
+    function loadBriefings() {
+      const loading = document.getElementById('briefings-loading');
+      const empty = document.getElementById('briefings-empty');
+      const container = document.getElementById('briefings-container');
+      
+      loading.style.display = 'block';
+      empty.style.display = 'none';
+      container.innerHTML = '';
+      
+      fetch('/api/briefings')
+        .then(res => {
+          if (!res.ok) throw new Error('API Error');
+          return res.json();
+        })
+        .then(data => {
+          loading.style.display = 'none';
+          if (!data || data.length === 0) {
+            empty.style.display = 'block';
+            return;
+          }
+          
+          data.forEach(item => {
+            const card = document.createElement('div');
+            card.className = 'briefing-card';
+            
+            const dateStr = item.date ? new Date(item.date + 'T00:00:00').toLocaleDateString('en-US', {
+              month: 'long',
+              day: 'numeric',
+              year: 'numeric'
+            }) : 'Unknown Date';
+            
+            let formattedContent = item.content;
+            
+            // Basic markdown transformations for display rendering
+            formattedContent = formattedContent
+              .replace(/###\s*(.*)/g, '<h4 style="color: var(--primary); margin-top: 15px; margin-bottom: 8px;">$1</h4>')
+              .replace(/##\s*(.*)/g, '<h3 style="color: var(--primary); margin-top: 20px; margin-bottom: 10px;">$1</h3>')
+              .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+              .replace(/-\s*`\[\s*\]`\s*(.*)/g, '<div style="margin-left: 15px; margin-top: 4px; display: flex; align-items: center; gap: 8px;"><input type="checkbox" disabled style="accent-color: var(--primary);"> <span style="font-size: 13px;">$1</span></div>')
+              .replace(/-\s*`\[x\]`\s*(.*)/g, '<div style="margin-left: 15px; margin-top: 4px; display: flex; align-items: center; gap: 8px; text-decoration: line-through; opacity: 0.6;"><input type="checkbox" checked disabled style="accent-color: var(--primary);"> <span style="font-size: 13px;">$1</span></div>')
+              .replace(/-\s*(.*)/g, '<li style="margin-left: 20px; margin-bottom: 4px;">$1</li>');
+              
+            card.innerHTML = `
+              <div class="briefing-meta">
+                <span class="briefing-date">${dateStr.toUpperCase()}</span>
+                <span style="font-size: 11px; color: var(--text-muted); font-family: monospace;">${item.filename}</span>
+              </div>
+              <div class="briefing-subject" style="margin-bottom: 12px; color: var(--primary); font-family: 'Outfit', sans-serif; font-weight: 700; font-size: 1.15rem; text-transform: uppercase;">
+                ${item.subject}
+              </div>
+              <div class="briefing-content-preview">
+                ${formattedContent}
+              </div>
+            `;
+            container.appendChild(card);
+          });
+          briefingsLoaded = true;
+        })
+        .catch(err => {
+          console.error(err);
+          loading.style.display = 'none';
+          container.innerHTML = `<div style="color: var(--error-color); text-align: center; padding: 20px;">Failed to load briefings. Check backend API connection.</div>`;
+        });
     }
 
     // Toggle checked styles on checkboxes

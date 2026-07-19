@@ -1,0 +1,900 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Agent Blueprint — Stop Tech Friction & Commission Leakage</title>
+  
+  <!-- Web App Meta -->
+  <meta name="theme-color" content="#121212">
+  <meta name="description" content="Your CRM tech stack is leaking commissions. Estimate your weekly administrative friction and database neglect losses with our ROI calculator, and secure your founding member spot today.">
+
+  <!-- Google Fonts: Outfit & Roboto Mono -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700;800&family=Roboto+Mono:wght@400;600&display=swap" rel="stylesheet">
+
+  <style>
+    /* CSS Variables following Sovereign Forge Brand Guidelines */
+    :root {
+      --bg-dark: #0A0A0A;
+      --bg-workspace: #121212;
+      --card-bg: rgba(26, 26, 26, 0.65);
+      --card-border: rgba(255, 255, 255, 0.08);
+      --primary: #D4AF37; /* Sovereign Gold */
+      --primary-light: #FFF2B2;
+      --primary-dark: #996E00;
+      --accent-plum: #3C1F3D;
+      --text-main: #FFFFFF;
+      --text-muted: #94A3B8;
+      --text-dark: #000000;
+      --error-color: #EF4444;
+      --success-color: #10B981;
+      --gold-gradient: linear-gradient(135deg, var(--primary-light) 0%, var(--primary) 50%, var(--primary-dark) 100%);
+      --glass-glow: 0 8px 32px 0 rgba(212, 175, 55, 0.05);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Outfit', sans-serif;
+      background-color: var(--bg-dark);
+      color: var(--text-main);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      overflow-x: hidden;
+      position: relative;
+    }
+
+    /* Ambient Background Glows */
+    .ambient-glow-1 {
+      position: absolute;
+      top: -200px;
+      right: -100px;
+      width: 600px;
+      height: 600px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(212, 175, 55, 0.07) 0%, rgba(0, 0, 0, 0) 70%);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .ambient-glow-2 {
+      position: absolute;
+      bottom: -150px;
+      left: -150px;
+      width: 700px;
+      height: 700px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(60, 31, 61, 0.18) 0%, rgba(0, 0, 0, 0) 70%);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    /* Navigation Header */
+    header {
+      width: 100%;
+      background: rgba(10, 10, 10, 0.6);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--card-border);
+      padding: 20px 40px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    .header-logo {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      text-decoration: none;
+    }
+
+    .header-logo img {
+      height: 40px;
+      width: auto;
+    }
+
+    .header-logo-text {
+      font-weight: 800;
+      font-size: 22px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--text-main);
+    }
+
+    .header-logo-text span {
+      background: var(--gold-gradient);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .social-badge {
+      font-size: 0.85rem;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid var(--card-border);
+      padding: 8px 16px;
+      border-radius: 20px;
+      color: var(--text-muted);
+      font-weight: 600;
+    }
+
+    /* Hero Section */
+    .hero-container {
+      max-width: 1300px;
+      margin: 0 auto;
+      padding: 60px 40px 100px 40px;
+      display: grid;
+      grid-template-columns: 1.12fr 0.88fr;
+      gap: 50px;
+      align-items: center;
+      position: relative;
+      z-index: 10;
+    }
+
+    .hero-text-panel {
+      display: flex;
+      flex-direction: column;
+      gap: 25px;
+    }
+
+    .pre-headline {
+      font-size: 0.9rem;
+      text-transform: uppercase;
+      letter-spacing: 3px;
+      color: var(--primary);
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .pre-headline::before {
+      content: '';
+      display: inline-block;
+      width: 20px;
+      height: 2px;
+      background: var(--primary);
+    }
+
+    h1 {
+      font-size: 3.8rem;
+      font-weight: 800;
+      line-height: 1.1;
+      letter-spacing: -1.5px;
+      color: var(--text-main);
+    }
+
+    h1 span {
+      background: var(--gold-gradient);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .hero-description {
+      font-size: 1.25rem;
+      color: var(--text-muted);
+      line-height: 1.6;
+      font-weight: 300;
+    }
+
+    .hero-description strong {
+      color: var(--text-main);
+      font-weight: 600;
+    }
+
+    /* Countdown Styling */
+    .countdown-section {
+      display: flex;
+      gap: 15px;
+      margin-top: 15px;
+    }
+
+    .countdown-box {
+      background: rgba(255, 255, 255, 0.02);
+      border: 1px solid var(--card-border);
+      border-radius: 12px;
+      min-width: 80px;
+      padding: 12px;
+      text-align: center;
+    }
+
+    .countdown-num {
+      font-family: 'Roboto Mono', monospace;
+      font-size: 2.2rem;
+      font-weight: 700;
+      color: var(--primary);
+      line-height: 1;
+    }
+
+    .countdown-label {
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      letter-spacing: 1px;
+      margin-top: 5px;
+    }
+
+    /* Waitlist Form Styling */
+    .waitlist-card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 24px;
+      padding: 35px;
+      backdrop-filter: blur(20px);
+      box-shadow: var(--glass-glow);
+    }
+
+    .waitlist-title {
+      font-size: 1.5rem;
+      font-weight: 700;
+      margin-bottom: 8px;
+    }
+
+    .waitlist-subtitle {
+      font-size: 0.95rem;
+      color: var(--text-muted);
+      margin-bottom: 25px;
+      line-height: 1.5;
+    }
+
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      margin-bottom: 18px;
+    }
+
+    .form-group label {
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    .form-input {
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid var(--card-border);
+      border-radius: 10px;
+      padding: 12px 16px;
+      color: var(--text-main);
+      font-family: inherit;
+      font-size: 0.95rem;
+      transition: all 0.3s ease;
+    }
+
+    .form-input:focus {
+      outline: none;
+      border-color: var(--primary);
+      background: rgba(255, 255, 255, 0.06);
+    }
+
+    .submit-btn {
+      width: 100%;
+      background: var(--gold-gradient);
+      border: none;
+      border-radius: 10px;
+      padding: 14px;
+      color: var(--text-dark);
+      font-family: inherit;
+      font-weight: 700;
+      font-size: 1rem;
+      cursor: pointer;
+      box-shadow: 0 4px 15px rgba(212, 175, 55, 0.2);
+      transition: all 0.3s ease;
+      margin-top: 10px;
+    }
+
+    .submit-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(212, 175, 55, 0.3);
+    }
+
+    /* Calculator Section */
+    .calculator-section-wrapper {
+      max-width: 1300px;
+      margin: 0 auto 100px auto;
+      padding: 0 40px;
+      position: relative;
+      z-index: 10;
+    }
+
+    .calc-container {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 30px;
+      padding: 50px;
+      box-shadow: var(--glass-glow);
+      backdrop-filter: blur(20px);
+      display: grid;
+      grid-template-columns: 1.1fr 0.9fr;
+      gap: 50px;
+    }
+
+    .calc-controls-col {
+      display: flex;
+      flex-direction: column;
+      gap: 30px;
+    }
+
+    .calc-header-title {
+      font-size: 2rem;
+      font-weight: 800;
+      line-height: 1.2;
+    }
+
+    .calc-header-title span {
+      background: var(--gold-gradient);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .slider-group {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .slider-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-weight: 600;
+      font-size: 0.95rem;
+    }
+
+    .slider-val {
+      font-family: 'Roboto Mono', monospace;
+      color: var(--primary);
+      font-size: 1.1rem;
+    }
+
+    .slider-desc {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+    }
+
+    /* Custom range input styling */
+    input[type=range] {
+      -webkit-appearance: none;
+      width: 100%;
+      background: transparent;
+    }
+
+    input[type=range]:focus {
+      outline: none;
+    }
+
+    input[type=range]::-webkit-slider-runnable-track {
+      width: 100%;
+      height: 6px;
+      cursor: pointer;
+      background: rgba(255,255,255,0.1);
+      border-radius: 3px;
+    }
+
+    input[type=range]::-webkit-slider-thumb {
+      height: 20px;
+      width: 20px;
+      border-radius: 50%;
+      background: var(--primary);
+      cursor: pointer;
+      -webkit-appearance: none;
+      margin-top: -7px;
+      box-shadow: 0 0 10px rgba(212,175,55,0.5);
+      transition: transform 0.1s ease;
+    }
+
+    input[type=range]::-webkit-slider-thumb:hover {
+      transform: scale(1.2);
+    }
+
+    /* Calculator Results Column */
+    .calc-results-col {
+      background: rgba(255, 255, 255, 0.015);
+      border: 1px solid rgba(255, 255, 255, 0.05);
+      border-radius: 20px;
+      padding: 35px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    .calc-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      padding: 16px 0;
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+    }
+
+    .calc-row:last-of-type {
+      border-bottom: none;
+    }
+
+    .calc-label {
+      flex: 1;
+      font-size: 0.95rem;
+      color: var(--text-main);
+      padding-right: 15px;
+    }
+
+    .calc-label-desc {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      margin-top: 4px;
+    }
+
+    .calc-row-value {
+      font-family: 'Roboto Mono', monospace;
+      font-weight: 700;
+      font-size: 1.25rem;
+    }
+
+    .value-danger {
+      color: var(--error-color);
+    }
+
+    .value-warning {
+      color: var(--primary);
+    }
+
+    .value-success {
+      color: var(--success-color);
+    }
+
+    .calc-total-box {
+      background: rgba(212, 175, 55, 0.04);
+      border: 1px dashed var(--primary);
+      border-radius: 12px;
+      padding: 20px;
+      margin-top: 25px;
+      text-align: center;
+    }
+
+    .calc-total-label {
+      font-size: 0.85rem;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      color: var(--text-muted);
+      margin-bottom: 5px;
+      font-weight: 600;
+    }
+
+    .calc-total-value {
+      font-size: 2.8rem;
+      font-weight: 800;
+      background: var(--gold-gradient);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      font-family: 'Outfit', sans-serif;
+    }
+
+    .calc-total-value span {
+      font-size: 1rem;
+      color: var(--text-muted);
+      -webkit-text-fill-color: initial;
+    }
+
+    /* Success state waitlist card */
+    .waitlist-success-state {
+      display: none;
+      text-align: center;
+      animation: fadeIn 0.4s ease forwards;
+    }
+
+    .success-icon-circle {
+      width: 70px;
+      height: 70px;
+      border-radius: 50%;
+      background: rgba(16, 185, 129, 0.1);
+      border: 2px solid var(--success-color);
+      color: var(--success-color);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 20px auto;
+    }
+
+    .success-code-box {
+      background: rgba(255,255,255,0.03);
+      border: 1px solid var(--card-border);
+      padding: 15px;
+      border-radius: 10px;
+      font-family: 'Roboto Mono', monospace;
+      font-size: 1.2rem;
+      color: var(--primary);
+      font-weight: 700;
+      letter-spacing: 3px;
+      margin: 20px 0;
+      position: relative;
+    }
+
+    /* Footer styling */
+    footer {
+      margin-top: auto;
+      border-top: 1px solid var(--card-border);
+      background: rgba(10, 10, 10, 0.8);
+      padding: 40px;
+      text-align: center;
+      color: var(--text-muted);
+      font-size: 0.9rem;
+      position: relative;
+      z-index: 10;
+    }
+
+    .footer-logo {
+      height: 30px;
+      margin-bottom: 15px;
+      opacity: 0.8;
+    }
+
+    .footer-links {
+      margin-top: 15px;
+      display: flex;
+      justify-content: center;
+      gap: 20px;
+      font-size: 0.85rem;
+    }
+
+    .footer-links a {
+      color: var(--text-muted);
+      text-decoration: none;
+      transition: color 0.2s ease;
+    }
+
+    .footer-links a:hover {
+      color: var(--primary);
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Responsive adjustments */
+    @media (max-width: 1024px) {
+      .hero-container, .calc-container {
+        grid-template-columns: 1fr;
+        gap: 40px;
+      }
+      h1 {
+        font-size: 2.8rem;
+      }
+    }
+
+    @media (max-width: 768px) {
+      header {
+        padding: 20px;
+      }
+      .hero-container {
+        padding: 40px 20px;
+      }
+      .calculator-section-wrapper {
+        padding: 0 20px;
+      }
+      .calc-container {
+        padding: 30px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="ambient-glow-1"></div>
+  <div class="ambient-glow-2"></div>
+
+  <!-- Header -->
+  <header>
+    <a href="#" class="header-logo">
+      <div class="header-logo-text">Agent<span>Blueprint</span></div>
+    </a>
+    <div class="social-badge">COMING SOON</div>
+  </header>
+
+  <!-- Hero Content -->
+  <main class="hero-container">
+    <div class="hero-text-panel">
+      <div class="pre-headline">Sovereign Forge Autonomics</div>
+      <h1>Your Brokerage Tech Stack is <span>Leaking Commissions.</span></h1>
+      <p class="hero-description">
+        Every manual CRM update, delayed lead callback, and neglected past client is a silent tax on your GCI. <strong>Agent Blueprint</strong> builds custom, autonomous AI Chief of Staff engines that sync FUB, kvCORE, and Dotloop directly. 
+      </p>
+      
+      <p class="hero-description" style="font-size: 1.05rem; border-left: 3px solid var(--primary); padding-left: 15px; color: var(--text-main);">
+        <em>"Don't hire another expensive sales consultant until you've seen Agent Blueprint."</em>
+      </p>
+
+      <!-- Launch Countdown -->
+      <div class="slider-group" style="margin-top: 10px;">
+        <div style="font-size: 0.85rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px;">Blueprint Engine Launch Countdown</div>
+        <div class="countdown-section">
+          <div class="countdown-box">
+            <div class="countdown-num" id="cd-days">00</div>
+            <div class="countdown-label">Days</div>
+          </div>
+          <div class="countdown-box">
+            <div class="countdown-num" id="cd-hours">00</div>
+            <div class="countdown-label">Hrs</div>
+          </div>
+          <div class="countdown-box">
+            <div class="countdown-num" id="cd-mins">00</div>
+            <div class="countdown-label">Mins</div>
+          </div>
+          <div class="countdown-box">
+            <div class="countdown-num" id="cd-secs">00</div>
+            <div class="countdown-label">Secs</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Waitlist Capture Card -->
+    <div class="waitlist-card">
+      <div id="waitlist-form-container">
+        <h2 class="waitlist-title">Join the Founding List</h2>
+        <p class="waitlist-subtitle">Secure your founding member subscription benefits and receive early beta access before we open to public agencies.</p>
+        
+        <form id="blueprint-subscribe-form" onsubmit="submitWaitlist(event)">
+          <div class="form-group">
+            <label for="name">Full Name</label>
+            <input type="text" id="name" class="form-input" placeholder="Mike Price" required>
+          </div>
+          <div class="form-group">
+            <label for="email">Email Address</label>
+            <input type="email" id="email" class="form-input" placeholder="mike@lauralai.llc" required>
+          </div>
+          <div class="form-group">
+            <label for="brokerage">Brokerage/Company</label>
+            <input type="text" id="brokerage" class="form-input" placeholder="Sovereign Realty Group" required>
+          </div>
+          <div class="form-group">
+            <label for="phone">Phone Number (Optional)</label>
+            <input type="tel" id="phone" class="form-input" placeholder="(555) 000-0000">
+          </div>
+          
+          <div id="form-error" style="color: var(--error-color); font-size: 0.85rem; margin-bottom: 10px; display: none;"></div>
+          <button type="submit" class="submit-btn" id="submit-btn-el">Secure Early Spot ↗</button>
+        </form>
+      </div>
+
+      <!-- Success State -->
+      <div class="waitlist-success-state" id="waitlist-success-container">
+        <div class="success-icon-circle">
+          <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+        </div>
+        <h2 class="waitlist-title">Founding Spot Secured!</h2>
+        <p class="waitlist-subtitle" style="margin-bottom: 15px;">Your early spot is registered. Keep this VIP founding member code safe—you will use it to unlock your onboarding priority.</p>
+        <div class="success-code-box" id="success-vip-code">AB-FOUNDER-2026</div>
+        <p class="waitlist-subtitle" style="font-size: 0.85rem; margin-bottom: 0;">We've sent a confirmation email to <strong id="success-email-display">your email</strong>. Stand by for the first blueprints deployment.</p>
+      </div>
+    </div>
+  </main>
+
+  <!-- Interactive ROI Calculator Section -->
+  <section class="calculator-section-wrapper">
+    <div class="calc-container">
+      
+      <!-- Left controls col -->
+      <div class="calc-controls-col">
+        <h2 class="calc-header-title">Estimate Your <span>Quiet Tech Leakage</span></h2>
+        <p class="slider-desc" style="margin-top: -15px; font-size: 1.05rem;">Slide the dials below to calculate your current annual technical and administrative overhead costs.</p>
+
+        <!-- Slider 1: Admin Hours -->
+        <div class="slider-group">
+          <div class="slider-header">
+            <label for="adminHours">System Friction (Admin Hours/Week)</label>
+            <span class="slider-val" id="val-admin">10 hours</span>
+          </div>
+          <input type="range" id="adminHours" min="0" max="40" value="10" oninput="runCalculator()">
+          <div class="slider-desc">Time spent manually transferring leads, updating spreadsheets, or wrestling CRM integrations.</div>
+        </div>
+
+        <!-- Slider 2: Latency Minutes -->
+        <div class="slider-group">
+          <div class="slider-header">
+            <label for="leadLatency">Lead Callback Latency</label>
+            <span class="slider-val" id="val-latency">15 mins</span>
+          </div>
+          <input type="range" id="leadLatency" min="1" max="120" value="15" oninput="runCalculator()">
+          <div class="slider-desc">Average minutes elapsed before a new inbound portal or website lead receives a callback.</div>
+        </div>
+
+        <!-- Slider 3: Neglect Attrition -->
+        <div class="slider-group">
+          <div class="slider-header">
+            <label for="clientNeglect">Database Follow-up Attrition</label>
+            <span class="slider-val" id="val-neglect">50% neglect</span>
+          </div>
+          <input type="range" id="clientNeglect" min="0" max="100" value="50" oninput="runCalculator()">
+          <div class="slider-desc">Estimated percentage of past listings or closed transactions that do not have a systematic follow-up plan.</div>
+        </div>
+      </div>
+
+      <!-- Right results col -->
+      <div class="calc-results-col">
+        <div>
+          <h3 style="font-size: 1.15rem; font-weight: 700; margin-bottom: 20px; border-bottom: 1px solid rgba(255,255,255,0.06); padding-bottom: 10px; color: var(--primary);">Real-time Leakage Summary</h3>
+          
+          <div class="calc-row">
+            <div class="calc-label">
+              <strong>Administrative Loss</strong>
+              <div class="calc-label-desc">Productivity cost valued at $50/hour standard agent services.</div>
+            </div>
+            <div class="calc-row-value value-danger" id="result-admin">$26,000</div>
+          </div>
+
+          <div class="calc-row">
+            <div class="calc-label">
+              <strong>Speed-to-Lead Loss</strong>
+              <div class="calc-label-desc">Portal lead conversion decay penalty if callback latency exceeds 5 mins.</div>
+            </div>
+            <div class="calc-row-value value-danger" id="result-latency">$12,000</div>
+          </div>
+
+          <div class="calc-row">
+            <div class="calc-label">
+              <strong>Referral Leakage Loss</strong>
+              <div class="calc-label-desc">Lost commission side value based on database attrition (Industry avg: $12k/side).</div>
+            </div>
+            <div class="calc-row-value value-danger" id="result-referral">$12,000</div>
+          </div>
+        </div>
+
+        <div class="calc-total-box">
+          <div class="calc-total-label">Total Annual Technical Leakage</div>
+          <div class="calc-total-value" id="result-total">$50,000<span>/yr</span></div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer>
+    <img src="nc_assets/img/logo.svg" alt="250PROUD™ Logo" class="footer-logo">
+    <p>&copy; 2026 Lauralai LLC. All rights reserved. Agent Blueprint™ and 250PROUD™ are trademarks of Lauralai LLC.</p>
+    <p style="font-size: 0.8rem; margin-top: 5px; color: #64748B;">Lauralai LLC | 515 Cypress Dr, Long Beach MS, 39560</p>
+    <div class="footer-links">
+      <a href="terms.html">Terms of Service</a>
+      <a href="privacy.html">Privacy Policy</a>
+      <a href="contact.html">Contact Us</a>
+    </div>
+  </footer>
+
+  <script>
+    // 1. Countdown Logic
+    const targetDate = new Date("October 1, 2026 00:00:00").getTime();
+
+    function updateCountdown() {
+      const now = new Date().getTime();
+      const difference = targetDate - now;
+
+      if (difference <= 0) {
+        document.getElementById("cd-days").textContent = "00";
+        document.getElementById("cd-hours").textContent = "00";
+        document.getElementById("cd-mins").textContent = "00";
+        document.getElementById("cd-secs").textContent = "00";
+        return;
+      }
+
+      const days = Math.floor(difference / (1000 * 60 * 60 * 24));
+      const hours = Math.floor((difference % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+      const minutes = Math.floor((difference % (1000 * 60 * 60)) / (1000 * 60));
+      const seconds = Math.floor((difference % (1000 * 60)) / 1000);
+
+      document.getElementById("cd-days").textContent = days.toString().padStart(2, '0');
+      document.getElementById("cd-hours").textContent = hours.toString().padStart(2, '0');
+      document.getElementById("cd-mins").textContent = minutes.toString().padStart(2, '0');
+      document.getElementById("cd-secs").textContent = seconds.toString().padStart(2, '0');
+    }
+
+    setInterval(updateCountdown, 1000);
+    updateCountdown();
+
+    // 2. Calculator Logic
+    function runCalculator() {
+      const adminHours = parseInt(document.getElementById('adminHours').value);
+      const leadLatency = parseInt(document.getElementById('leadLatency').value);
+      const clientNeglect = parseInt(document.getElementById('clientNeglect').value);
+
+      // Sync slider tags
+      document.getElementById('val-admin').innerText = `${adminHours} hour${adminHours !== 1 ? 's' : ''}`;
+      
+      let latencyText = '';
+      if (leadLatency < 60) {
+        latencyText = `${leadLatency} min${leadLatency !== 1 ? 's' : ''}`;
+      } else {
+        const hours = Math.round(leadLatency / 60);
+        latencyText = `${hours} hr${hours > 1 ? 's' : ''}`;
+      }
+      document.getElementById('val-latency').innerText = latencyText;
+      document.getElementById('val-neglect').innerText = `${clientNeglect}% neglect`;
+
+      // 1. Admin Loss ($50/hour, 52 weeks)
+      const adminLoss = adminHours * 50 * 52;
+      document.getElementById('result-admin').innerText = `$${adminLoss.toLocaleString()}`;
+
+      // 2. Latency Risk Loss (Standard $12,000 penalty if latency is > 5 minutes)
+      const latencyLoss = leadLatency > 5 ? 12000 : 0;
+      document.getElementById('result-latency').innerText = `$${latencyLoss.toLocaleString()}`;
+      
+      const latencyValueEl = document.getElementById('result-latency');
+      if (leadLatency <= 5) {
+        latencyValueEl.className = 'calc-row-value value-success';
+        latencyValueEl.innerText = 'OPTIMIZED';
+      } else {
+        latencyValueEl.className = 'calc-row-value value-danger';
+      }
+
+      // 3. Referral Loss: assume 20 transactions * 10% repeat rate * $12k avg side * negAttr%
+      const transactionsLost = (clientNeglect / 100) * 20 * 0.1;
+      const referralLoss = Math.round(transactionsLost * 12000);
+      document.getElementById('result-referral').innerText = `$${referralLoss.toLocaleString()}`;
+
+      // 4. Combined Loss
+      const combinedTotal = adminLoss + latencyLoss + referralLoss;
+      document.getElementById('result-total').innerHTML = `$${combinedTotal.toLocaleString()}<span>/yr</span>`;
+    }
+
+    // Initialize calculator
+    runCalculator();
+
+    // 3. Waitlist Subscription Submission
+    function submitWaitlist(event) {
+      event.preventDefault();
+      
+      const name = document.getElementById('name').value;
+      const email = document.getElementById('email').value;
+      const brokerage = document.getElementById('brokerage').value;
+      const phone = document.getElementById('phone').value;
+      
+      const submitBtn = document.getElementById('submit-btn-el');
+      const errorEl = document.getElementById('form-error');
+      
+      submitBtn.innerText = "Securing Spot...";
+      submitBtn.disabled = true;
+      errorEl.style.display = 'none';
+
+      fetch('/api/blueprint/subscribe', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ name, email, brokerage, phone })
+      })
+      .then(res => {
+        if (!res.ok) throw new Error('Failed to subscribe');
+        return res.json();
+      })
+      .then(data => {
+        // Toggle view to success state
+        document.getElementById('success-email-display').innerText = email;
+        
+        // Generate a random unique looking code
+        const vipCodeNum = Math.floor(1000 + Math.random() * 9000);
+        document.getElementById('success-vip-code').innerText = `AB-VIP-${vipCodeNum}`;
+
+        document.getElementById('waitlist-form-container').style.display = 'none';
+        document.getElementById('waitlist-success-container').style.display = 'block';
+      })
+      .catch(err => {
+        console.error(err);
+        submitBtn.innerText = "Secure Early Spot ↗";
+        submitBtn.disabled = false;
+        errorEl.innerText = "There was an error securing your spot. Please check your email and try again.";
+        errorEl.style.display = 'block';
+      });
+    }
+  </script>
+</body>
+</html>

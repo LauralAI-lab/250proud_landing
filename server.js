@@ -2035,6 +2035,63 @@ app.get('/api/briefings', async (req, res) => {
     }
 });
 
+app.post('/api/blueprint/subscribe', express.json(), async (req, res) => {
+    try {
+        const { email, name, brokerage, phone } = req.body;
+        if (!email) {
+            return res.status(400).json({ error: "Email is required" });
+        }
+
+        try {
+            const { error } = await supabase.from('blueprint_waitlist').insert([{
+                email: email.toLowerCase().trim(),
+                name: name || null,
+                brokerage: brokerage || null,
+                phone: phone || null
+            }]);
+            
+            if (error && error.code !== '23505' && error.code !== '42P01') {
+                console.error("Supabase Save Waitlist Error:", error);
+            }
+        } catch (dbErr) {
+            console.error("Supabase connection error, continuing to Mailchimp:", dbErr);
+        }
+
+        if (process.env.MAILCHIMP_API_KEY && process.env.MAILCHIMP_API_KEY !== 'missing_key') {
+            const listId = process.env.MAILCHIMP_LIST_ID;
+            const subscriberHash = crypto.createHash('md5').update(email.toLowerCase().trim()).digest('hex');
+            
+            try {
+                await mailchimp.lists.setListMember(listId, subscriberHash, {
+                    email_address: email.toLowerCase().trim(),
+                    status_if_new: 'subscribed',
+                    merge_fields: {
+                        FNAME: name ? name.split(' ')[0] : '',
+                        LNAME: name && name.split(' ').length > 1 ? name.split(' ').slice(1).join(' ') : '',
+                        COMPANY: brokerage || '',
+                        PHONE: phone || ''
+                    }
+                });
+
+                await mailchimp.lists.updateListMemberTags(listId, subscriberHash, {
+                    tags: [
+                        { name: 'agent-blueprint-waitlist', status: 'active' },
+                        { name: 'founding-member-launch', status: 'active' }
+                    ]
+                });
+                console.log(`📧 Mailchimp: Successfully subscribed & tagged ${email} for Agent Blueprint.`);
+            } catch (mcError) {
+                console.error("Mailchimp Sync Error for Agent Blueprint:", mcError.response?.body?.detail || mcError.message);
+            }
+        }
+
+        res.json({ success: true });
+    } catch (err) {
+        console.error("Blueprint Subscribe Endpoint Error:", err);
+        res.status(500).json({ error: "Failed to submit subscription" });
+    }
+});
+
 
 // Vercel requires exporting the app
 module.exports = app;

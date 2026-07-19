@@ -112,6 +112,10 @@
       "headers": { "Location": "/resources" }
     },
     {
+      "src": "/blueprint",
+      "dest": "/agent-blueprint-coming-soon.html"
+    },
+    {
       "src": "/today-in-history",
       "dest": "/today-in-history.html"
     },

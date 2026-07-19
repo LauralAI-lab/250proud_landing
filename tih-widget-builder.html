@@ -606,7 +606,7 @@
             // Generate snippets
             const scriptSnippet = `<div id="tih-widget-container"></div>\n<script src="https://250proud.net/tih-widget-loader.js" data-color="${primaryColorInput.value}" data-cta-text="${ctaTextInput.value.trim() || 'Find Your Home'}" data-cta-link="${ctaLinkInput.value.trim() || 'https://250proud.net'}" data-theme="${theme}"><\/script>`;
             
-            const iframeSnippet = `<iframe src="${widgetUrl}" style="width: 100%; height: 550px; border: none; overflow: hidden; border-radius: 16px;" scrolling="no"></iframe>`;
+            const iframeSnippet = `<div id="tih-iframe-container" style="width: 100%; max-width: 900px; margin: 0 auto; padding: 0;">\n  <iframe src="${widgetUrl}" id="tih-iframe" style="width: 100%; border: none; overflow: hidden; display: block; border-radius: 16px; transition: height 0.2s ease;" scrolling="no" height="520"></iframe>\n</div>\n\n<script>\n  window.addEventListener('message', function(event) {\n    if (event.data && (event.data.type === 'tih-resize' || event.data.type === 'resize-widget') && event.data.height) {\n      const iframe = document.getElementById('tih-iframe');\n      if (iframe) iframe.style.height = event.data.height + 'px';\n    }\n  });\n<\/script>`;
 
             document.getElementById('script-code').innerText = scriptSnippet;
             document.getElementById('iframe-code').innerText = iframeSnippet;

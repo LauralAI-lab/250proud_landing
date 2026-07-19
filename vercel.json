@@ -117,11 +117,6 @@
       "headers": { "Location": "/agent-blueprint-coming-soon" }
     },
     {
-      "src": "/agent-blueprint",
-      "status": 302,
-      "headers": { "Location": "/agent-blueprint-coming-soon" }
-    },
-    {
       "src": "/research-citations",
       "status": 302,
       "headers": { "Location": "/citations" }

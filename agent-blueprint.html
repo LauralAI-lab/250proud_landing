@@ -1412,12 +1412,12 @@ RULES:
             <strong>Referral Retention Gap:</strong>
             <div style="font-size: 11px; margin-top:2px;">Estimated yearly transactions lost to follow-up leakage.</div>
           </div>
-          <div class="calc-value value-danger" id="retention-loss-val">$21,840</div>
+          <div class="calc-value value-danger" id="retention-loss-val">$26,587</div>
         </div>
 
         <div class="calc-total-box">
           <div class="calc-total-label">Total Realizable Agent Leakage</div>
-          <div class="calc-total-value" id="calc-total-loss">$55,640<span>/yr</span></div>
+          <div class="calc-total-value" id="calc-total-loss">$72,387<span>/yr</span></div>
         </div>
       </div>
     </div>
@@ -1603,9 +1603,9 @@ RULES:
       }
 
       // 3. Referral Retention Gap:
-      // Volume estimate of 20 deals a year * average side value of $12,000 * attrition percentage
-      const transactionsLost = (retentionDropoff / 100) * 20 * 0.1; // assuming 10% of neglected leads would refer per year
-      const annualRetentionLoss = Math.round(transactionsLost * 12000);
+      // Volume estimate of 9.5 deals a year (NAR 2026 median) * average side value of $15,377 * 20% database repeat/referral rate
+      const transactionsLost = 9.5 * 0.20 * (retentionDropoff / 100);
+      const annualRetentionLoss = Math.round(transactionsLost * 15377);
       document.getElementById('retention-loss-val').innerText = `$${annualRetentionLoss.toLocaleString()}`;
 
       // 4. Combined Loss

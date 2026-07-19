@@ -485,6 +485,29 @@
       -webkit-text-fill-color: initial;
     }
 
+    .citations-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 10px 18px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: var(--primary-light);
+      background: rgba(214, 175, 55, 0.08);
+      border: 1px solid rgba(214, 175, 55, 0.2);
+      border-radius: 8px;
+      text-decoration: none;
+      transition: all 0.2s ease;
+      cursor: pointer;
+    }
+
+    .citations-btn:hover {
+      background: rgba(214, 175, 55, 0.15);
+      border-color: var(--primary);
+      color: var(--text-main);
+      box-shadow: 0 4px 12px rgba(212, 175, 55, 0.1);
+    }
+
     /* Success state waitlist card */
     .waitlist-success-state {
       display: none;
@@ -604,7 +627,7 @@
   <!-- Hero Content -->
   <main class="hero-container">
     <div class="hero-text-panel">
-      <div class="pre-headline">Sovereign Forge Autonomics</div>
+      <div class="pre-headline">Sovereign Forge</div>
       <h1>Your Brokerage Tech Stack is <span>Leaking Commissions.</span></h1>
       <p class="hero-description">
         Every manual CRM update, delayed lead callback, and neglected past client is a silent tax on your GCI. <strong>Agent Blueprint</strong> builds custom, autonomous AI Chief of Staff engines that sync FUB, kvCORE, and Dotloop directly. 
@@ -699,7 +722,17 @@
           <div class="slider-desc">Based on the typical individual agent industry average (NAR, 2026).</div>
         </div>
 
-        <!-- Slider 2: Admin Hours -->
+        <!-- Slider 2: Follow-Up Gap -->
+        <div class="slider-group">
+          <div class="slider-header">
+            <label for="followupGap">Referral Follow-Up Gap</label>
+            <span class="slider-val" id="val-followup">88% gap</span>
+          </div>
+          <input type="range" id="followupGap" min="0" max="100" value="88" oninput="runCalculator()">
+          <div class="slider-desc">Percentage of past clients who drift away. Industry average is 88% (NAR Buyers/Sellers Profile).</div>
+        </div>
+
+        <!-- Slider 3: Admin Hours -->
         <div class="slider-group">
           <div class="slider-header">
             <label for="adminHours">System Friction (Admin Hours/Week)</label>
@@ -726,15 +759,22 @@
           <div class="calc-row">
             <div class="calc-label">
               <strong>Referral Attrition Loss</strong>
-              <div class="calc-label-desc">Dropped commission opportunities (Conservatively estimated at 20% database leak from the 88% Referral Retention Gap, valued at $15,377/side).</div>
+              <div class="calc-label-desc">Dropped commission opportunities (Conservatively estimated at 20% database leak multiplied by your Follow-Up Gap, valued at $15,377/side).</div>
             </div>
-            <div class="calc-row-value value-danger" id="result-referral">$29,216</div>
+            <div class="calc-row-value value-danger" id="result-referral">$25,710</div>
           </div>
         </div>
 
         <div class="calc-total-box">
           <div class="calc-total-label">Total Annual Technical Leakage</div>
-          <div class="calc-total-value" id="result-total">$63,016<span>/yr</span></div>
+          <div class="calc-total-value" id="result-total">$59,510<span>/yr</span></div>
+        </div>
+
+        <div class="calc-citations-container" style="margin-top: 20px; text-align: center;">
+          <a href="/disclaimer" class="citations-btn">
+            <svg style="vertical-align: middle; margin-right: 6px;" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+            Verify Citations & Methodology ↗
+          </a>
         </div>
       </div>
 
@@ -791,18 +831,20 @@
       // Referral Attrition: 88% Gap (90% intent vs 12% repeat) - NAR Buyers/Sellers Profile
       // Note: This is a national baseline, candidate for a localized Mississippi/Gulf Coast override down the line.
       const annualClosings = parseFloat(document.getElementById('annualClosings').value);
+      const followupGap = parseInt(document.getElementById('followupGap').value);
       const adminHours = parseInt(document.getElementById('adminHours').value);
 
       // Sync slider tags
       document.getElementById('val-closings').innerText = `${annualClosings} deal${annualClosings !== 1 ? 's' : ''}`;
+      document.getElementById('val-followup').innerText = `${followupGap}% gap`;
       document.getElementById('val-admin').innerText = `${adminHours} hour${adminHours !== 1 ? 's' : ''}`;
 
       // 1. Admin Loss = Weekly Admin Hours * 52 * $50
       const adminLoss = adminHours * 52 * 50;
       document.getElementById('result-admin').innerText = `$${adminLoss.toLocaleString()}`;
 
-      // 2. Referral Loss = Annual Closings * 20% (0.20) * $15,377
-      const referralLoss = Math.round(annualClosings * 0.20 * 15377);
+      // 2. Referral Loss = Annual Closings * 20% (0.20) * (Follow-Up Gap / 100) * $15,377
+      const referralLoss = Math.round(annualClosings * 0.20 * (followupGap / 100) * 15377);
       document.getElementById('result-referral').innerText = `$${referralLoss.toLocaleString()}`;
 
       // 3. Combined Loss

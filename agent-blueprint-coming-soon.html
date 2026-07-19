@@ -693,10 +693,10 @@
         <div class="slider-group">
           <div class="slider-header">
             <label for="annualClosings">Annual Closed Transactions</label>
-            <span class="slider-val" id="val-closings">20 deals</span>
+            <span class="slider-val" id="val-closings">9.5 deals</span>
           </div>
-          <input type="range" id="annualClosings" min="1" max="100" value="20" oninput="runCalculator()">
-          <div class="slider-desc">Your average volume of closed transaction sides (buy or sell sides) per year.</div>
+          <input type="range" id="annualClosings" min="1" max="100" step="0.5" value="9.5" oninput="runCalculator()">
+          <div class="slider-desc">Based on the typical individual agent industry average (NAR, 2026).</div>
         </div>
 
         <!-- Slider 2: Admin Hours -->
@@ -726,15 +726,15 @@
           <div class="calc-row">
             <div class="calc-label">
               <strong>Referral Attrition Loss</strong>
-              <div class="calc-label-desc">Dropped commission opportunities (Conservatively estimated at 20% database dropoff at $11,500/side).</div>
+              <div class="calc-label-desc">Dropped commission opportunities (Conservatively estimated at 20% database leak from the 88% Referral Retention Gap, valued at $15,377/side).</div>
             </div>
-            <div class="calc-row-value value-danger" id="result-referral">$46,000</div>
+            <div class="calc-row-value value-danger" id="result-referral">$29,216</div>
           </div>
         </div>
 
         <div class="calc-total-box">
           <div class="calc-total-label">Total Annual Technical Leakage</div>
-          <div class="calc-total-value" id="result-total">$79,800<span>/yr</span></div>
+          <div class="calc-total-value" id="result-total">$63,016<span>/yr</span></div>
         </div>
       </div>
 
@@ -786,7 +786,11 @@
 
     // 2. Calculator Logic
     function runCalculator() {
-      const annualClosings = parseInt(document.getElementById('annualClosings').value);
+      // Default Deals/Year: 9.5 median - NAR 2026 Member Profile
+      // Commission Baseline: 2.55% per side (~$15,377) - MLS/Redfin 2026 Analysis
+      // Referral Attrition: 88% Gap (90% intent vs 12% repeat) - NAR Buyers/Sellers Profile
+      // Note: This is a national baseline, candidate for a localized Mississippi/Gulf Coast override down the line.
+      const annualClosings = parseFloat(document.getElementById('annualClosings').value);
       const adminHours = parseInt(document.getElementById('adminHours').value);
 
       // Sync slider tags
@@ -797,8 +801,8 @@
       const adminLoss = adminHours * 52 * 50;
       document.getElementById('result-admin').innerText = `$${adminLoss.toLocaleString()}`;
 
-      // 2. Referral Loss = Annual Closings * 20% (0.20) * $11,500
-      const referralLoss = annualClosings * 0.20 * 11500;
+      // 2. Referral Loss = Annual Closings * 20% (0.20) * $15,377
+      const referralLoss = Math.round(annualClosings * 0.20 * 15377);
       document.getElementById('result-referral').innerText = `$${referralLoss.toLocaleString()}`;
 
       // 3. Combined Loss

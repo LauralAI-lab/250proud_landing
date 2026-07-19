@@ -122,6 +122,11 @@
       "headers": { "Location": "/agent-blueprint-coming-soon" }
     },
     {
+      "src": "/research-citations",
+      "status": 302,
+      "headers": { "Location": "/citations" }
+    },
+    {
       "src": "/today-in-history",
       "dest": "/today-in-history.html"
     },

@@ -69,7 +69,7 @@
     // 5. Setup dynamic height resizing via postMessage
     window.addEventListener('message', function(event) {
         // Check if message is a resize request from our widget
-        if (event.data && event.data.type === 'tih-resize' && event.data.height) {
+        if (event.data && (event.data.type === 'tih-resize' || event.data.type === 'resize-widget') && event.data.height) {
             iframe.style.height = event.data.height + 'px';
         }
     });

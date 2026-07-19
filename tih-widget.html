@@ -335,16 +335,20 @@
             document.getElementById('tih-bg-date').innerText = months[today.getMonth()] + ' ' + d;
 
             // 3. Post Height updates to the parent page (for the Loader resize logic)
-            function sendHeight() {
-                setTimeout(() => {
-                    const height = document.body.scrollHeight || document.documentElement.scrollHeight;
-                    window.parent.postMessage({ type: 'tih-resize', height: height }, '*');
-                }, 100);
-            }
+            const sendHeight = () => {
+                const height = document.documentElement.offsetHeight || document.body.scrollHeight || document.documentElement.scrollHeight;
+                window.parent.postMessage({ type: 'tih-resize', height: height }, '*');
+            };
 
-            // Send height on load, on image load, and on window resize
-            window.addEventListener('resize', sendHeight);
-            document.getElementById('tih-fact-image').addEventListener('load', sendHeight);
+            // Use ResizeObserver for extremely robust height tracking across all web builders
+            if (window.ResizeObserver) {
+                new ResizeObserver(sendHeight).observe(document.body);
+            } else {
+                window.addEventListener('load', sendHeight);
+                window.addEventListener('resize', sendHeight);
+                const factImg = document.getElementById('tih-fact-image');
+                if (factImg) factImg.addEventListener('load', sendHeight);
+            }
             
             function fetchFallbackWikiImage(searchText, fallbackSrc, factImage, learnMoreLink) {
                 const words = searchText.split(' ').slice(0, 7).join(' ').replace(/[^a-zA-Z0-9\s]/g, '').trim();

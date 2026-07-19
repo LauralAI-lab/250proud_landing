@@ -689,34 +689,24 @@
         <h2 class="calc-header-title">Estimate Your <span>Quiet Tech Leakage</span></h2>
         <p class="slider-desc" style="margin-top: -15px; font-size: 1.05rem;">Slide the dials below to calculate your current annual technical and administrative overhead costs.</p>
 
-        <!-- Slider 1: Admin Hours -->
+        <!-- Slider 1: Annual Closings -->
+        <div class="slider-group">
+          <div class="slider-header">
+            <label for="annualClosings">Annual Closed Transactions</label>
+            <span class="slider-val" id="val-closings">20 deals</span>
+          </div>
+          <input type="range" id="annualClosings" min="1" max="100" value="20" oninput="runCalculator()">
+          <div class="slider-desc">Your average volume of closed transaction sides (buy or sell sides) per year.</div>
+        </div>
+
+        <!-- Slider 2: Admin Hours -->
         <div class="slider-group">
           <div class="slider-header">
             <label for="adminHours">System Friction (Admin Hours/Week)</label>
-            <span class="slider-val" id="val-admin">10 hours</span>
+            <span class="slider-val" id="val-admin">13 hours</span>
           </div>
-          <input type="range" id="adminHours" min="0" max="40" value="10" oninput="runCalculator()">
-          <div class="slider-desc">Time spent manually transferring leads, updating spreadsheets, or wrestling CRM integrations.</div>
-        </div>
-
-        <!-- Slider 2: Latency Minutes -->
-        <div class="slider-group">
-          <div class="slider-header">
-            <label for="leadLatency">Lead Callback Latency</label>
-            <span class="slider-val" id="val-latency">15 mins</span>
-          </div>
-          <input type="range" id="leadLatency" min="1" max="120" value="15" oninput="runCalculator()">
-          <div class="slider-desc">Average minutes elapsed before a new inbound portal or website lead receives a callback.</div>
-        </div>
-
-        <!-- Slider 3: Neglect Attrition -->
-        <div class="slider-group">
-          <div class="slider-header">
-            <label for="clientNeglect">Database Follow-up Attrition</label>
-            <span class="slider-val" id="val-neglect">50% neglect</span>
-          </div>
-          <input type="range" id="clientNeglect" min="0" max="100" value="50" oninput="runCalculator()">
-          <div class="slider-desc">Estimated percentage of past listings or closed transactions that do not have a systematic follow-up plan.</div>
+          <input type="range" id="adminHours" min="0" max="40" value="13" oninput="runCalculator()">
+          <div class="slider-desc">Hours spent writing descriptions, formatting posts, compiling market data, and updating CRM checklists.</div>
         </div>
       </div>
 
@@ -727,32 +717,24 @@
           
           <div class="calc-row">
             <div class="calc-label">
-              <strong>Administrative Loss</strong>
-              <div class="calc-label-desc">Productivity cost valued at $50/hour standard agent services.</div>
+              <strong>Administrative Drag Loss</strong>
+              <div class="calc-label-desc">Productivity leakage valued at a conservative assistant replacement fee of $50/hour.</div>
             </div>
-            <div class="calc-row-value value-danger" id="result-admin">$26,000</div>
+            <div class="calc-row-value value-danger" id="result-admin">$33,800</div>
           </div>
 
           <div class="calc-row">
             <div class="calc-label">
-              <strong>Speed-to-Lead Loss</strong>
-              <div class="calc-label-desc">Portal lead conversion decay penalty if callback latency exceeds 5 mins.</div>
+              <strong>Referral Attrition Loss</strong>
+              <div class="calc-label-desc">Dropped commission opportunities (Conservatively estimated at 20% database dropoff at $11,500/side).</div>
             </div>
-            <div class="calc-row-value value-danger" id="result-latency">$12,000</div>
-          </div>
-
-          <div class="calc-row">
-            <div class="calc-label">
-              <strong>Referral Leakage Loss</strong>
-              <div class="calc-label-desc">Lost commission side value based on database attrition (Industry avg: $12k/side).</div>
-            </div>
-            <div class="calc-row-value value-danger" id="result-referral">$12,000</div>
+            <div class="calc-row-value value-danger" id="result-referral">$46,000</div>
           </div>
         </div>
 
         <div class="calc-total-box">
           <div class="calc-total-label">Total Annual Technical Leakage</div>
-          <div class="calc-total-value" id="result-total">$50,000<span>/yr</span></div>
+          <div class="calc-total-value" id="result-total">$79,800<span>/yr</span></div>
         </div>
       </div>
 
@@ -765,6 +747,7 @@
     <p>&copy; 2026 Lauralai LLC. All rights reserved. Agent Blueprint™ and 250PROUD™ are trademarks of Lauralai LLC.</p>
     <p style="font-size: 0.8rem; margin-top: 5px; color: #64748B;">Lauralai LLC | 515 Cypress Dr, Long Beach MS, 39560</p>
     <div class="footer-links">
+      <a href="disclaimer">Disclaimer & Methodology Disclosure</a>
       <a href="terms.html">Terms of Service</a>
       <a href="privacy.html">Privacy Policy</a>
       <a href="contact.html">Contact Us</a>
@@ -803,46 +786,23 @@
 
     // 2. Calculator Logic
     function runCalculator() {
+      const annualClosings = parseInt(document.getElementById('annualClosings').value);
       const adminHours = parseInt(document.getElementById('adminHours').value);
-      const leadLatency = parseInt(document.getElementById('leadLatency').value);
-      const clientNeglect = parseInt(document.getElementById('clientNeglect').value);
 
       // Sync slider tags
+      document.getElementById('val-closings').innerText = `${annualClosings} deal${annualClosings !== 1 ? 's' : ''}`;
       document.getElementById('val-admin').innerText = `${adminHours} hour${adminHours !== 1 ? 's' : ''}`;
-      
-      let latencyText = '';
-      if (leadLatency < 60) {
-        latencyText = `${leadLatency} min${leadLatency !== 1 ? 's' : ''}`;
-      } else {
-        const hours = Math.round(leadLatency / 60);
-        latencyText = `${hours} hr${hours > 1 ? 's' : ''}`;
-      }
-      document.getElementById('val-latency').innerText = latencyText;
-      document.getElementById('val-neglect').innerText = `${clientNeglect}% neglect`;
 
-      // 1. Admin Loss ($50/hour, 52 weeks)
-      const adminLoss = adminHours * 50 * 52;
+      // 1. Admin Loss = Weekly Admin Hours * 52 * $50
+      const adminLoss = adminHours * 52 * 50;
       document.getElementById('result-admin').innerText = `$${adminLoss.toLocaleString()}`;
 
-      // 2. Latency Risk Loss (Standard $12,000 penalty if latency is > 5 minutes)
-      const latencyLoss = leadLatency > 5 ? 12000 : 0;
-      document.getElementById('result-latency').innerText = `$${latencyLoss.toLocaleString()}`;
-      
-      const latencyValueEl = document.getElementById('result-latency');
-      if (leadLatency <= 5) {
-        latencyValueEl.className = 'calc-row-value value-success';
-        latencyValueEl.innerText = 'OPTIMIZED';
-      } else {
-        latencyValueEl.className = 'calc-row-value value-danger';
-      }
-
-      // 3. Referral Loss: assume 20 transactions * 10% repeat rate * $12k avg side * negAttr%
-      const transactionsLost = (clientNeglect / 100) * 20 * 0.1;
-      const referralLoss = Math.round(transactionsLost * 12000);
+      // 2. Referral Loss = Annual Closings * 20% (0.20) * $11,500
+      const referralLoss = annualClosings * 0.20 * 11500;
       document.getElementById('result-referral').innerText = `$${referralLoss.toLocaleString()}`;
 
-      // 4. Combined Loss
-      const combinedTotal = adminLoss + latencyLoss + referralLoss;
+      // 3. Combined Loss
+      const combinedTotal = adminLoss + referralLoss;
       document.getElementById('result-total').innerHTML = `$${combinedTotal.toLocaleString()}<span>/yr</span>`;
     }
 

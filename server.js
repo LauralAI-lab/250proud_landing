@@ -2041,6 +2041,19 @@ app.post('/api/blueprint/subscribe', express.json(), async (req, res) => {
         if (!email) {
             return res.status(400).json({ error: "Email is required" });
         }
+        
+        // Strict Backend Validation
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailRegex.test(email)) {
+            return res.status(400).json({ error: "Invalid email format" });
+        }
+        
+        if (phone) {
+            const numericPhone = phone.replace(/\D/g, '');
+            if (numericPhone.length < 10) {
+                return res.status(400).json({ error: "Invalid phone number format" });
+            }
+        }
 
         try {
             const { error } = await supabase.from('blueprint_waitlist').insert([{

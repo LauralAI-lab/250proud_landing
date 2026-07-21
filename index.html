@@ -788,8 +788,17 @@
               <input type="email" id="email" class="form-input" placeholder="mike@lauralai.llc" required pattern="^[^\s@]+@[^\s@]+\.[^\s@]+$" title="Please enter a valid email address.">
             </div>
             <div class="form-group">
-              <label for="brokerage">Brokerage/Company</label>
-              <input type="text" id="brokerage" class="form-input" placeholder="Sovereign Realty Group" required minlength="2">
+              <label for="brokerage">Role / Category</label>
+              <select id="brokerage" class="form-input" required style="appearance: auto; -webkit-appearance: auto;">
+                <option value="" disabled selected>Select your role...</option>
+                <option value="Agent" style="background: var(--bg-workspace); color: var(--text-main);">Real Estate Agent</option>
+                <option value="Broker" style="background: var(--bg-workspace); color: var(--text-main);">Broker / Owner</option>
+                <option value="Team Leader" style="background: var(--bg-workspace); color: var(--text-main);">Team Leader</option>
+                <option value="Investor" style="background: var(--bg-workspace); color: var(--text-main);">Investor</option>
+                <option value="Partner" style="background: var(--bg-workspace); color: var(--text-main);">Partner / Vendor</option>
+                <option value="Association Executive" style="background: var(--bg-workspace); color: var(--text-main);">Association / MLS Executive</option>
+                <option value="Other" style="background: var(--bg-workspace); color: var(--text-main);">Other</option>
+              </select>
             </div>
             <div class="form-group">
               <label for="phone">Phone Number (Optional)</label>

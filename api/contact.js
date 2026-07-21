@@ -10,7 +10,7 @@ module.exports = async function handler(req, res) {
     }
 
     const rawBody = typeof req.body === 'string' ? JSON.parse(req.body) : req.body || {};
-    const { first_name, last_name, email, phone, order_number, message } = rawBody;
+    const { first_name, last_name, email, phone, message } = rawBody;
 
     // Validate required fields
     if (!first_name || !last_name || !email || !message) {
@@ -20,10 +20,7 @@ module.exports = async function handler(req, res) {
     const full_name = `${first_name} ${last_name}`.trim();
     
     // Subject line formatted for rules/filtering
-    let subjectLine = `[Contact Form] Request from ${full_name}`;
-    if (order_number) {
-        subjectLine = `[Contact Form] Order ${order_number} Inquiry - ${full_name}`;
-    }
+    let subjectLine = `[Aligned Agentics] Contact Request from ${full_name}`;
 
     // Send Email via Resend
     if (!process.env.RESEND_API_KEY) {
@@ -35,11 +32,11 @@ module.exports = async function handler(req, res) {
     
     try {
       await resend.emails.send({
-        from: '250PROUD Contact Form <notifications@send.250proud.net>',
-        to: 'info@250proud.net',
+        from: 'Aligned Agentics Contact Form <notifications@send.250proud.net>',
+        to: 'mike@lauralai.llc',
         subject: subjectLine,
         html: `
-          <h2 style="color: #0A3161;">New Contact Request</h2>
+          <h2 style="color: #D4AF37;">New Contact Request (Aligned Agentics)</h2>
           <table style="width: 100%; border-collapse: collapse;">
             <tr>
                 <td style="padding: 8px; border-bottom: 1px solid #ddd;"><strong>Name:</strong></td>
@@ -53,13 +50,9 @@ module.exports = async function handler(req, res) {
                 <td style="padding: 8px; border-bottom: 1px solid #ddd;"><strong>Phone:</strong></td>
                 <td style="padding: 8px; border-bottom: 1px solid #ddd;">${phone || 'Not provided'}</td>
             </tr>
-            <tr>
-                <td style="padding: 8px; border-bottom: 1px solid #ddd;"><strong>Shopify Order #:</strong></td>
-                <td style="padding: 8px; border-bottom: 1px solid #ddd;">${order_number || 'N/A'}</td>
-            </tr>
           </table>
           <h3 style="margin-top: 20px;">Message:</h3>
-          <div style="background-color: #f9f9f9; padding: 15px; border-left: 4px solid #B8922A; white-space: pre-wrap;">
+          <div style="background-color: #f9f9f9; padding: 15px; border-left: 4px solid #D4AF37; white-space: pre-wrap; color: #333;">
               ${message}
           </div>
         `

@@ -6,9 +6,6 @@
   <title>Agent Blueprint™ — Stop Tech Friction & Commission Leakage</title>
   
   <!-- Web App Meta -->
-  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
-  <meta http-equiv="Pragma" content="no-cache">
-  <meta http-equiv="Expires" content="0">
   <meta name="theme-color" content="#121212">
   <meta name="description" content="Your CRM tech stack is leaking commissions. Estimate your weekly administrative friction and database neglect losses with our ROI calculator, and secure your founding member spot today.">
 
@@ -701,8 +698,15 @@
             <input type="email" id="email" class="form-input" placeholder="mike@lauralai.llc" required>
           </div>
           <div class="form-group">
-            <label for="brokerage">Brokerage/Company</label>
-            <input type="text" id="brokerage" class="form-input" placeholder="Sovereign Realty Group" required>
+            <label for="persona">Your Role / Industry Persona</label>
+            <select id="persona" class="form-input" required style="appearance: none; -webkit-appearance: none; background-color: rgba(255, 255, 255, 0.05); color: #E2E8F0; padding-right: 35px; background-image: url('data:image/svg+xml;utf8,<svg fill=%22%23D4AF37%22 height=%2224%22 viewBox=%220 0 24 24%22 width=%2224%22 xmlns=%22http://www.w3.org/2000/svg%22><path d=%22M7 10l5 5 5-5z%22/></svg>'); background-repeat: no-repeat; background-position: right 12px center;">
+              <option value="" disabled selected style="background-color: #121212; color: #94A3B8;">Select your primary role...</option>
+              <option value="Active Real Estate Agent / REALTOR®" style="background-color: #121212; color: #E2E8F0;">Active Real Estate Agent / REALTOR®</option>
+              <option value="Broker / Managing Broker" style="background-color: #121212; color: #E2E8F0;">Broker / Managing Broker</option>
+              <option value="Team Leader" style="background-color: #121212; color: #E2E8F0;">Team Leader</option>
+              <option value="PropTech / Association Leader" style="background-color: #121212; color: #E2E8F0;">PropTech / Association Leader</option>
+              <option value="Investor / Other Real Estate Pro" style="background-color: #121212; color: #E2E8F0;">Investor / Other Real Estate Pro</option>
+            </select>
           </div>
           <div class="form-group">
             <label for="phone">Phone Number (Optional)</label>
@@ -885,7 +889,8 @@
       
       const name = document.getElementById('name').value;
       const email = document.getElementById('email').value;
-      const brokerage = document.getElementById('brokerage').value;
+      const personaEl = document.getElementById('persona');
+      const persona = personaEl ? personaEl.value : '';
       const phone = document.getElementById('phone').value;
       
       const submitBtn = document.getElementById('submit-btn-el');
@@ -900,7 +905,7 @@
         headers: {
           'Content-Type': 'application/json'
         },
-        body: JSON.stringify({ name, email, brokerage, phone })
+        body: JSON.stringify({ name, email, persona, brokerage: persona, phone })
       })
       .then(res => {
         if (!res.ok) throw new Error('Failed to subscribe');

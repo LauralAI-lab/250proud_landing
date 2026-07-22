@@ -2037,7 +2037,8 @@ app.get('/api/briefings', async (req, res) => {
 
 app.post('/api/blueprint/subscribe', express.json(), async (req, res) => {
     try {
-        const { email, name, brokerage, phone } = req.body;
+        const { email, name, brokerage, persona, phone } = req.body;
+        const userPersona = persona || brokerage || 'Not provided';
         if (!email) {
             return res.status(400).json({ error: "Email is required" });
         }
@@ -2171,7 +2172,7 @@ app.post('/api/blueprint/subscribe', express.json(), async (req, res) => {
                         <p><strong>Member Number:</strong> #${memberNumber}</p>
                         <p><strong>Name:</strong> ${name || 'Not provided'}</p>
                         <p><strong>Email:</strong> ${email}</p>
-                        <p><strong>Brokerage:</strong> ${brokerage || 'Not provided'}</p>
+                        <p><strong>Persona / Role:</strong> ${userPersona}</p>
                         <p><strong>Phone:</strong> ${phone || 'Not provided'}</p>
                         <p><em>Welcome email sent automatically via Resend.</em></p>
                     `

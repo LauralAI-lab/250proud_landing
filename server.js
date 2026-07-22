@@ -2184,7 +2184,7 @@ app.post('/api/blueprint/subscribe', express.json(), async (req, res) => {
         res.json({ success: true, memberNumber });
     } catch (err) {
         console.error("Blueprint Subscribe Endpoint Error:", err);
-        res.status(500).json({ error: "Failed to submit subscription" });
+        res.status(500).json({ error: "Failed to submit subscription", details: err.message });
     }
 });
 

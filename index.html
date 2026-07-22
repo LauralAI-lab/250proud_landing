@@ -3,14 +3,14 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Aligned Agentics™ | Agent Blueprint™</title>
+  <title>Agent Blueprint™ — Stop Tech Friction & Commission Leakage</title>
   
   <!-- Web App Meta -->
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
   <meta http-equiv="Pragma" content="no-cache">
   <meta http-equiv="Expires" content="0">
   <meta name="theme-color" content="#121212">
-  <meta name="description" content="Your Real Estate Tech Stack is Leaking Commissions. Agent Blueprint™ deploys an autonomous AI Chief of Staff engineered specifically for real estate operators.">
+  <meta name="description" content="Your CRM tech stack is leaking commissions. Estimate your weekly administrative friction and database neglect losses with our ROI calculator, and secure your founding member spot today.">
 
   <!-- Google Fonts: Outfit & Roboto Mono -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -94,13 +94,24 @@
       z-index: 100;
     }
 
+    .header-logo {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      text-decoration: none;
+    }
+
+    .header-logo img {
+      height: 40px;
+      width: auto;
+    }
+
     .header-logo-text {
       font-weight: 800;
       font-size: 22px;
       letter-spacing: 2px;
       text-transform: uppercase;
       color: var(--text-main);
-      text-decoration: none;
     }
 
     .header-logo-text span {
@@ -110,142 +121,206 @@
     }
 
     .social-badge {
-      background: var(--gold-gradient);
-      color: var(--text-dark);
-      padding: 6px 14px;
+      font-size: 0.85rem;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid var(--card-border);
+      padding: 8px 16px;
       border-radius: 20px;
-      font-size: 0.8rem;
-      font-weight: 800;
-      letter-spacing: 2px;
-      text-transform: uppercase;
-      box-shadow: 0 4px 15px rgba(212, 175, 55, 0.2);
+      color: var(--text-muted);
+      font-weight: 600;
     }
 
-    /* General Layout */
-    .section-wrapper {
+    /* Hero Section */
+    .hero-container {
       max-width: 1300px;
       margin: 0 auto;
-      padding: 60px 40px;
+      padding: 60px 40px 100px 40px;
+      display: grid;
+      grid-template-columns: 1.12fr 0.88fr;
+      gap: 50px;
+      align-items: center;
       position: relative;
       z-index: 10;
     }
 
-    /* Section 1: Hero Block */
-    .hero-container {
-      display: grid;
-      grid-template-columns: 1fr;
-      text-align: center;
-      gap: 15px;
-      padding-top: 20px;
-      padding-bottom: 40px;
-    }
-    
-    .hero-container h1 {
-      font-size: 3.8rem;
-      font-weight: 800;
-      line-height: 1.1;
-      letter-spacing: -1.5px;
-      margin: 0 auto;
-      max-width: 900px;
-    }
-    
-    .hero-container h1 span {
-      background: var(--gold-gradient);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
+    .hero-text-panel {
+      display: flex;
+      flex-direction: column;
+      gap: 25px;
     }
 
     .pre-headline {
-      font-size: 1rem;
+      font-size: 0.9rem;
       text-transform: uppercase;
       letter-spacing: 3px;
       color: var(--primary);
       font-weight: 700;
       display: flex;
       align-items: center;
-      justify-content: center;
-      gap: 12px;
+      gap: 8px;
     }
-    
-    .pre-headline::before, .pre-headline::after {
+
+    .pre-headline::before {
       content: '';
       display: inline-block;
-      width: 40px;
+      width: 20px;
       height: 2px;
       background: var(--primary);
     }
-    
+
+    h1 {
+      font-size: 3.8rem;
+      font-weight: 800;
+      line-height: 1.1;
+      letter-spacing: -1.5px;
+      color: var(--text-main);
+    }
+
+    h1 span {
+      background: var(--gold-gradient);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
     .hero-description {
-      font-size: 1.35rem;
+      font-size: 1.25rem;
       color: var(--text-muted);
       line-height: 1.6;
       font-weight: 300;
-      max-width: 800px;
-      margin: 0 auto;
     }
 
-    .cta-wrapper {
-      margin-top: 20px;
+    .hero-description strong {
+      color: var(--text-main);
+      font-weight: 600;
     }
 
-    .btn-primary {
-      display: inline-block;
-      background: var(--gold-gradient);
-      border: none;
+    /* Countdown Styling */
+    .countdown-section {
+      display: flex;
+      gap: 15px;
+      margin-top: 15px;
+    }
+
+    .countdown-box {
+      background: rgba(255, 255, 255, 0.02);
+      border: 1px solid var(--card-border);
       border-radius: 12px;
-      padding: 18px 40px;
-      color: var(--text-dark);
-      font-family: inherit;
+      min-width: 80px;
+      padding: 12px;
+      text-align: center;
+    }
+
+    .countdown-num {
+      font-family: 'Roboto Mono', monospace;
+      font-size: 2.2rem;
       font-weight: 700;
-      font-size: 1.1rem;
-      cursor: pointer;
-      text-decoration: none;
-      box-shadow: 0 4px 15px rgba(212, 175, 55, 0.2);
+      color: var(--primary);
+      line-height: 1;
+    }
+
+    .countdown-label {
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      letter-spacing: 1px;
+      margin-top: 5px;
+    }
+
+    /* Waitlist Form Styling */
+    .waitlist-card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 24px;
+      padding: 35px;
+      backdrop-filter: blur(20px);
+      box-shadow: var(--glass-glow);
+    }
+
+    .waitlist-title {
+      font-size: 1.5rem;
+      font-weight: 700;
+      margin-bottom: 8px;
+    }
+
+    .waitlist-subtitle {
+      font-size: 0.95rem;
+      color: var(--text-muted);
+      margin-bottom: 25px;
+      line-height: 1.5;
+    }
+
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      margin-bottom: 18px;
+    }
+
+    .form-group label {
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    .form-input {
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid var(--card-border);
+      border-radius: 10px;
+      padding: 12px 16px;
+      color: var(--text-main);
+      font-family: inherit;
+      font-size: 0.95rem;
       transition: all 0.3s ease;
     }
 
-    .btn-primary:hover {
+    .form-input:focus {
+      outline: none;
+      border-color: var(--primary);
+      background: rgba(255, 255, 255, 0.06);
+    }
+
+    .submit-btn {
+      width: 100%;
+      background: var(--gold-gradient);
+      border: none;
+      border-radius: 10px;
+      padding: 14px;
+      color: var(--text-dark);
+      font-family: inherit;
+      font-weight: 700;
+      font-size: 1rem;
+      cursor: pointer;
+      box-shadow: 0 4px 15px rgba(212, 175, 55, 0.2);
+      transition: all 0.3s ease;
+      margin-top: 10px;
+    }
+
+    .submit-btn:hover {
       transform: translateY(-2px);
       box-shadow: 0 6px 20px rgba(212, 175, 55, 0.3);
     }
 
-    /* Section 2: Core Differentiator */
-    .differentiator-box {
+    /* Calculator Section */
+    .calculator-section-wrapper {
+      max-width: 1300px;
+      margin: 0 auto 100px auto;
+      padding: 0 40px;
+      position: relative;
+      z-index: 10;
+    }
+
+    .calc-container {
       background: var(--card-bg);
       border: 1px solid var(--card-border);
       border-radius: 30px;
-      padding: 60px;
+      padding: 50px;
       box-shadow: var(--glass-glow);
       backdrop-filter: blur(20px);
-      text-align: left;
-    }
-
-    .differentiator-box h2 {
-      font-size: 2.2rem;
-      margin-bottom: 25px;
-      font-weight: 800;
-    }
-    
-    .differentiator-box p {
-      font-size: 1.15rem;
-      color: var(--text-muted);
-      line-height: 1.7;
-    }
-    
-    .differentiator-box p strong {
-      color: var(--text-main);
-    }
-
-    /* Interactive Calculator Section */
-    .calc-container {
-      background: rgba(255, 255, 255, 0.015);
-      border: 1px solid var(--card-border);
-      border-radius: 30px;
-      padding: 50px;
       display: grid;
       grid-template-columns: 1.1fr 0.9fr;
       gap: 50px;
-      margin-top: 50px;
     }
 
     .calc-controls-col {
@@ -291,6 +366,7 @@
       color: var(--text-muted);
     }
 
+    /* Custom range input styling */
     input[type=range] {
       -webkit-appearance: none;
       width: 100%;
@@ -325,8 +401,9 @@
       transform: scale(1.2);
     }
 
+    /* Calculator Results Column */
     .calc-results-col {
-      background: rgba(0, 0, 0, 0.4);
+      background: rgba(255, 255, 255, 0.015);
       border: 1px solid rgba(255, 255, 255, 0.05);
       border-radius: 20px;
       padding: 35px;
@@ -366,9 +443,17 @@
       font-size: 1.25rem;
     }
 
-    .value-danger { color: var(--error-color); }
-    .value-warning { color: var(--primary); }
-    .value-success { color: var(--success-color); }
+    .value-danger {
+      color: var(--error-color);
+    }
+
+    .value-warning {
+      color: var(--primary);
+    }
+
+    .value-success {
+      color: var(--success-color);
+    }
 
     .calc-total-box {
       background: rgba(212, 175, 55, 0.04);
@@ -402,7 +487,7 @@
       color: var(--text-muted);
       -webkit-text-fill-color: initial;
     }
-    
+
     .citations-btn {
       display: inline-flex;
       align-items: center;
@@ -426,129 +511,18 @@
       box-shadow: 0 4px 12px rgba(212, 175, 55, 0.1);
     }
 
-    /* Section 3: The Value Offer */
-    .offer-container {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 50px;
-      align-items: center;
-    }
-
-    .offer-text h2 {
-      font-size: 2.5rem;
-      font-weight: 800;
-      margin-bottom: 20px;
-      line-height: 1.1;
-    }
-    
-    .offer-text h2 span {
-      background: var(--gold-gradient);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-    }
-    
-    .offer-text p {
-      font-size: 1.2rem;
-      color: var(--text-muted);
-      line-height: 1.6;
-    }
-
-    /* Countdown Styling */
-    .countdown-section {
-      display: flex;
-      gap: 15px;
-      margin-top: 30px;
-      margin-bottom: 30px;
-    }
-
-    .countdown-box {
-      background: rgba(255, 255, 255, 0.02);
-      border: 1px solid var(--card-border);
-      border-radius: 12px;
-      min-width: 80px;
-      padding: 15px 12px;
-      text-align: center;
-    }
-
-    .countdown-num {
-      font-family: 'Roboto Mono', monospace;
-      font-size: 2.2rem;
-      font-weight: 700;
-      color: var(--primary);
-      line-height: 1;
-    }
-
-    .countdown-label {
-      font-size: 0.75rem;
-      text-transform: uppercase;
-      color: var(--text-muted);
-      letter-spacing: 1px;
-      margin-top: 8px;
-    }
-
-    /* Waitlist Form */
-    .waitlist-card {
-      background: var(--card-bg);
-      border: 1px solid var(--card-border);
-      border-radius: 24px;
-      padding: 45px 35px;
-      backdrop-filter: blur(20px);
-      box-shadow: var(--glass-glow);
-    }
-
-    .form-group {
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-      margin-bottom: 18px;
-    }
-
-    .form-group label {
-      font-size: 0.85rem;
-      font-weight: 600;
-      color: var(--text-muted);
-      text-transform: uppercase;
-      letter-spacing: 1px;
-    }
-
-    .form-input {
-      background: rgba(255, 255, 255, 0.03);
-      border: 1px solid var(--card-border);
-      border-radius: 10px;
-      padding: 14px 16px;
-      color: var(--text-main);
-      font-family: inherit;
-      font-size: 1rem;
-      transition: all 0.3s ease;
-    }
-
-    .form-input:focus {
-      outline: none;
-      border-color: var(--primary);
-      background: rgba(255, 255, 255, 0.06);
-    }
-
-    .submit-btn {
-      width: 100%;
-      background: var(--gold-gradient);
+    .hero-magazine-logo {
+      float: left;
+      width: 245px;
+      height: auto;
+      margin: 6px 20px 12px 0;
+      background: transparent;
       border: none;
-      border-radius: 10px;
-      padding: 16px;
-      color: var(--text-dark);
-      font-family: inherit;
-      font-weight: 700;
-      font-size: 1.05rem;
-      cursor: pointer;
-      box-shadow: 0 4px 15px rgba(212, 175, 55, 0.2);
-      transition: all 0.3s ease;
-      margin-top: 15px;
+      padding: 0;
+      box-shadow: none;
     }
 
-    .submit-btn:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 6px 20px rgba(212, 175, 55, 0.3);
-    }
-    
+    /* Success state waitlist card */
     .waitlist-success-state {
       display: none;
       text-align: center;
@@ -579,14 +553,10 @@
       font-weight: 700;
       letter-spacing: 3px;
       margin: 20px 0;
+      position: relative;
     }
 
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(10px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-
-    /* Section 4: Footer */
+    /* Footer styling */
     footer {
       margin-top: auto;
       border-top: 1px solid var(--card-border);
@@ -594,21 +564,23 @@
       padding: 40px;
       text-align: center;
       color: var(--text-muted);
-      font-size: 0.95rem;
+      font-size: 0.9rem;
       position: relative;
       z-index: 10;
     }
-    
-    footer p {
-      margin-bottom: 8px;
+
+    .footer-logo {
+      height: 30px;
+      margin-bottom: 15px;
+      opacity: 0.8;
     }
 
     .footer-links {
-      margin-top: 20px;
+      margin-top: 15px;
       display: flex;
       justify-content: center;
-      gap: 25px;
-      font-size: 0.9rem;
+      gap: 20px;
+      font-size: 0.85rem;
     }
 
     .footer-links a {
@@ -621,11 +593,19 @@
       color: var(--primary);
     }
 
-    /* Responsive */
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Responsive adjustments */
     @media (max-width: 1024px) {
-      .offer-container, .calc-container {
+      .hero-container, .calc-container {
         grid-template-columns: 1fr;
         gap: 40px;
+      }
+      h1 {
+        font-size: 2.8rem;
       }
     }
 
@@ -633,15 +613,23 @@
       header {
         padding: 20px;
       }
-      .section-wrapper {
+      .hero-container {
         padding: 40px 20px;
       }
-      .hero-container h1 {
-        font-size: 2.8rem;
+      .calculator-section-wrapper {
+        padding: 0 20px;
       }
-      .countdown-section {
-        flex-wrap: wrap;
-        justify-content: center;
+      .calc-container {
+        padding: 30px;
+      }
+    }
+
+    @media (max-width: 576px) {
+      .hero-magazine-logo {
+        float: none !important;
+        display: block;
+        margin: 0 auto 20px auto !important;
+        width: 200px !important;
       }
     }
   </style>
@@ -653,30 +641,93 @@
 
   <!-- Header -->
   <header>
-    <a href="#" class="header-logo" style="text-decoration: none; display: flex; align-items: center; gap: 12px;">
-      <img src="socials/aligned_agentics_logo.png" alt="Aligned Agentics Logo" style="height: 100px; width: auto;">
-      <div class="header-logo-text">Aligned<span>Agentics</span>™</div>
+    <a href="#" class="header-logo">
+      <div class="header-logo-text">Agent<span>Blueprint</span>™</div>
     </a>
     <div class="social-badge">COMING SOON</div>
   </header>
 
-  <!-- Section 1: Hero Block -->
-  <main class="section-wrapper hero-container">
-    <div style="display: flex; justify-content: center; margin-bottom: -15px;">
-      <img src="socials/agent_blueprint_white.png" alt="Agent Blueprint Logo" style="height: 350px; width: auto; max-width: 90vw; opacity: 1; filter: drop-shadow(0 4px 20px rgba(212, 175, 55, 0.15));">
+  <!-- Hero Content -->
+  <main class="hero-container">
+    <div class="hero-text-panel">
+      <div class="pre-headline">Aligned Agentics™</div>
+      <h1>Your Real Estate Tech Stack is <span>Leaking Commissions.</span></h1>
+      <p class="hero-description">
+        <img src="nc_assets/img/agent_blueprint_white.png" alt="Agent Blueprint™ Logo" class="hero-magazine-logo">
+        Every manual CRM update, delayed lead callback, and neglected past client is a silent tax on your GCI. <strong>Agent Blueprint™</strong> builds custom, autonomous AI Chief of Staff engines that sync the essential pieces of your tech stack into one system. Generate world-class marketing resources with a single click, and get back the hours you need for what you actually do best: building and keeping real relationships.
+      </p>
+      
+      <p class="hero-description" style="font-size: 1.05rem; border-left: 3px solid var(--primary); padding-left: 15px; color: var(--text-main);">
+        <em>Don't hire an expensive AI consultant until you've seen Agent Blueprint™.</em> Our proprietary intake engine was built specifically for real estate professionals, not adapted from some generic business template. Founding members lock in a lifetime discount plus early access to everything landing next in our white-label resource store and marketing resource centers.
+      </p>
+
+      <!-- Launch Countdown -->
+      <div class="slider-group" style="margin-top: 10px;">
+        <div style="font-size: 0.85rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px;">Blueprint Engine Launch Countdown</div>
+        <div class="countdown-section">
+          <div class="countdown-box">
+            <div class="countdown-num" id="cd-days">00</div>
+            <div class="countdown-label">Days</div>
+          </div>
+          <div class="countdown-box">
+            <div class="countdown-num" id="cd-hours">00</div>
+            <div class="countdown-label">Hrs</div>
+          </div>
+          <div class="countdown-box">
+            <div class="countdown-num" id="cd-mins">00</div>
+            <div class="countdown-label">Mins</div>
+          </div>
+          <div class="countdown-box">
+            <div class="countdown-num" id="cd-secs">00</div>
+            <div class="countdown-label">Secs</div>
+          </div>
+        </div>
+      </div>
     </div>
-    <div class="pre-headline">An Aligned Agentics™ Platform</div>
-    <h1>Your Real Estate Tech Stack is <span>Leaking Commissions.</span></h1>
-    <p class="hero-description">
-      Stop losing 13 hours a week to manual admin and letting past clients drift away. Agent Blueprint™ deploys an autonomous AI Chief of Staff engineered specifically for real estate operators.
-    </p>
-    <div class="cta-wrapper">
-      <a href="#register" class="btn-primary">Become a Founding Member →</a>
+
+    <!-- Waitlist Capture Card -->
+    <div class="waitlist-card">
+      <div id="waitlist-form-container">
+        <h2 class="waitlist-title">Join the Founding List</h2>
+        <p class="waitlist-subtitle">Become a founding member of the Agent Blueprint™ community and lock in big discounts, early previews of new features, and priority access before we open to the public.</p>
+        
+        <form id="blueprint-subscribe-form" onsubmit="submitWaitlist(event)">
+          <div class="form-group">
+            <label for="name">Full Name</label>
+            <input type="text" id="name" class="form-input" placeholder="Mike Price" required>
+          </div>
+          <div class="form-group">
+            <label for="email">Email Address</label>
+            <input type="email" id="email" class="form-input" placeholder="mike@lauralai.llc" required>
+          </div>
+          <div class="form-group">
+            <label for="brokerage">Brokerage/Company</label>
+            <input type="text" id="brokerage" class="form-input" placeholder="Sovereign Realty Group" required>
+          </div>
+          <div class="form-group">
+            <label for="phone">Phone Number (Optional)</label>
+            <input type="tel" id="phone" class="form-input" placeholder="(555) 000-0000">
+          </div>
+          
+          <div id="form-error" style="color: var(--error-color); font-size: 0.85rem; margin-bottom: 10px; display: none;"></div>
+          <button type="submit" class="submit-btn" id="submit-btn-el">Become a Founding Member →</button>
+        </form>
+      </div>
+
+      <!-- Success State -->
+      <div class="waitlist-success-state" id="waitlist-success-container">
+        <div class="success-icon-circle">
+          <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+        </div>
+        <h2 class="waitlist-title" id="waitlist-success-title">Founding Spot Confirmed!</h2>
+        <p class="waitlist-subtitle" style="margin-bottom: 15px;">Your founding spot is registered. Stand by for the first blueprints deployment.</p>
+        <p class="waitlist-subtitle" style="font-size: 0.85rem; margin-bottom: 0;">We've sent a confirmation email to <strong id="success-email-display">your email</strong>.</p>
+      </div>
     </div>
   </main>
 
-  <!-- Interactive ROI Calculator (Retained) -->
-  <section class="section-wrapper" style="padding-top: 0; padding-bottom: 40px;">
+  <!-- Interactive ROI Calculator Section -->
+  <section class="calculator-section-wrapper">
     <div class="calc-container">
       
       <!-- Left controls col -->
@@ -753,106 +804,17 @@
     </div>
   </section>
 
-  <!-- Section 2: The Core Differentiator -->
-  <section class="section-wrapper" style="padding-top: 20px; padding-bottom: 60px;">
-    <div class="differentiator-box">
-      <h2>AI That Sounds Like You. <span>Not a Chatbot.</span></h2>
-      <p>
-        Most AI tools ruin your brand with canned, recognizable jargon ("nestled," "delve," "tapestry"). Anyone can spot it from a mile away. <strong>Agent Blueprint™ is different.</strong> Our proprietary intake engine analyzes your authentic written and spoken cadence, strips out generic AI slop, and locks down your personal voice. Your sub-agents draft emails, listing angles, and follow-ups that actually sound like you—so you keep relationships warm without lifting a finger.
-      </p>
-    </div>
-  </section>
-
-  <!-- Section 3: The Value Offer & Registration -->
-  <section id="register" class="section-wrapper">
-    <div class="offer-container">
-      
-      <div class="offer-text">
-        <h2>Don't Hire an Expensive Consultant. <span>Build Your Engine.</span></h2>
-        <p>Founding members lock in lifetime priority access, steep discounts, and early previews of our upcoming white-label resource center.</p>
-        
-        <div class="countdown-section">
-          <div class="countdown-box">
-            <div class="countdown-num" id="cd-days">00</div>
-            <div class="countdown-label">Days</div>
-          </div>
-          <div class="countdown-box">
-            <div class="countdown-num" id="cd-hours">00</div>
-            <div class="countdown-label">Hrs</div>
-          </div>
-          <div class="countdown-box">
-            <div class="countdown-num" id="cd-mins">00</div>
-            <div class="countdown-label">Mins</div>
-          </div>
-          <div class="countdown-box">
-            <div class="countdown-num" id="cd-secs">00</div>
-            <div class="countdown-label">Secs</div>
-          </div>
-        </div>
-        <p style="font-size: 0.9rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px; font-weight: 700;">Blueprint Engine Launching Soon</p>
-      </div>
-
-      <div class="waitlist-card">
-        <div id="waitlist-form-container">
-          <h3 style="font-size: 1.5rem; font-weight: 700; margin-bottom: 8px;">Secure Your Spot</h3>
-          <p style="font-size: 0.95rem; color: var(--text-muted); margin-bottom: 25px; line-height: 1.5;">Register today for founding member benefits.</p>
-          
-          <form id="blueprint-subscribe-form" onsubmit="submitWaitlist(event)">
-            <div class="form-group">
-              <label for="name">Full Name</label>
-              <input type="text" id="name" class="form-input" placeholder="Mike Price" required minlength="2" pattern="^[a-zA-Z\s\-\.]+$" title="Please enter a valid name (letters, spaces, hyphens).">
-            </div>
-            <div class="form-group">
-              <label for="email">Email Address</label>
-              <input type="email" id="email" class="form-input" placeholder="mike@lauralai.llc" required pattern="^[^\s@]+@[^\s@]+\.[^\s@]+$" title="Please enter a valid email address.">
-            </div>
-            <div class="form-group">
-              <label for="brokerage">Role / Category</label>
-              <select id="brokerage" class="form-input" required style="appearance: auto; -webkit-appearance: auto;">
-                <option value="" disabled selected>Select your role...</option>
-                <option value="Agent" style="background: var(--bg-workspace); color: var(--text-main);">Real Estate Agent</option>
-                <option value="Broker" style="background: var(--bg-workspace); color: var(--text-main);">Broker / Owner</option>
-                <option value="Team Leader" style="background: var(--bg-workspace); color: var(--text-main);">Team Leader</option>
-                <option value="Investor" style="background: var(--bg-workspace); color: var(--text-main);">Investor</option>
-                <option value="Partner" style="background: var(--bg-workspace); color: var(--text-main);">Partner / Vendor</option>
-                <option value="Association Executive" style="background: var(--bg-workspace); color: var(--text-main);">Association / MLS Executive</option>
-                <option value="Other" style="background: var(--bg-workspace); color: var(--text-main);">Other</option>
-              </select>
-            </div>
-            <div class="form-group">
-              <label for="phone">Phone Number (Optional)</label>
-              <input type="tel" id="phone" class="form-input" placeholder="(555) 000-0000" pattern="^[\d\s\-\+\(\)]{10,20}$" title="Please enter a valid phone number, e.g., (555) 000-0000.">
-            </div>
-            
-            <div id="form-error" style="color: var(--error-color); font-size: 0.85rem; margin-bottom: 10px; display: none;"></div>
-            <button type="submit" class="submit-btn" id="submit-btn-el">Become a Founding Member →</button>
-          </form>
-        </div>
-
-        <!-- Success State -->
-        <div class="waitlist-success-state" id="waitlist-success-container">
-          <div class="success-icon-circle">
-            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
-          </div>
-          <h3 style="font-size: 1.5rem; font-weight: 700; margin-bottom: 8px;" id="waitlist-success-title">Founding Spot Confirmed!</h3>
-          <p style="font-size: 0.95rem; color: var(--text-muted); margin-bottom: 15px;">Your founding spot is registered. Stand by for the first blueprints deployment.</p>
-          <p style="font-size: 0.85rem; margin-bottom: 0;">Confirmation sent to <strong id="success-email-display" style="color: var(--text-main);">your email</strong>.</p>
-        </div>
-      </div>
-
-    </div>
-  </section>
-
-  <!-- Section 4: Footer & Compliance Branding -->
+  <!-- Footer -->
   <footer>
     <img src="socials/aligned_agentics_logo.png" alt="Aligned Agentics Logo" style="height: 120px; margin-bottom: 20px; opacity: 0.8;">
     <p>Agent Blueprint™ and Aligned Agentics™ are products of Lauralai LLC. All rights reserved.</p>
-    <p>Lauralai LLC | 515 Cypress Dr, Long Beach MS, 39560</p>
+    <p style="font-size: 0.8rem; margin-top: 5px; color: #64748B;">Lauralai LLC | 515 Cypress Dr, Long Beach MS, 39560</p>
     <div class="footer-links">
-      <a href="/privacy">Privacy Policy</a>
-      <a href="/terms">Terms of Service</a>
-      <a href="/citations">Research Citations & Methodology Disclosure</a>
-      <a href="/contact">Contact Us</a>
+      <a href="citations">Research Citations</a>
+      <a href="disclaimer">Disclaimer & Methodology Disclosure</a>
+      <a href="terms.html">Terms of Service</a>
+      <a href="privacy.html">Privacy Policy</a>
+      <a href="contact.html">Contact Us</a>
     </div>
   </footer>
 
@@ -888,20 +850,28 @@
 
     // 2. Calculator Logic
     function runCalculator() {
+      // Default Deals/Year: 9.5 median - NAR 2026 Member Profile
+      // Commission Baseline: 2.55% per side (~$15,377) - MLS/Redfin 2026 Analysis
+      // Referral Attrition: 88% Gap (90% intent vs 12% repeat) - NAR Buyers/Sellers Profile
+      // Note: This is a national baseline, candidate for a localized Mississippi/Gulf Coast override down the line.
       const annualClosings = parseFloat(document.getElementById('annualClosings').value);
       const followupGap = parseInt(document.getElementById('followupGap').value);
       const adminHours = parseInt(document.getElementById('adminHours').value);
 
+      // Sync slider tags
       document.getElementById('val-closings').innerText = `${annualClosings} deal${annualClosings !== 1 ? 's' : ''}`;
       document.getElementById('val-followup').innerText = `${followupGap}% gap`;
       document.getElementById('val-admin').innerText = `${adminHours} hour${adminHours !== 1 ? 's' : ''}`;
 
+      // 1. Admin Loss = Weekly Admin Hours * 52 * $50
       const adminLoss = adminHours * 52 * 50;
       document.getElementById('result-admin').innerText = `$${adminLoss.toLocaleString()}`;
 
+      // 2. Referral Loss = Annual Closings * 20% (0.20) * (Follow-Up Gap / 100) * $15,377
       const referralLoss = Math.round(annualClosings * 0.20 * (followupGap / 100) * 15377);
       document.getElementById('result-referral').innerText = `$${referralLoss.toLocaleString()}`;
 
+      // 3. Combined Loss
       const combinedTotal = adminLoss + referralLoss;
       document.getElementById('result-total').innerHTML = `$${combinedTotal.toLocaleString()}<span>/yr</span>`;
     }
@@ -913,36 +883,17 @@
     function submitWaitlist(event) {
       event.preventDefault();
       
-      const name = document.getElementById('name').value.trim();
-      const email = document.getElementById('email').value.trim();
-      const brokerage = document.getElementById('brokerage').value.trim();
-      const phone = document.getElementById('phone') ? document.getElementById('phone').value.trim() : '';
+      const name = document.getElementById('name').value;
+      const email = document.getElementById('email').value;
+      const brokerage = document.getElementById('brokerage').value;
+      const phone = document.getElementById('phone').value;
       
       const submitBtn = document.getElementById('submit-btn-el');
       const errorEl = document.getElementById('form-error');
       
-      errorEl.style.display = 'none';
-
-      // Strict Frontend Validation
-      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-      if (!emailRegex.test(email)) {
-        errorEl.innerText = "Please enter a strictly valid email address.";
-        errorEl.style.display = 'block';
-        return;
-      }
-
-      if (phone) {
-        // Strip non-numeric to check length
-        const numericPhone = phone.replace(/\D/g, '');
-        if (numericPhone.length < 10) {
-          errorEl.innerText = "Please enter a valid phone number with at least 10 digits.";
-          errorEl.style.display = 'block';
-          return;
-        }
-      }
-
       submitBtn.innerText = "Securing Spot...";
       submitBtn.disabled = true;
+      errorEl.style.display = 'none';
 
       fetch('/api/blueprint/subscribe', {
         method: 'POST',
@@ -956,13 +907,14 @@
         return res.json();
       })
       .then(data => {
+        // Toggle view to success state
         document.getElementById('success-email-display').innerText = email;
         document.getElementById('waitlist-form-container').style.display = 'none';
         document.getElementById('waitlist-success-container').style.display = 'block';
       })
       .catch(err => {
         console.error(err);
-        submitBtn.innerText = "Become a Founding Member →";
+        submitBtn.innerText = "Secure Early Spot ↗";
         submitBtn.disabled = false;
         errorEl.innerText = "There was an error securing your spot. Please check your email and try again.";
         errorEl.style.display = 'block';

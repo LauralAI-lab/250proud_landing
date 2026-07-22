@@ -5,9 +5,19 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Agent Blueprint™ — Stop Tech Friction & Commission Leakage</title>
   
-  <!-- Web App Meta -->
-  <meta name="theme-color" content="#121212">
-  <meta name="description" content="Your CRM tech stack is leaking commissions. Estimate your weekly administrative friction and database neglect losses with our ROI calculator, and secure your founding member spot today.">
+  <!-- Cache Control & Service Worker Reset -->
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+  <meta http-equiv="Pragma" content="no-cache">
+  <meta http-equiv="Expires" content="0">
+  <script>
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.getRegistrations().then(function(registrations) {
+        for (let registration of registrations) {
+          registration.unregister();
+        }
+      });
+    }
+  </script>
 
   <!-- Google Fonts: Outfit & Roboto Mono -->
   <link rel="preconnect" href="https://fonts.googleapis.com">

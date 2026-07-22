@@ -622,16 +622,25 @@
 
     @media (max-width: 768px) {
       header {
-        padding: 20px;
+        padding: 16px 20px;
       }
       .hero-container {
-        padding: 40px 20px;
+        padding: 15px 20px 30px 20px !important;
+        gap: 20px !important;
+      }
+      .hero-container > div:first-child {
+        margin-bottom: 10px !important;
       }
       .calculator-section-wrapper {
-        padding: 0 20px;
+        padding: 0 20px !important;
+        margin-bottom: 20px !important;
       }
       .calc-container {
-        padding: 30px;
+        padding: 24px !important;
+      }
+      footer {
+        margin-top: 30px !important;
+        padding: 30px 20px 30px 20px !important;
       }
     }
 
@@ -651,18 +660,18 @@
   <div class="ambient-glow-2"></div>
 
   <!-- Header -->
-  <header>
-    <a href="/" class="header-logo">
-      <img src="/nc_assets/img/agent_blueprint_white.png" alt="Agent Blueprint™ Logo" onerror="this.onerror=null; this.src='nc_assets/img/agent_blueprint_white.png';">
-      <div class="header-logo-text">ALIGNED <span>AGENTICS</span>™</div>
+  <header style="background: rgba(10, 10, 10, 0.85); backdrop-filter: blur(12px); border-bottom: 1px solid var(--card-border); padding: 16px 40px; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 100;">
+    <a href="/" class="header-logo" style="text-decoration: none; display: flex; align-items: center; gap: 14px;">
+      <img src="/nc_assets/img/agent_blueprint_white.png" alt="Agent Blueprint™ Logo" style="height: 48px; width: auto; filter: drop-shadow(0 0 10px rgba(212, 175, 55, 0.2));" onerror="this.onerror=null; this.src='nc_assets/img/agent_blueprint_white.png';">
+      <div class="header-logo-text" style="font-weight: 800; font-size: 22px; letter-spacing: 1.5px; text-transform: uppercase; color: #FFFFFF;">ALIGNED <span style="background: linear-gradient(135deg, #FFF2B2 0%, #D4AF37 50%, #996E00 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">AGENTICS</span>™</div>
     </a>
-    <div class="social-badge">COMING SOON</div>
+    <div class="social-badge" style="background: rgba(212, 175, 55, 0.12); border: 1px solid #D4AF37; color: #D4AF37; font-size: 11px; font-weight: 700; letter-spacing: 1.5px; padding: 6px 14px; border-radius: 20px; text-transform: uppercase;">COMING SOON</div>
   </header>
 
   <!-- Hero Content -->
   <main class="hero-container">
-    <div style="grid-column: 1 / -1; text-align: center; margin-bottom: 25px;">
-      <img src="/nc_assets/img/agent_blueprint_white.png" alt="Agent Blueprint Emblem" style="max-width: 220px; width: 100%; height: auto; margin: 0 auto; display: block; filter: drop-shadow(0 0 15px rgba(212, 175, 55, 0.2));" onerror="this.onerror=null; this.src='nc_assets/img/agent_blueprint_white.png';">
+    <div style="grid-column: 1 / -1; text-align: center; margin-bottom: 10px;">
+      <img src="/nc_assets/img/agent_blueprint_white.png" alt="Agent Blueprint Emblem" style="max-width: 240px; width: 100%; height: auto; margin: 0 auto; display: block; filter: drop-shadow(0 0 18px rgba(212, 175, 55, 0.25));" onerror="this.onerror=null; this.src='nc_assets/img/agent_blueprint_white.png';">
     </div>
 
     <div class="hero-text-panel">
@@ -724,7 +733,7 @@
             <input type="email" id="email" class="form-input" placeholder="mike@lauralai.llc" required>
           </div>
           <div class="form-group">
-            <label for="persona">Your Role / Industry Persona</label>
+            <label for="persona">Your Role</label>
             <select id="persona" class="form-input" required style="appearance: none; -webkit-appearance: none; background-color: rgba(255, 255, 255, 0.05); color: #E2E8F0; padding-right: 35px; background-image: url('data:image/svg+xml;utf8,<svg fill=%22%23D4AF37%22 height=%2224%22 viewBox=%220 0 24 24%22 width=%2224%22 xmlns=%22http://www.w3.org/2000/svg%22><path d=%22M7 10l5 5 5-5z%22/></svg>'); background-repeat: no-repeat; background-position: right 12px center;">
               <option value="" disabled selected style="background-color: #121212; color: #94A3B8;">Select your primary role...</option>
               <option value="Active Real Estate Agent / REALTOR®" style="background-color: #121212; color: #E2E8F0;">Active Real Estate Agent / REALTOR®</option>
@@ -749,10 +758,9 @@
         <div class="success-icon-circle">
           <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
         </div>
-        <h2 class="waitlist-title">Founding Spot Secured!</h2>
-        <p class="waitlist-subtitle" style="margin-bottom: 15px;">Your early spot is registered. Keep this VIP founding member code safe—you will use it to unlock your onboarding priority.</p>
-        <div class="success-code-box" id="success-vip-code">AB-FOUNDER-2026</div>
-        <p class="waitlist-subtitle" style="font-size: 0.85rem; margin-bottom: 0;">We've sent a confirmation email to <strong id="success-email-display">your email</strong>. Stand by for the first blueprints deployment.</p>
+        <h2 class="waitlist-title">Founding Spot Confirmed!</h2>
+        <p class="waitlist-subtitle" style="margin-bottom: 15px;">Your founding member spot is registered. Stand by for the first blueprints deployment.</p>
+        <p class="waitlist-subtitle" style="font-size: 0.85rem; margin-bottom: 0;">We've sent a confirmation email to <strong id="success-email-display">your email</strong>.</p>
       </div>
     </div>
   </main>
@@ -836,9 +844,14 @@
   </section>
 
   <!-- Footer -->
-  <footer style="margin-top: 60px; border-top: 1px solid var(--card-border); background: rgba(10, 10, 10, 0.8); padding: 50px 20px 40px 20px; text-align: center; color: var(--text-muted); font-size: 0.9rem; position: relative; z-index: 10;">
-    <div style="margin-bottom: 20px;">
-      <img src="/nc_assets/img/agent_blueprint_white.png" alt="Agent Blueprint Logo" style="height: 48px; width: auto; margin: 0 auto; display: block; opacity: 0.9;" onerror="this.onerror=null; this.src='nc_assets/img/agent_blueprint_white.png';">
+  <footer style="margin-top: 50px; border-top: 1px solid var(--card-border); background: rgba(10, 10, 10, 0.9); padding: 50px 20px 40px 20px; text-align: center; color: var(--text-muted); font-size: 0.9rem; position: relative; z-index: 10;">
+    <div style="margin-bottom: 25px;">
+      <a href="/" style="text-decoration: none; display: inline-flex; flex-direction: column; align-items: center; gap: 12px;">
+        <img src="/nc_assets/img/agent_blueprint_white.png" alt="Agent Blueprint Logo" style="height: 120px; width: auto; margin: 0 auto; display: block; filter: drop-shadow(0 0 20px rgba(212, 175, 55, 0.3));" onerror="this.onerror=null; this.src='nc_assets/img/agent_blueprint_white.png';">
+        <div style="font-weight: 800; font-size: 22px; letter-spacing: 2px; text-transform: uppercase; color: #FFFFFF; margin-top: 8px;">
+          ALIGNED <span style="background: linear-gradient(135deg, #FFF2B2 0%, #D4AF37 50%, #996E00 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">AGENTICS</span>™
+        </div>
+      </a>
     </div>
     <p style="font-weight: 600; color: var(--text-main); margin-bottom: 6px;">Aligned Agentics™ is a division of Lauralai LLC. All rights reserved.</p>
     <p style="font-size: 0.8rem; color: #64748B; margin-bottom: 20px;">Lauralai LLC | 515 Cypress Dr, Long Beach MS, 39560</p>

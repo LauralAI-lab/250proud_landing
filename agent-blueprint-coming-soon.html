@@ -719,10 +719,9 @@
         <div class="success-icon-circle">
           <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
         </div>
-        <h2 class="waitlist-title" id="waitlist-success-title">Founding Spot Secured!</h2>
-        <p class="waitlist-subtitle" style="margin-bottom: 15px;">Your early spot is registered. Keep your lifetime founding code safe—you will use it to unlock your onboarding priority.</p>
-        <div class="success-code-box" id="success-vip-code">AB-FOUNDER-2026</div>
-        <p class="waitlist-subtitle" style="font-size: 0.85rem; margin-bottom: 0;">We've sent a confirmation email to <strong id="success-email-display">your email</strong>. Stand by for the first blueprints deployment.</p>
+        <h2 class="waitlist-title" id="waitlist-success-title">Founding Spot Confirmed!</h2>
+        <p class="waitlist-subtitle" style="margin-bottom: 15px;">Your founding spot is registered. Stand by for the first blueprints deployment.</p>
+        <p class="waitlist-subtitle" style="font-size: 0.85rem; margin-bottom: 0;">We've sent a confirmation email to <strong id="success-email-display">your email</strong>.</p>
       </div>
     </div>
   </main>
@@ -910,12 +909,6 @@
       .then(data => {
         // Toggle view to success state
         document.getElementById('success-email-display').innerText = email;
-        
-        if (data.memberNumber) {
-          document.getElementById('waitlist-success-title').innerText = `Founding Member Spot #${data.memberNumber} Secured!`;
-        }
-        document.getElementById('success-vip-code').innerText = `AB-FOUNDER-2026`;
-
         document.getElementById('waitlist-form-container').style.display = 'none';
         document.getElementById('waitlist-success-container').style.display = 'block';
       })

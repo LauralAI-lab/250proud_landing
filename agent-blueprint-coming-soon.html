@@ -378,6 +378,10 @@
       -webkit-appearance: none;
       width: 100%;
       background: transparent;
+      touch-action: pan-y;
+    }
+    .slider-group, .calc-controls-col {
+      touch-action: pan-y;
     }
 
     input[type=range]:focus {
@@ -657,12 +661,15 @@
 
   <!-- Hero Content -->
   <main class="hero-container">
+    <div style="grid-column: 1 / -1; text-align: center; margin-bottom: 25px;">
+      <img src="/nc_assets/img/agent_blueprint_white.png" alt="Agent Blueprint Emblem" style="max-width: 220px; width: 100%; height: auto; margin: 0 auto; display: block; filter: drop-shadow(0 0 15px rgba(212, 175, 55, 0.2));" onerror="this.onerror=null; this.src='nc_assets/img/agent_blueprint_white.png';">
+    </div>
+
     <div class="hero-text-panel">
       <div class="pre-headline">Aligned Agentics™ presents Agent Blueprint™</div>
       <h1>Your Real Estate Tech Stack is <span>Leaking Commissions.</span></h1>
       
       <p class="hero-description" style="font-size: 1.15rem; color: var(--text-main); font-weight: 400;">
-        <img src="/nc_assets/img/agent_blueprint_white.png" alt="Agent Blueprint™ Logo" class="hero-magazine-logo" onerror="this.onerror=null; this.src='nc_assets/img/agent_blueprint_white.png';">
         Stop losing 13 hours a week to manual admin drag and letting past clients drift away. <strong>Agent Blueprint™</strong> deploys an autonomous AI Chief of Staff engineered specifically for real estate operators.
       </p>
 

@@ -831,8 +831,8 @@
           <div class="success-icon-circle">
             <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
           </div>
-          <h3 style="font-size: 1.5rem; font-weight: 700; margin-bottom: 8px;">Founding Spot Secured!</h3>
-          <p style="font-size: 0.95rem; color: var(--text-muted); margin-bottom: 15px;">Keep this VIP founding member code safe.</p>
+          <h3 style="font-size: 1.5rem; font-weight: 700; margin-bottom: 8px;" id="waitlist-success-title">Founding Spot Secured!</h3>
+          <p style="font-size: 0.95rem; color: var(--text-muted); margin-bottom: 15px;">Keep your lifetime founding code safe.</p>
           <div class="success-code-box" id="success-vip-code">AB-FOUNDER-2026</div>
           <p style="font-size: 0.85rem; margin-bottom: 0;">Confirmation sent to <strong id="success-email-display" style="color: var(--text-main);">your email</strong>.</p>
         </div>
@@ -955,8 +955,10 @@
       })
       .then(data => {
         document.getElementById('success-email-display').innerText = email;
-        const vipCodeNum = Math.floor(1000 + Math.random() * 9000);
-        document.getElementById('success-vip-code').innerText = `AB-VIP-${vipCodeNum}`;
+        if (data.memberNumber) {
+          document.getElementById('waitlist-success-title').innerText = `Founding Member Spot #${data.memberNumber} Secured!`;
+        }
+        document.getElementById('success-vip-code').innerText = `AB-FOUNDER-2026`;
 
         document.getElementById('waitlist-form-container').style.display = 'none';
         document.getElementById('waitlist-success-container').style.display = 'block';

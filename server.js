@@ -2056,33 +2056,39 @@ app.post('/api/blueprint/subscribe', express.json(), async (req, res) => {
         }
 
         // Calculate Sequential Member Number
-        let memberNumber = 1;
+        let memberNumber = 79;
         try {
-            const { count, error: countErr } = await supabase
-                .from('blueprint_waitlist')
-                .select('*', { count: 'exact', head: true });
-            
-            if (!countErr && typeof count === 'number') {
-                memberNumber = count + 1;
+            const supaUrl = process.env.SUPABASE_URL || 'https://iohdigyivypgyphcliuo.supabase.co';
+            const supaKey = process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.SUPABASE_SERVICE_KEY || process.env.SUPABASE_ANON_KEY;
+            const resCount = await fetch(`${supaUrl}/rest/v1/subscribers?select=id`, {
+                headers: {
+                    'apikey': supaKey,
+                    'Authorization': `Bearer ${supaKey}`,
+                    'Prefer': 'count=exact',
+                    'Range': '0-0'
+                }
+            });
+            const contentRange = resCount.headers.get('content-range');
+            if (contentRange && contentRange.includes('/')) {
+                const totalRows = parseInt(contentRange.split('/')[1], 10);
+                if (!isNaN(totalRows) && totalRows > 0) {
+                    memberNumber = totalRows + 1;
+                }
             }
         } catch (cntErr) {
-            console.warn("Could not query waitlist count, defaulting memberNumber to 1:", cntErr.message);
+            console.warn("Could not query waitlist count, defaulting memberNumber to 79:", cntErr.message);
         }
 
         try {
-            const { error } = await supabase.from('blueprint_waitlist').insert([{
+            await supabase.from('subscribers').insert([{
+                first_name: name || null,
                 email: email.toLowerCase().trim(),
-                name: name || null,
-                brokerage: brokerage || null,
                 phone: phone || null,
-                member_number: memberNumber
+                comm_pref: 'email',
+                source: 'agent_blueprint_founding_member',
             }]);
-            
-            if (error && error.code !== '23505' && error.code !== '42P01') {
-                console.error("Supabase Save Waitlist Error:", error);
-            }
         } catch (dbErr) {
-            console.error("Supabase connection error, continuing to Mailchimp & Resend:", dbErr);
+            console.error("Supabase connection error, continuing to Mailchimp & Resend:", dbErr.message);
         }
 
         // Mailchimp Integration

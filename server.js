@@ -25,8 +25,8 @@ app.use(express.json());
 app.use(express.static(__dirname, { extensions: ['html'] }));
 
 // Init Supabase (Use Service Role Key to bypass RLS in the serverless environment)
-const supabaseUrl = process.env.SUPABASE_URL;
-const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.SUPABASE_ANON_KEY;
+const supabaseUrl = process.env.SUPABASE_URL || 'https://placeholder.supabase.co';
+const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.SUPABASE_ANON_KEY || 'placeholder_key';
 const supabase = createClient(supabaseUrl, supabaseKey, {
     auth: {
         persistSession: false,
@@ -2055,21 +2055,37 @@ app.post('/api/blueprint/subscribe', express.json(), async (req, res) => {
             }
         }
 
+        // Calculate Sequential Member Number
+        let memberNumber = 1;
+        try {
+            const { count, error: countErr } = await supabase
+                .from('blueprint_waitlist')
+                .select('*', { count: 'exact', head: true });
+            
+            if (!countErr && typeof count === 'number') {
+                memberNumber = count + 1;
+            }
+        } catch (cntErr) {
+            console.warn("Could not query waitlist count, defaulting memberNumber to 1:", cntErr.message);
+        }
+
         try {
             const { error } = await supabase.from('blueprint_waitlist').insert([{
                 email: email.toLowerCase().trim(),
                 name: name || null,
                 brokerage: brokerage || null,
-                phone: phone || null
+                phone: phone || null,
+                member_number: memberNumber
             }]);
             
             if (error && error.code !== '23505' && error.code !== '42P01') {
                 console.error("Supabase Save Waitlist Error:", error);
             }
         } catch (dbErr) {
-            console.error("Supabase connection error, continuing to Mailchimp:", dbErr);
+            console.error("Supabase connection error, continuing to Mailchimp & Resend:", dbErr);
         }
 
+        // Mailchimp Integration
         if (process.env.MAILCHIMP_API_KEY && process.env.MAILCHIMP_API_KEY !== 'missing_key') {
             const listId = process.env.MAILCHIMP_LIST_ID;
             const subscriberHash = crypto.createHash('md5').update(email.toLowerCase().trim()).digest('hex');
@@ -2082,23 +2098,84 @@ app.post('/api/blueprint/subscribe', express.json(), async (req, res) => {
                         FNAME: name ? name.split(' ')[0] : '',
                         LNAME: name && name.split(' ').length > 1 ? name.split(' ').slice(1).join(' ') : '',
                         COMPANY: brokerage || '',
-                        PHONE: phone || ''
+                        PHONE: phone || '',
+                        MEMBER_NUM: memberNumber
                     }
                 });
 
                 await mailchimp.lists.updateListMemberTags(listId, subscriberHash, {
                     tags: [
+                        { name: 'Founding Spot Secured', status: 'active' },
                         { name: 'agent-blueprint-waitlist', status: 'active' },
                         { name: 'founding-member-launch', status: 'active' }
                     ]
                 });
-                console.log(`📧 Mailchimp: Successfully subscribed & tagged ${email} for Agent Blueprint.`);
+                console.log(`📧 Mailchimp: Successfully subscribed & tagged ${email} for Agent Blueprint (Founding Spot Secured).`);
             } catch (mcError) {
                 console.error("Mailchimp Sync Error for Agent Blueprint:", mcError.response?.body?.detail || mcError.message);
             }
         }
 
-        res.json({ success: true });
+        // Resend Integration — Immediate Founding Member Welcome Email
+        if (process.env.RESEND_API_KEY) {
+            try {
+                const resend = new Resend(process.env.RESEND_API_KEY);
+                const firstName = name && name.trim() ? name.trim().split(' ')[0] : 'there';
+                
+                let htmlTemplate = '';
+                const templatePathLocal = path.join(__dirname, 'emails', 'agent_blueprint_founding_member_welcome.html');
+                const templatePathParent = path.join(__dirname, '..', 'emails', 'agent_blueprint_founding_member_welcome.html');
+                if (fs.existsSync(templatePathLocal)) {
+                    htmlTemplate = fs.readFileSync(templatePathLocal, 'utf8');
+                } else if (fs.existsSync(templatePathParent)) {
+                    htmlTemplate = fs.readFileSync(templatePathParent, 'utf8');
+                } else {
+                    htmlTemplate = `
+                        <div style="font-family: sans-serif; background-color: #0a0a0a; color: #fff; padding: 30px;">
+                            <h2>Founding Member #${memberNumber}</h2>
+                            <p>Hey ${firstName},</p>
+                            <p>Thanks for grabbing founding spot #${memberNumber} in Agent Blueprint!</p>
+                            <p>Your Founder Code: <strong>AB-FOUNDER-2026</strong></p>
+                            <p>Reply to this email with your AI experience level (1-10).</p>
+                            <p>- Mike Price, Founder Lauralai LLC</p>
+                        </div>
+                    `;
+                }
+
+                const formattedHtml = htmlTemplate
+                    .replace(/\{\{MEMBER_NUMBER\}\}/g, memberNumber)
+                    .replace(/\{\{FIRST_NAME\}\}/g, firstName);
+
+                await resend.emails.send({
+                    from: 'Mike Price | Agent Blueprint <info@250proud.net>',
+                    reply_to: 'mike@lauralai.llc',
+                    to: email.toLowerCase().trim(),
+                    subject: "You're in. Here's what happens next.",
+                    html: formattedHtml
+                });
+                console.log(`✉️ Resend: Founding member welcome email sent to ${email} (Member #${memberNumber}).`);
+
+                // Send Internal Notification to Mike
+                await resend.emails.send({
+                    from: 'Agent Blueprint System <info@250proud.net>',
+                    to: 'mike@lauralai.llc',
+                    subject: `🚀 New Agent Blueprint Founding Member #${memberNumber}: ${name || email}`,
+                    html: `
+                        <h2>🎉 New Agent Blueprint Founding Member Signed Up!</h2>
+                        <p><strong>Member Number:</strong> #${memberNumber}</p>
+                        <p><strong>Name:</strong> ${name || 'Not provided'}</p>
+                        <p><strong>Email:</strong> ${email}</p>
+                        <p><strong>Brokerage:</strong> ${brokerage || 'Not provided'}</p>
+                        <p><strong>Phone:</strong> ${phone || 'Not provided'}</p>
+                        <p><em>Welcome email sent automatically via Resend.</em></p>
+                    `
+                });
+            } catch (resendErr) {
+                console.error("Resend Welcome Email Error:", resendErr.message || resendErr);
+            }
+        }
+
+        res.json({ success: true, memberNumber });
     } catch (err) {
         console.error("Blueprint Subscribe Endpoint Error:", err);
         res.status(500).json({ error: "Failed to submit subscription" });

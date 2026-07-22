@@ -44,7 +44,8 @@
         "includeFiles": [
           "250Proud_ColoringBook_B2B_Base_Final.pdf",
           "back_cover_template.html",
-          "marketing_card_template.html"
+          "marketing_card_template.html",
+          "emails/agent_blueprint_founding_member_welcome.html"
         ]
       }
     },

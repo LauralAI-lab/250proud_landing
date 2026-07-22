@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>You're in. Here's what happens next.</title>
+  <style>
+    /* Reset & Base Styles */
+    body {
+      margin: 0;
+      padding: 0;
+      background-color: #0A0A0A;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+      color: #E2E8F0;
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+    }
+    table {
+      border-collapse: collapse;
+      width: 100%;
+    }
+    .wrapper {
+      width: 100%;
+      table-layout: fixed;
+      background-color: #0A0A0A;
+      padding: 40px 10px;
+    }
+    .main-card {
+      max-width: 600px;
+      margin: 0 auto;
+      background-color: #121212;
+      border: 1px solid rgba(212, 175, 55, 0.25);
+      border-radius: 16px;
+      overflow: hidden;
+      box-shadow: 0 12px 40px rgba(0, 0, 0, 0.6);
+    }
+    .header-banner {
+      background: linear-gradient(135deg, #1A1A1A 0%, #0A0A0A 100%);
+      padding: 35px 30px 25px 30px;
+      text-align: center;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    }
+    .badge {
+      display: inline-block;
+      background: rgba(212, 175, 55, 0.12);
+      border: 1px solid #D4AF37;
+      color: #D4AF37;
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      padding: 6px 16px;
+      border-radius: 20px;
+      margin-bottom: 15px;
+    }
+    .brand-title {
+      font-size: 26px;
+      font-weight: 800;
+      color: #FFFFFF;
+      margin: 0;
+      letter-spacing: -0.5px;
+    }
+    .brand-title span {
+      color: #D4AF37;
+    }
+    .body-content {
+      padding: 35px 35px;
+      font-size: 16px;
+      color: #CBD5E1;
+    }
+    .greeting {
+      font-size: 18px;
+      font-weight: 700;
+      color: #FFFFFF;
+      margin-bottom: 18px;
+    }
+    p {
+      margin-top: 0;
+      margin-bottom: 18px;
+    }
+    .benefits-box {
+      background: rgba(255, 255, 255, 0.03);
+      border-left: 3px solid #D4AF37;
+      border-radius: 0 8px 8px 0;
+      padding: 20px 25px;
+      margin: 25px 0;
+    }
+    .benefits-title {
+      font-weight: 700;
+      color: #FFFFFF;
+      margin-bottom: 12px;
+      font-size: 15px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .benefits-list {
+      margin: 0;
+      padding-left: 20px;
+    }
+    .benefits-list li {
+      margin-bottom: 10px;
+      color: #E2E8F0;
+    }
+    .benefits-list li:last-child {
+      margin-bottom: 0;
+    }
+    .code-box {
+      background: #1A1A1A;
+      border: 1px dashed #D4AF37;
+      border-radius: 10px;
+      padding: 18px;
+      text-align: center;
+      margin: 28px 0;
+    }
+    .code-label {
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: #94A3B8;
+      margin-bottom: 6px;
+    }
+    .code-value {
+      font-family: 'Courier New', Courier, monospace;
+      font-size: 24px;
+      font-weight: 700;
+      color: #D4AF37;
+      letter-spacing: 3px;
+    }
+    .focus-group-card {
+      background: rgba(212, 175, 55, 0.05);
+      border: 1px solid rgba(212, 175, 55, 0.2);
+      border-radius: 12px;
+      padding: 22px;
+      margin: 28px 0;
+    }
+    .focus-group-title {
+      font-size: 16px;
+      font-weight: 700;
+      color: #FFFFFF;
+      margin-bottom: 8px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .signature-section {
+      margin-top: 35px;
+      padding-top: 25px;
+      border-top: 1px solid rgba(255, 255, 255, 0.08);
+    }
+    .sig-name {
+      font-weight: 700;
+      color: #FFFFFF;
+      font-size: 18px;
+    }
+    .sig-title {
+      color: #D4AF37;
+      font-size: 14px;
+      font-weight: 600;
+    }
+    .sig-company {
+      color: #94A3B8;
+      font-size: 13px;
+      margin-top: 4px;
+    }
+    .sig-email {
+      color: #64748B;
+      font-size: 13px;
+      margin-top: 2px;
+    }
+    .footer {
+      background-color: #0A0A0A;
+      padding: 25px 30px;
+      text-align: center;
+      font-size: 12px;
+      color: #64748B;
+      border-top: 1px solid rgba(255, 255, 255, 0.05);
+    }
+    .footer a {
+      color: #94A3B8;
+      text-decoration: none;
+    }
+  </style>
+</head>
+<body>
+  <div class="wrapper">
+    <div class="main-card">
+      
+      <!-- Header Banner -->
+      <div class="header-banner">
+        <div class="badge">✨ FOUNDING MEMBER #{{MEMBER_NUMBER}}</div>
+        <h1 class="brand-title">Agent Blueprint<span>™</span></h1>
+      </div>
+
+      <!-- Body Content -->
+      <div class="body-content">
+        <div class="greeting">Hey {{FIRST_NAME}},</div>
+
+        <p>Thanks for grabbing founding spot <strong>#{{MEMBER_NUMBER}}</strong> in Agent Blueprint. I mean that—not the kind of "thanks" that's auto-generated by a form. You just told me you're one of the agents actually paying attention to where this industry is headed, instead of waiting to get run over by it.</p>
+
+        <div class="benefits-box">
+          <div class="benefits-title">Here's what your founding spot locks in, for good:</div>
+          <ul class="benefits-list">
+            <li><strong>Lifetime Discount:</strong> A permanent discount on Agent Blueprint. No expiration, no "intro rate" that quietly goes away.</li>
+            <li><strong>First Access:</strong> Priority access to our white-label resource store and marketing resource centers before anyone else sees them.</li>
+            <li><strong>Priority Onboarding:</strong> Front-of-the-line onboarding the moment we open the doors.</li>
+          </ul>
+        </div>
+
+        <div class="code-box">
+          <div class="code-label">Your Lifetime Founder Code</div>
+          <div class="code-value">AB-FOUNDER-2026</div>
+        </div>
+
+        <p>Hang onto your code: <strong>AB-FOUNDER-2026</strong>. You'll use it when we bring you in.</p>
+
+        <p>I built Agent Blueprint because I watched too many good agents get buried under CRM busywork that has nothing to do with why they got into this business—the relationships, the trust, the actual work of helping someone buy or sell a home. That's the job. Everything else should be automated out of your way, not something you're doing at 9pm instead of being home.</p>
+
+        <p>I'll be back in your inbox soon with the next update. Until then, you're on the list, and the list is exactly where you want to be.</p>
+
+        <div class="focus-group-card">
+          <div class="focus-group-title">🎯 Focus Group & Beta Tester Invitation</div>
+          <p style="margin-bottom: 0;">We will soon be opening up spots for our focus group. As a member of the focus group, you will have access as a beta tester. <strong>Reply directly to this email</strong> and let me know if you're interested and at what level you consider yourself with regard to AI Agents, on a scale of <strong>1 to 10</strong>.</p>
+        </div>
+
+        <!-- Signature -->
+        <div class="signature-section">
+          <div class="sig-name">Mike Price</div>
+          <div class="sig-title">Founder, Lauralai™ LLC</div>
+          <div class="sig-company">Creators of Aligned Agentics™ &amp; Agent Blueprint™</div>
+          <div class="sig-email"><a href="mailto:mike@lauralai.llc" style="color: #D4AF37; text-decoration: none;">mike@lauralai.llc</a></div>
+        </div>
+      </div>
+
+      <!-- Footer -->
+      <div class="footer">
+        <p>&copy; 2026 Lauralai LLC. All rights reserved.<br>
+        515 Cypress Dr, Long Beach MS, 39560</p>
+      </div>
+
+    </div>
+  </div>
+</body>
+</html>

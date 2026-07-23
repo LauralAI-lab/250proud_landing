@@ -1,972 +1,1380 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Agent Blueprint™ — Stop Tech Friction & Commission Leakage</title>
-  
-  <!-- Cache Control & Service Worker Reset -->
-  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
-  <meta http-equiv="Pragma" content="no-cache">
-  <meta http-equiv="Expires" content="0">
-  <script>
-    if ('serviceWorker' in navigator) {
-      navigator.serviceWorker.getRegistrations().then(function(registrations) {
-        for (let registration of registrations) {
-          registration.unregister();
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>250PROUD™ | Official 250PROUD™ Coloring Book & Collection | Coming Soon</title>
+
+    <!-- SEO Optimization -->
+    <meta name="description"
+        content="Celebrate America's 250th with the official 250PROUD™ Coloring Book and Apparel Collection. Sign up now for exclusive early access and a free digital gift.">
+    <meta name="keywords" content="250PROUD™, 1776, 2026, patriotic apparel, USA clothing, July 4th merch, coloring book">
+    <link rel="canonical" href="https://250proud.net/">
+
+    <!-- Open Graph for Social Media -->
+    <meta property="og:title" content="250PROUD™ | Official 250PROUD™ Coloring Book & Collection">
+    <meta property="og:description"
+        content="Celebrate America's Semiquincentennial with the official 250PROUD™ Coloring Book and Apparel Collection.">
+    <meta property="og:image" content="nc_assets/img/logo.png">
+    <meta property="og:url" content="https://250proud.net">
+    <meta property="og:type" content="website">
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&family=Playfair+Display:ital,wght@0,700;1,600&display=swap" rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Oswald:wght@500;700&display=swap"
+        rel="stylesheet">
+
+    <!-- Schema.org JSON-LD SEO Optimization -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Organization",
+      "name": "250PROUD™",
+      "url": "https://250proud.net/",
+      "logo": "https://250proud.net/nc_assets/img/logo.png",
+      "description": "Official America 250 Apparel and gear. Secure your limited edition 250PROUD™ merch before July 4th.",
+      "brand": {
+        "@type": "Brand",
+        "name": "250PROUD™"
+      },
+      "parentOrganization": {
+        "@type": "Organization",
+        "name": "Lauralai LLC"
+      }
+    }
+    </script>
+
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-7LQJ5NJRM3"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'G-7LQJ5NJRM3');
+    </script>
+
+    <!-- Supabase JS Client -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+    <style>
+        :root {
+            /* Patriotic Color Palette */
+            --navy: #0A3161;
+            --navy-dark: #071E3D;
+            --red: #B31942;
+            --red-bright: #D31A47;
+            --white: #FFFFFF;
+            --off-white: #F5F0E8;
+            --gold: #B8922A;
+            --gray: #E0E0E0;
+            --gray-dark: #333333;
         }
-      });
-    }
-  </script>
-
-  <!-- Google Fonts: Outfit & Roboto Mono -->
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700;800&family=Roboto+Mono:wght@400;600&display=swap" rel="stylesheet">
-
-  <style>
-    /* CSS Variables following Sovereign Forge Brand Guidelines */
-    :root {
-      --bg-dark: #0A0A0A;
-      --bg-workspace: #121212;
-      --card-bg: rgba(26, 26, 26, 0.65);
-      --card-border: rgba(255, 255, 255, 0.08);
-      --primary: #D4AF37; /* Sovereign Gold */
-      --primary-light: #FFF2B2;
-      --primary-dark: #996E00;
-      --accent-plum: #3C1F3D;
-      --text-main: #FFFFFF;
-      --text-muted: #94A3B8;
-      --text-dark: #000000;
-      --error-color: #EF4444;
-      --success-color: #10B981;
-      --gold-gradient: linear-gradient(135deg, var(--primary-light) 0%, var(--primary) 50%, var(--primary-dark) 100%);
-      --glass-glow: 0 8px 32px 0 rgba(212, 175, 55, 0.05);
-    }
-
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
-
-    body {
-      font-family: 'Outfit', sans-serif;
-      background-color: var(--bg-dark);
-      color: var(--text-main);
-      min-height: 100vh;
-      display: flex;
-      flex-direction: column;
-      overflow-x: hidden;
-      position: relative;
-    }
-
-    /* Ambient Background Glows */
-    .ambient-glow-1 {
-      position: absolute;
-      top: -200px;
-      right: -100px;
-      width: 600px;
-      height: 600px;
-      border-radius: 50%;
-      background: radial-gradient(circle, rgba(212, 175, 55, 0.07) 0%, rgba(0, 0, 0, 0) 70%);
-      pointer-events: none;
-      z-index: 0;
-    }
-
-    .ambient-glow-2 {
-      position: absolute;
-      bottom: -150px;
-      left: -150px;
-      width: 700px;
-      height: 700px;
-      border-radius: 50%;
-      background: radial-gradient(circle, rgba(60, 31, 61, 0.18) 0%, rgba(0, 0, 0, 0) 70%);
-      pointer-events: none;
-      z-index: 0;
-    }
-
-    /* Navigation Header */
-    header {
-      width: 100%;
-      background: rgba(10, 10, 10, 0.6);
-      backdrop-filter: blur(12px);
-      border-bottom: 1px solid var(--card-border);
-      padding: 20px 40px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      position: sticky;
-      top: 0;
-      z-index: 100;
-    }
-
-    .header-logo {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      text-decoration: none;
-    }
-
-    .header-logo img {
-      height: 40px;
-      width: auto;
-    }
-
-    .header-logo-text {
-      font-weight: 800;
-      font-size: 22px;
-      letter-spacing: 2px;
-      text-transform: uppercase;
-      color: var(--text-main);
-    }
-
-    .header-logo-text span {
-      background: var(--gold-gradient);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-    }
-
-    .social-badge {
-      font-size: 0.85rem;
-      background: rgba(255, 255, 255, 0.05);
-      border: 1px solid var(--card-border);
-      padding: 8px 16px;
-      border-radius: 20px;
-      color: var(--text-muted);
-      font-weight: 600;
-    }
-
-    /* Hero Section */
-    .hero-container {
-      max-width: 1300px;
-      margin: 0 auto;
-      padding: 60px 40px 100px 40px;
-      display: grid;
-      grid-template-columns: 1.12fr 0.88fr;
-      gap: 50px;
-      align-items: center;
-      position: relative;
-      z-index: 10;
-    }
-
-    .hero-text-panel {
-      display: flex;
-      flex-direction: column;
-      gap: 25px;
-    }
-
-    .pre-headline {
-      font-size: 0.9rem;
-      text-transform: uppercase;
-      letter-spacing: 3px;
-      color: var(--primary);
-      font-weight: 700;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-
-    .pre-headline::before {
-      content: '';
-      display: inline-block;
-      width: 20px;
-      height: 2px;
-      background: var(--primary);
-    }
-
-    h1 {
-      font-size: 3.8rem;
-      font-weight: 800;
-      line-height: 1.1;
-      letter-spacing: -1.5px;
-      color: var(--text-main);
-    }
-
-    h1 span {
-      background: var(--gold-gradient);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-    }
-
-    .hero-description {
-      font-size: 1.25rem;
-      color: var(--text-muted);
-      line-height: 1.6;
-      font-weight: 300;
-    }
-
-    .hero-description strong {
-      color: var(--text-main);
-      font-weight: 600;
-    }
-
-    /* Countdown Styling */
-    .countdown-section {
-      display: flex;
-      gap: 15px;
-      margin-top: 15px;
-    }
-
-    .countdown-box {
-      background: rgba(255, 255, 255, 0.02);
-      border: 1px solid var(--card-border);
-      border-radius: 12px;
-      min-width: 80px;
-      padding: 12px;
-      text-align: center;
-    }
-
-    .countdown-num {
-      font-family: 'Roboto Mono', monospace;
-      font-size: 2.2rem;
-      font-weight: 700;
-      color: var(--primary);
-      line-height: 1;
-    }
-
-    .countdown-label {
-      font-size: 0.75rem;
-      text-transform: uppercase;
-      color: var(--text-muted);
-      letter-spacing: 1px;
-      margin-top: 5px;
-    }
-
-    /* Waitlist Form Styling */
-    .waitlist-card {
-      background: var(--card-bg);
-      border: 1px solid var(--card-border);
-      border-radius: 24px;
-      padding: 35px;
-      backdrop-filter: blur(20px);
-      box-shadow: var(--glass-glow);
-    }
-
-    .waitlist-title {
-      font-size: 1.5rem;
-      font-weight: 700;
-      margin-bottom: 8px;
-    }
-
-    .waitlist-subtitle {
-      font-size: 0.95rem;
-      color: var(--text-muted);
-      margin-bottom: 25px;
-      line-height: 1.5;
-    }
-
-    .form-group {
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-      margin-bottom: 18px;
-    }
-
-    .form-group label {
-      font-size: 0.85rem;
-      font-weight: 600;
-      color: var(--text-muted);
-      text-transform: uppercase;
-      letter-spacing: 1px;
-    }
-
-    .form-input {
-      background: rgba(255, 255, 255, 0.03);
-      border: 1px solid var(--card-border);
-      border-radius: 10px;
-      padding: 12px 16px;
-      color: var(--text-main);
-      font-family: inherit;
-      font-size: 0.95rem;
-      transition: all 0.3s ease;
-    }
-
-    .form-input:focus {
-      outline: none;
-      border-color: var(--primary);
-      background: rgba(255, 255, 255, 0.06);
-    }
-
-    .submit-btn {
-      width: 100%;
-      background: var(--gold-gradient);
-      border: none;
-      border-radius: 10px;
-      padding: 14px;
-      color: var(--text-dark);
-      font-family: inherit;
-      font-weight: 700;
-      font-size: 1rem;
-      cursor: pointer;
-      box-shadow: 0 4px 15px rgba(212, 175, 55, 0.2);
-      transition: all 0.3s ease;
-      margin-top: 10px;
-    }
-
-    .submit-btn:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 6px 20px rgba(212, 175, 55, 0.3);
-    }
-
-    /* Calculator Section */
-    .calculator-section-wrapper {
-      max-width: 1300px;
-      margin: 0 auto 100px auto;
-      padding: 0 40px;
-      position: relative;
-      z-index: 10;
-    }
-
-    .calc-container {
-      background: var(--card-bg);
-      border: 1px solid var(--card-border);
-      border-radius: 30px;
-      padding: 50px;
-      box-shadow: var(--glass-glow);
-      backdrop-filter: blur(20px);
-      display: grid;
-      grid-template-columns: 1.1fr 0.9fr;
-      gap: 50px;
-    }
-
-    .calc-controls-col {
-      display: flex;
-      flex-direction: column;
-      gap: 30px;
-    }
-
-    .calc-header-title {
-      font-size: 2rem;
-      font-weight: 800;
-      line-height: 1.2;
-    }
-
-    .calc-header-title span {
-      background: var(--gold-gradient);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-    }
-
-    .slider-group {
-      display: flex;
-      flex-direction: column;
-      gap: 12px;
-    }
-
-    .slider-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      font-weight: 600;
-      font-size: 0.95rem;
-    }
-
-    .slider-val {
-      font-family: 'Roboto Mono', monospace;
-      color: var(--primary);
-      font-size: 1.1rem;
-    }
-
-    .slider-desc {
-      font-size: 0.85rem;
-      color: var(--text-muted);
-    }
-
-    /* Custom range input styling */
-    input[type=range] {
-      -webkit-appearance: none;
-      width: 100%;
-      background: transparent;
-      touch-action: pan-y;
-    }
-    .slider-group, .calc-controls-col {
-      touch-action: pan-y;
-    }
-
-    input[type=range]:focus {
-      outline: none;
-    }
-
-    input[type=range]::-webkit-slider-runnable-track {
-      width: 100%;
-      height: 6px;
-      cursor: pointer;
-      background: rgba(255,255,255,0.1);
-      border-radius: 3px;
-    }
-
-    input[type=range]::-webkit-slider-thumb {
-      height: 20px;
-      width: 20px;
-      border-radius: 50%;
-      background: var(--primary);
-      cursor: pointer;
-      -webkit-appearance: none;
-      margin-top: -7px;
-      box-shadow: 0 0 10px rgba(212,175,55,0.5);
-      transition: transform 0.1s ease;
-    }
-
-    input[type=range]::-webkit-slider-thumb:hover {
-      transform: scale(1.2);
-    }
-
-    /* Calculator Results Column */
-    .calc-results-col {
-      background: rgba(255, 255, 255, 0.015);
-      border: 1px solid rgba(255, 255, 255, 0.05);
-      border-radius: 20px;
-      padding: 35px;
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-    }
-
-    .calc-row {
-      display: flex;
-      justify-content: space-between;
-      align-items: flex-start;
-      padding: 16px 0;
-      border-bottom: 1px solid rgba(255,255,255,0.06);
-    }
-
-    .calc-row:last-of-type {
-      border-bottom: none;
-    }
-
-    .calc-label {
-      flex: 1;
-      font-size: 0.95rem;
-      color: var(--text-main);
-      padding-right: 15px;
-    }
-
-    .calc-label-desc {
-      font-size: 0.75rem;
-      color: var(--text-muted);
-      margin-top: 4px;
-    }
-
-    .calc-row-value {
-      font-family: 'Roboto Mono', monospace;
-      font-weight: 700;
-      font-size: 1.25rem;
-    }
-
-    .value-danger {
-      color: var(--error-color);
-    }
-
-    .value-warning {
-      color: var(--primary);
-    }
-
-    .value-success {
-      color: var(--success-color);
-    }
-
-    .calc-total-box {
-      background: rgba(212, 175, 55, 0.04);
-      border: 1px dashed var(--primary);
-      border-radius: 12px;
-      padding: 20px;
-      margin-top: 25px;
-      text-align: center;
-    }
-
-    .calc-total-label {
-      font-size: 0.85rem;
-      text-transform: uppercase;
-      letter-spacing: 2px;
-      color: var(--text-muted);
-      margin-bottom: 5px;
-      font-weight: 600;
-    }
-
-    .calc-total-value {
-      font-size: 2.8rem;
-      font-weight: 800;
-      background: var(--gold-gradient);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      font-family: 'Outfit', sans-serif;
-    }
-
-    .calc-total-value span {
-      font-size: 1rem;
-      color: var(--text-muted);
-      -webkit-text-fill-color: initial;
-    }
-
-    .citations-btn {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      padding: 10px 18px;
-      font-size: 0.85rem;
-      font-weight: 600;
-      color: var(--primary-light);
-      background: rgba(214, 175, 55, 0.08);
-      border: 1px solid rgba(214, 175, 55, 0.2);
-      border-radius: 8px;
-      text-decoration: none;
-      transition: all 0.2s ease;
-      cursor: pointer;
-    }
-
-    .citations-btn:hover {
-      background: rgba(214, 175, 55, 0.15);
-      border-color: var(--primary);
-      color: var(--text-main);
-      box-shadow: 0 4px 12px rgba(212, 175, 55, 0.1);
-    }
-
-    .hero-magazine-logo {
-      float: left;
-      width: 245px;
-      height: auto;
-      margin: 6px 20px 12px 0;
-      background: transparent;
-      border: none;
-      padding: 0;
-      box-shadow: none;
-    }
-
-    /* Success state waitlist card */
-    .waitlist-success-state {
-      display: none;
-      text-align: center;
-      animation: fadeIn 0.4s ease forwards;
-    }
-
-    .success-icon-circle {
-      width: 70px;
-      height: 70px;
-      border-radius: 50%;
-      background: rgba(16, 185, 129, 0.1);
-      border: 2px solid var(--success-color);
-      color: var(--success-color);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      margin: 0 auto 20px auto;
-    }
-
-    .success-code-box {
-      background: rgba(255,255,255,0.03);
-      border: 1px solid var(--card-border);
-      padding: 15px;
-      border-radius: 10px;
-      font-family: 'Roboto Mono', monospace;
-      font-size: 1.2rem;
-      color: var(--primary);
-      font-weight: 700;
-      letter-spacing: 3px;
-      margin: 20px 0;
-      position: relative;
-    }
-
-    /* Footer styling */
-    footer {
-      margin-top: auto;
-      border-top: 1px solid var(--card-border);
-      background: rgba(10, 10, 10, 0.8);
-      padding: 40px;
-      text-align: center;
-      color: var(--text-muted);
-      font-size: 0.9rem;
-      position: relative;
-      z-index: 10;
-    }
-
-    .footer-logo {
-      height: 30px;
-      margin-bottom: 15px;
-      opacity: 0.8;
-    }
-
-    .footer-links {
-      margin-top: 15px;
-      display: flex;
-      justify-content: center;
-      gap: 20px;
-      font-size: 0.85rem;
-    }
-
-    .footer-links a {
-      color: var(--text-muted);
-      text-decoration: none;
-      transition: color 0.2s ease;
-    }
-
-    .footer-links a:hover {
-      color: var(--primary);
-    }
-
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(10px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-
-    /* Responsive adjustments */
-    @media (max-width: 1024px) {
-      .hero-container, .calc-container {
-        grid-template-columns: 1fr;
-        gap: 40px;
-      }
-      h1 {
-        font-size: 2.8rem;
-      }
-    }
-
-    @media (max-width: 768px) {
-      header {
-        padding: 16px 20px;
-      }
-      .hero-container {
-        padding: 15px 20px 30px 20px !important;
-        gap: 20px !important;
-      }
-      .hero-container > div:first-child {
-        margin-bottom: 10px !important;
-      }
-      .calculator-section-wrapper {
-        padding: 0 20px !important;
-        margin-bottom: 20px !important;
-      }
-      .calc-container {
-        padding: 24px !important;
-      }
-      footer {
-        margin-top: 30px !important;
-        padding: 30px 20px 30px 20px !important;
-      }
-    }
-
-    @media (max-width: 576px) {
-      .hero-magazine-logo {
-        float: none !important;
-        display: block;
-        margin: 0 auto 20px auto !important;
-        width: 200px !important;
-      }
-    }
-  </style>
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--off-white);
+            color: var(--navy-dark);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        h1,
+        h2,
+        h3,
+        .heading-font {
+            font-family: 'Oswald', sans-serif;
+            text-transform: uppercase;
+        }
+
+        /* Nav & Header */
+        header {
+            background-color: var(--white);
+            padding: 1.5rem 5%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 2px solid var(--navy);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .logo-container img {
+            height: 180px;
+            width: auto;
+        }
+
+        @media (max-width: 768px) {
+            .logo-container img {
+                height: 120px;
+            }
+        }
+
+        .badge {
+            background-color: var(--navy);
+            color: var(--white);
+            padding: 0.5rem 1rem;
+            font-weight: 700;
+            font-size: 0.85rem;
+            letter-spacing: 2px;
+            border-radius: 4px;
+            display: inline-block;
+        }
+
+        /* Hero Section */
+        .hero {
+            background: linear-gradient(135deg, var(--navy-dark) 0%, var(--navy) 100%);
+            color: var(--white);
+            padding: 6rem 5%;
+            text-align: center;
+            position: relative;
+        }
+
+        .hero::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml;utf8,<svg width="100" height="100" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"><path d="M50 0 L52 48 L100 50 L52 52 L50 100 L48 52 L0 50 L48 48 Z" fill="rgba(255,255,255,0.03)"/></svg>') repeat;
+            opacity: 0.5;
+            pointer-events: none;
+        }
+
+        .coming-soon-ribbon {
+            color: var(--gold);
+            font-weight: 700;
+            letter-spacing: 4px;
+            margin-bottom: 1rem;
+            display: block;
+            text-transform: uppercase;
+        }
+
+        .hero h1 {
+            font-size: clamp(3rem, 6vw, 5rem);
+            margin-bottom: 1.5rem;
+            line-height: 1.1;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        .hero h1 span {
+            color: var(--red);
+        }
+
+        .urgency-text {
+            font-size: 1.25rem;
+            max-width: 800px;
+            margin: 0 auto 3rem;
+            font-weight: 400;
+        }
+
+        .urgency-highlight {
+            font-weight: 700;
+            color: var(--gold);
+            border-bottom: 2px solid var(--gold);
+        }
+
+        /* Form Section */
+        .signup-container {
+            background-color: var(--white);
+            border: 4px solid var(--navy);
+            border-radius: 8px;
+            padding: 3rem;
+            max-width: 700px;
+            margin: -4rem auto 4rem;
+            position: relative;
+            z-index: 10;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+        }
+
+        .signup-container h2 {
+            font-size: 2rem;
+            color: var(--navy);
+            margin-bottom: 1rem;
+            text-align: center;
+        }
+
+        .signup-offer {
+            text-align: center;
+            margin-bottom: 2rem;
+            color: var(--gray-dark);
+            font-size: 1.1rem;
+        }
+
+        .signup-offer strong {
+            color: var(--red);
+        }
+
+        .form-group {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .form-group input {
+            flex: 1;
+            padding: 1rem;
+            font-size: 1rem;
+            border: 2px solid var(--gray);
+            border-radius: 4px;
+            font-family: inherit;
+            min-width: 250px;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: var(--navy);
+        }
+
+        .submit-btn {
+            background-color: var(--red);
+            color: var(--white);
+            border: none;
+            padding: 1rem 2rem;
+            font-size: 1.1rem;
+            font-weight: 700;
+            font-family: 'Oswald', sans-serif;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            cursor: pointer;
+            border-radius: 4px;
+            transition: background-color 0.3s ease;
+        }
+
+        .submit-btn:hover {
+            background-color: var(--red-bright);
+        }
+
+        .form-message {
+            text-align: center;
+            margin-top: 1rem;
+            font-weight: 600;
+            display: none;
+        }
+
+        .success {
+            color: #2e7d32;
+            display: block;
+        }
+
+        .error {
+            color: var(--red);
+            display: block;
+        }
+
+        /* Mockup Grid */
+        .mockups-section {
+            padding: 4rem 5%;
+            text-align: center;
+        }
+
+        .mockups-section h2 {
+            font-size: 2.5rem;
+            color: var(--navy);
+            margin-bottom: 3rem;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .mockup-card {
+            background: var(--white);
+            border: 1px solid var(--gray);
+            border-radius: 8px;
+            padding: 2rem;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .mockup-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.05);
+        }
+
+        .placeholder-image {
+            width: 100%;
+            aspect-ratio: 1;
+            background-color: var(--off-white);
+            border: 2px dashed var(--gray);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 1.5rem;
+            color: var(--gray-dark);
+            font-weight: 600;
+            font-size: 1.2rem;
+        }
+
+        .mockup-card h3 {
+            font-size: 1.5rem;
+            color: var(--navy);
+            margin-bottom: 0.5rem;
+        }
+
+        /* Footer */
+        footer {
+            background-color: var(--navy-dark);
+            color: var(--white);
+            text-align: center;
+            padding: 3rem 5%;
+            margin-top: 4rem;
+        }
+
+        .footer-logo {
+            filter: brightness(0) invert(1);
+            height: 180px;
+            margin-bottom: 1rem;
+        }
+
+        @media (max-width: 768px) {
+            .hero {
+                padding: 4rem 5% 6rem;
+            }
+
+            .signup-container {
+                margin: -3rem 5% 3rem;
+                padding: 2rem;
+            }
+
+            .form-group {
+                flex-direction: column;
+            }
+
+            .submit-btn {
+                width: 100%;
+            }
+
+            header {
+                flex-direction: column;
+                gap: 1rem;
+            }
+        }
+
+        /* Anti-Bot Honeypot Styling */
+        /* Anti-Bot Honeypot Styling */
+        .oh-no-bots {
+            opacity: 0;
+            position: absolute;
+            top: 0;
+            left: 0;
+            height: 0;
+            width: 0;
+            z-index: -1;
+        }
+
+        /* NEW CTA STYLES */
+        .video-hero {
+            width: 100%;
+            max-width: 900px;
+            margin: 0 auto 2rem auto;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .video-hero video {
+            width: 100%;
+            display: block;
+        }
+
+        .cta-main {
+            text-align: center;
+            padding: 2rem 1.5rem;
+            max-width: 700px;
+            margin: 0 auto;
+        }
+
+        .eyebrow {
+            font-size: 0.75rem;
+            letter-spacing: 0.15em;
+            color: var(--gold);
+            text-transform: uppercase;
+            margin-bottom: 0.5rem;
+        }
+
+        .cta-main h2 {
+            font-size: 2.2rem;
+            color: var(--navy-dark);
+            margin-bottom: 1rem;
+            line-height: 1.2;
+        }
+
+        .cta-main h2 em {
+            color: var(--gold);
+            font-style: normal;
+        }
+
+        .subhead {
+            font-size: 1.1rem;
+            color: var(--navy);
+            opacity: 0.85;
+            margin-bottom: 2rem;
+            line-height: 1.6;
+        }
+
+        .offer-stack {
+            text-align: left;
+            background: rgba(10,49,97,0.05);
+            border: 1px solid rgba(201,168,76,0.3);
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .offer-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 0.75rem;
+            margin-bottom: 1rem;
+            color: var(--navy-dark);
+            font-size: 0.95rem;
+            line-height: 1.5;
+        }
+
+        .offer-item:last-child {
+            margin-bottom: 0;
+        }
+
+        .checkmark {
+            color: var(--gold);
+            font-size: 1rem;
+            flex-shrink: 0;
+            margin-top: 2px;
+        }
+
+        .sticker-preview {
+            width: 180px;
+            margin: 1.5rem auto;
+            display: block;
+        }
+
+        .signup-form {
+            max-width: 560px;
+            margin: 0 auto;
+            padding: 2rem 1.5rem;
+            text-align: center;
+        }
+
+        .signup-form h3 {
+            color: var(--gold);
+            font-size: 1.6rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .signup-form p {
+            color: var(--navy);
+            opacity: 0.85;
+            margin-bottom: 1.5rem;
+            font-size: 0.95rem;
+        }
+
+        .signup-form input[type="text"],
+        .signup-form input[type="email"],
+        .signup-form input[type="tel"] {
+            width: 100%;
+            padding: 0.85rem 1rem;
+            margin-bottom: 0.75rem;
+            background: rgba(255,255,255,0.8);
+            border: 1px solid rgba(201,168,76,0.4);
+            border-radius: 4px;
+            color: var(--navy-dark);
+            font-size: 1rem;
+            box-sizing: border-box;
+        }
+
+        .signup-form input::placeholder {
+            color: rgba(10,49,97,0.4);
+        }
+
+        .address-block,
+        .comm-prefs {
+            text-align: left;
+            margin-bottom: 1rem;
+        }
+
+        .field-label {
+            font-size: 0.8rem;
+            color: var(--gold);
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            margin-bottom: 0.5rem;
+        }
+
+        .comm-prefs label {
+            display: block;
+            color: var(--navy-dark);
+            font-size: 0.9rem;
+            margin-bottom: 0.4rem;
+            cursor: pointer;
+        }
+
+        .cta-button {
+            width: 100%;
+            padding: 1.1rem;
+            background: var(--red);
+            color: var(--white);
+            font-size: 1.1rem;
+            font-weight: 700;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+            margin-top: 1rem;
+            transition: background 0.2s ease;
+        }
+
+        .cta-button:hover {
+            background: var(--red-bright);
+        }
+
+        .compliance-copy {
+            font-size: 0.72rem;
+            color: rgba(10,49,97,0.45);
+            margin-top: 1.5rem;
+            line-height: 1.5;
+            text-align: left;
+        }
+
+        .compliance-copy a {
+            color: var(--gold);
+        }
+
+        #phone-field {
+            transition: all 0.2s ease;
+        }
+
+        /* --- NEW GIVEAWAY SECTION STYLES --- */
+        .giveaway-section {
+            background-color: var(--navy);
+            background: radial-gradient(circle at 20% 30%, var(--navy-dark) 0%, var(--navy) 100%);
+            padding: 4rem 5%;
+            position: relative;
+            color: var(--white);
+            margin-top: -1rem; /* blend into hero */
+        }
+        
+        .giveaway-section .particles {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            pointer-events: none;
+            z-index: 0;
+            background-image: 
+                radial-gradient(circle at 15% 50%, rgba(201, 168, 76, 0.05) 0%, transparent 50%),
+                radial-gradient(circle at 85% 30%, rgba(197, 34, 51, 0.05) 0%, transparent 50%);
+        }
+
+        .preview-wrapper {
+            max-width: 1200px;
+            width: 100%;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-radius: 24px;
+            box-shadow: 0 30px 60px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+            display: flex;
+            overflow: hidden;
+            position: relative;
+            z-index: 2;
+        }
+
+        .left-col {
+            flex: 1.2;
+            padding: 60px;
+            position: relative;
+            background: linear-gradient(135deg, rgba(201,168,76,0.1) 0%, transparent 100%);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .right-col {
+            flex: 1;
+            padding: 60px;
+            background: rgba(0, 0, 0, 0.2);
+            border-left: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .left-col h2.giveaway-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 3.5rem;
+            line-height: 1.1;
+            margin-bottom: 20px;
+            text-transform: none;
+            background: linear-gradient(to right, var(--white), #E0E0E0);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .left-col h2.giveaway-title span {
+            color: var(--gold);
+            -webkit-text-fill-color: var(--gold);
+        }
+
+        .left-col p.lead {
+            font-size: 1.25rem;
+            color: rgba(255,255,255,0.8);
+            margin-bottom: 40px;
+            line-height: 1.6;
+            font-family: 'Outfit', sans-serif;
+        }
+
+        .visual-stack {
+            position: relative;
+            height: 400px;
+            width: 100%;
+            max-width: 420px;
+            margin: 40px auto 0;
+            perspective: 1000px;
+        }
+
+        .book-img {
+            position: absolute;
+            left: 50px;
+            top: 20px;
+            width: 250px;
+            border-radius: 4px;
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.8), 0 0 0 1px rgba(255,255,255,0.1);
+            transform: rotate(-1deg);
+            z-index: 4;
+            transition: transform 0.6s cubic-bezier(0.2, 0.8, 0.2, 1);
+        }
+
+        .interior-page {
+            position: absolute;
+            width: 250px;
+            border-radius: 4px;
+            background: white;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3), 0 0 0 1px rgba(0,0,0,0.1);
+            transition: transform 0.6s cubic-bezier(0.2, 0.8, 0.2, 1);
+        }
+
+        .page-left {
+            left: -10px;
+            top: 20px;
+            transform: rotate(-12deg);
+            z-index: 2;
+        }
+
+        .page-right {
+            left: 110px;
+            top: 10px;
+            transform: rotate(12deg);
+            z-index: 3;
+        }
+
+        .sticker-img {
+            position: absolute;
+            left: 230px;
+            top: 160px;
+            width: 170px;
+            z-index: 5;
+            filter: drop-shadow(0 15px 25px rgba(0,0,0,0.6));
+            transform: rotate(10deg);
+            animation: stickerFloat 8s ease-in-out infinite;
+        }
+
+        .visual-stack:hover .book-img { transform: rotate(0deg) scale(1.02) translateY(-10px); }
+        .visual-stack:hover .page-left { transform: rotate(-20deg) translateX(-60px) translateY(-10px); }
+        .visual-stack:hover .page-right { transform: rotate(20deg) translateX(60px) translateY(-10px); }
+
+        @keyframes stickerFloat {
+            0% { transform: translateY(0px) rotate(10deg) scale(1.0); }
+            50% { transform: translateY(-25px) rotate(6deg) scale(1.03); }
+            100% { transform: translateY(0px) rotate(10deg) scale(1.0); }
+        }
+
+        /* Form Elements for Giveaway block */
+        .preview-form-title {
+            font-family: 'Outfit', sans-serif;
+            font-size: 1.8rem;
+            margin-bottom: 30px;
+            font-weight: 600;
+        }
+
+        .right-col .input-group {
+            margin-bottom: 15px;
+            position: relative;
+        }
+
+        .right-col .input-group input, 
+        .right-col .input-group select {
+            width: 100%;
+            padding: 14px 18px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            color: var(--white);
+            font-family: 'Outfit', sans-serif;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            box-sizing: border-box;
+        }
+
+        .right-col .input-group input:focus {
+            outline: none;
+            border-color: var(--gold);
+            background: rgba(255, 255, 255, 0.08);
+            box-shadow: 0 0 0 4px rgba(201, 168, 76, 0.1);
+        }
+
+        .right-col .input-group input::placeholder {
+            color: rgba(255, 255, 255, 0.4);
+        }
+
+        .right-col .row {
+            display: flex;
+            gap: 15px;
+        }
+        .right-col .row .input-group { flex: 1; margin-bottom: 15px;}
+
+        .giveaway-submit-btn {
+            width: 100%;
+            padding: 16px;
+            background: linear-gradient(135deg, var(--red) 0%, #901625 100%);
+            border: none;
+            border-radius: 8px;
+            color: var(--white);
+            font-family: 'Outfit', sans-serif;
+            font-size: 1.1rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            cursor: pointer;
+            box-shadow: 0 10px 20px rgba(197, 34, 51, 0.3);
+            transition: transform 0.2s, box-shadow 0.2s;
+            margin-top: 5px;
+        }
+
+        .giveaway-submit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 15px 25px rgba(197, 34, 51, 0.5);
+        }
+
+        .preview-disclaimer {
+            font-size: 0.75rem;
+            color: rgba(255, 255, 255, 0.3);
+            margin-top: 20px;
+            text-align: center;
+            font-family: 'Inter', sans-serif;
+        }
+
+        /* Animated Marquee */
+        .marquee-container {
+            width: 100%;
+            overflow: hidden;
+            background: var(--navy-dark);
+            padding: 4rem 0;
+            position: relative;
+            box-shadow: inset 0 0 30px rgba(0,0,0,0.8);
+        }
+
+        .marquee-track {
+            display: flex;
+            width: max-content;
+            animation: scroll 40s linear infinite;
+        }
+
+        .marquee-track:hover {
+            animation-play-state: paused;
+        }
+
+        .marquee-track img {
+            width: 280px;
+            height: auto;
+            margin: 0 15px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.4);
+            border-radius: 4px;
+        }
+
+        @keyframes scroll {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(-50%); }
+        }
+
+        /* Use Cases Section */
+        .usecases-section {
+            padding: 5rem 5%;
+            background: var(--white);
+            text-align: center;
+        }
+
+        .usecases-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            margin-top: 3rem;
+        }
+
+        .usecase-card {
+            background: var(--off-white);
+            padding: 2.5rem;
+            border-radius: 8px;
+            border-top: 4px solid var(--red);
+            text-align: left;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            transition: transform 0.2s;
+        }
+        
+        .usecase-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .usecase-card h3 {
+            color: var(--navy);
+            margin-bottom: 15px;
+            font-size: 1.4rem;
+        }
+
+        .btn-sample {
+            display: inline-block;
+            margin-top: 3.5rem;
+            padding: 1.2rem 2.5rem;
+            background: linear-gradient(135deg, var(--gold) 0%, #a38125 100%);
+            color: var(--navy-dark);
+            font-family: 'Outfit', sans-serif;
+            font-size: 1.1rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            text-decoration: none;
+            border-radius: 8px;
+            letter-spacing: 2px;
+            transition: transform 0.2s, box-shadow 0.2s;
+            box-shadow: 0 10px 20px rgba(184, 146, 42, 0.3);
+        }
+
+        .btn-sample:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 15px 25px rgba(184, 146, 42, 0.4);
+        }
+
+        /* Look Inside Book Spreads */
+        .look-inside-section {
+            padding: 5rem 5%;
+            background: var(--off-white);
+            text-align: center;
+        }
+
+        .book-spread {
+            display: flex;
+            max-width: 1000px;
+            margin: 3rem auto;
+            background: var(--white);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            border-radius: 8px;
+            overflow: hidden;
+            position: relative;
+        }
+        
+        .book-spread::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            left: 50%;
+            width: 40px;
+            transform: translateX(-50%);
+            background: linear-gradient(to right, rgba(0,0,0,0) 0%, rgba(0,0,0,0.05) 40%, rgba(0,0,0,0.15) 50%, rgba(0,0,0,0.05) 60%, rgba(0,0,0,0) 100%);
+            pointer-events: none;
+        }
+
+        .spread-left, .spread-right {
+            flex: 1;
+            padding: 3rem;
+            text-align: left;
+        }
+        
+        .spread-left {
+            background: #fdfbf7;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .spread-right {
+            background: #ffffff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .spread-right img {
+            width: 100%;
+            height: auto;
+            border: 2px solid #333;
+            border-radius: 4px;
+        }
+
+        .story-era {
+            font-family: 'Oswald', sans-serif;
+            color: var(--gold);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            font-size: 0.9rem;
+            margin-bottom: 10px;
+        }
+
+        .story-headline {
+            font-family: 'Oswald', sans-serif;
+            font-size: 2.2rem;
+            color: var(--navy-dark);
+            margin-bottom: 20px;
+            line-height: 1.2;
+            text-transform: uppercase;
+        }
+
+        .story-fact {
+            font-family: 'Inter', sans-serif;
+            font-size: 1.1rem;
+            color: #444;
+            line-height: 1.6;
+            margin-bottom: 20px;
+        }
+
+        .story-callout {
+            background: rgba(184, 146, 42, 0.1);
+            border-left: 4px solid var(--gold);
+            padding: 15px;
+            font-style: italic;
+            font-family: 'Playfair Display', serif;
+            color: var(--navy);
+            font-size: 1rem;
+        }
+
+        @media (max-width: 900px) {
+            .preview-wrapper { flex-direction: column; }
+            .left-col, .right-col { padding: 40px 30px; }
+            .left-col h2.giveaway-title { font-size: 2.5rem; }
+            .visual-stack { height: 320px; }
+            .book-img { width: 200px; }
+            .sticker-img { width: 140px; left: 140px; top: 100px; }
+            .right-col .row { flex-direction: column; gap: 0; }
+            .marquee-track img { width: 200px; margin: 0 10px; }
+            
+            /* Mobile Book Spread */
+            .book-spread { flex-direction: column; }
+            .book-spread::after { display: none; }
+            .spread-left, .spread-right { padding: 2rem; }
+        }
+
+        /* Hero Bundle Stack */
+        .hero-bundle-stack {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-top: 2rem;
+            position: relative;
+            max-width: 1000px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        .hero-composite-img {
+            width: 100%;
+            max-width: 900px;
+            height: auto;
+            display: block;
+            filter: drop-shadow(0 20px 45px rgba(0,0,0,0.5));
+        }
+        @media (max-width: 900px) {
+            .hero-composite-img {
+                max-width: 650px;
+            }
+        }
+
+        /* Shop Now Button styles */
+        .mockups-section h2 {
+            margin-bottom: 1.5rem;
+        }
+
+        .shop-now-container {
+            margin-bottom: 2rem;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .btn-shop-now {
+            display: inline-block;
+            padding: 1.1rem 3rem;
+            background: linear-gradient(135deg, var(--red-bright) 0%, var(--red) 100%);
+            color: var(--white) !important;
+            font-family: 'Outfit', sans-serif;
+            font-size: 1.25rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            text-decoration: none;
+            border-radius: 8px;
+            letter-spacing: 2px;
+            box-shadow: 0 10px 20px rgba(179, 25, 66, 0.3);
+            transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+            position: relative;
+            overflow: hidden;
+            z-index: 1;
+        }
+
+        .btn-shop-now::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(
+                90deg,
+                transparent,
+                rgba(255, 255, 255, 0.2),
+                transparent
+            );
+            transition: all 0.6s ease;
+            z-index: -1;
+        }
+
+        .btn-shop-now:hover::before {
+            left: 100%;
+        }
+
+        .btn-shop-now:hover {
+            transform: translateY(-3px) scale(1.03);
+            box-shadow: 0 15px 30px rgba(179, 25, 66, 0.5);
+            background: linear-gradient(135deg, var(--red) 0%, #901625 100%);
+            color: var(--white) !important;
+        }
+
+        .btn-shop-now:active {
+            transform: translateY(-1px) scale(1.01);
+            box-shadow: 0 5px 15px rgba(179, 25, 66, 0.4);
+        }
+    </style>
+<link rel="stylesheet" href="/nc_assets/css/lauralai-assistant.css?v=4">
 </head>
+
 <body>
 
-  <div class="ambient-glow-1"></div>
-  <div class="ambient-glow-2"></div>
+    <header>
+        <div class="logo-container">
+            <img src="nc_assets/img/logo.svg" alt="250PROUD™ Official Logo">
+        </div>
+        <div style="display: flex; align-items: center; gap: 1.5rem; flex-wrap: wrap;">
+            <a href="/blog.html" style="color: var(--navy); text-decoration: none; font-weight: 700; font-family: 'Oswald', sans-serif; text-transform: uppercase; font-size: 1.1rem; transition: color 0.2s ease;">250 PROUD JOURNAL</a>
+            <a href="/today-in-history" style="color: var(--navy); text-decoration: none; font-weight: 700; font-family: 'Oswald', sans-serif; text-transform: uppercase; font-size: 1.1rem; transition: color 0.2s ease;">TODAY IN HISTORY</a>
+            <a href="/magnet-promo.html" style="color: var(--navy); text-decoration: none; font-weight: 700; font-family: 'Oswald', sans-serif; text-transform: uppercase; font-size: 1.1rem; transition: color 0.2s ease;">COMMEMORATIVE MAGNETS</a>
+            <a href="b2b-configurator.html" style="color: var(--navy); text-decoration: none; font-weight: 700; font-family: 'Oswald', sans-serif; text-transform: uppercase; font-size: 1.1rem; transition: color 0.2s ease;">DIGITAL MARKETING TOOL</a>
+            <a href="/resource" style="color: var(--navy); text-decoration: none; font-weight: 700; font-family: 'Oswald', sans-serif; text-transform: uppercase; font-size: 1.1rem; transition: color 0.2s ease;">RESOURCE CENTER LOGIN</a>
+            <div class="header-badge">
+                <span class="badge">A UNIQUE WAY TO CELEBRATE AMERICA 250</span>
+            </div>
+        </div>
+    </header>
 
-  <!-- Header -->
-  <header style="background: rgba(10, 10, 10, 0.85); backdrop-filter: blur(12px); border-bottom: 1px solid var(--card-border); padding: 16px 40px; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 100;">
-    <a href="/" class="header-logo" style="text-decoration: none; display: flex; align-items: center; gap: 14px;">
-      <img src="/nc_assets/img/agent_blueprint_white.png" alt="Agent Blueprint™ Logo" style="height: 48px; width: auto; filter: drop-shadow(0 0 10px rgba(212, 175, 55, 0.2));" onerror="this.onerror=null; this.src='nc_assets/img/agent_blueprint_white.png';">
-      <div class="header-logo-text" style="font-weight: 800; font-size: 22px; letter-spacing: 1.5px; text-transform: uppercase; color: #FFFFFF;">ALIGNED <span style="background: linear-gradient(135deg, #FFF2B2 0%, #D4AF37 50%, #996E00 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">AGENTICS</span>™</div>
-    </a>
-    <div class="social-badge" style="background: rgba(212, 175, 55, 0.12); border: 1px solid #D4AF37; color: #D4AF37; font-size: 11px; font-weight: 700; letter-spacing: 1.5px; padding: 6px 14px; border-radius: 20px; text-transform: uppercase;">COMING SOON</div>
-  </header>
-
-  <!-- Hero Content -->
-  <main class="hero-container">
-    <div style="grid-column: 1 / -1; text-align: center; margin-bottom: 10px;">
-      <img src="/nc_assets/img/agent_blueprint_white.png" alt="Agent Blueprint Emblem" style="max-width: 240px; width: 100%; height: auto; margin: 0 auto; display: block; filter: drop-shadow(0 0 18px rgba(212, 175, 55, 0.25));" onerror="this.onerror=null; this.src='nc_assets/img/agent_blueprint_white.png';">
-    </div>
-
-    <div class="hero-text-panel">
-      <div class="pre-headline">Aligned Agentics™ presents Agent Blueprint™</div>
-      <h1>Your Real Estate Tech Stack is <span>Leaking Commissions.</span></h1>
-      
-      <p class="hero-description" style="font-size: 1.15rem; color: var(--text-main); font-weight: 400;">
-        Stop losing 13 hours a week to manual admin drag and letting past clients drift away. <strong>Agent Blueprint™</strong> deploys an autonomous AI Chief of Staff engineered specifically for real estate operators.
-      </p>
-
-      <div style="background: rgba(212, 175, 55, 0.04); border: 1px solid rgba(212, 175, 55, 0.2); border-radius: 12px; padding: 20px; margin: 10px 0;">
-        <h3 style="color: var(--primary); font-size: 1.1rem; font-weight: 700; margin-bottom: 8px; text-transform: uppercase; letter-spacing: 1px;">AI That Sounds Like You. Not a Chatbot.</h3>
-        <p style="font-size: 0.95rem; color: var(--text-muted); line-height: 1.6; margin: 0;">
-          Most AI tools ruin your brand with canned, recognizable jargon (<em>"nestled," "delve," "tapestry"</em>). Anyone can spot it from a mile away. <strong>Agent Blueprint™</strong> is different. Our proprietary intake engine analyzes your authentic written and spoken cadence, strips out generic AI slop, and locks down your personal voice. Your sub-agents draft emails, listing angles, and follow-ups that actually sound like you—so you keep relationships warm without lifting a finger.
+    <section class="hero">
+        <h1>THE OFFICIAL <span>250PROUD™</span> COLLECTION</h1>
+        <p class="urgency-text" style="max-width: 900px; margin: 1.5rem auto 2.5rem; font-size: 1.25rem; line-height: 1.6; color: rgba(255,255,255,0.9); font-family: 'Inter', sans-serif;">
+            Celebrate America's Semiquincentennial with the official <strong>250PROUD™ Celebration Bundle</strong>—featuring our digital coloring book, premium USA-made magnets, and heritage sticker. 
+            <span style="display: block; margin-top: 10px; font-size: 1.15rem; color: #E7C97E;">
+                <strong>Looking to grow your business?</strong> White-label our digital coloring book to capture high-value local leads and build lasting goodwill.
+            </span>
         </p>
-      </div>
-      
-      <p class="hero-description" style="font-size: 1.05rem; border-left: 3px solid var(--primary); padding-left: 15px; color: var(--text-main);">
-        <em>Don't hire an expensive AI consultant. Build your engine.</em> Founding members lock in lifetime priority access, steep discounts, and early previews of our upcoming white-label resource center.
-      </p>
-
-      <!-- Launch Countdown -->
-      <div class="slider-group" style="margin-top: 10px;">
-        <div style="font-size: 0.85rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px;">Blueprint Engine Launch Countdown</div>
-        <div class="countdown-section">
-          <div class="countdown-box">
-            <div class="countdown-num" id="cd-days">00</div>
-            <div class="countdown-label">Days</div>
-          </div>
-          <div class="countdown-box">
-            <div class="countdown-num" id="cd-hours">00</div>
-            <div class="countdown-label">Hrs</div>
-          </div>
-          <div class="countdown-box">
-            <div class="countdown-num" id="cd-mins">00</div>
-            <div class="countdown-label">Mins</div>
-          </div>
-          <div class="countdown-box">
-            <div class="countdown-num" id="cd-secs">00</div>
-            <div class="countdown-label">Secs</div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Waitlist Capture Card -->
-    <div class="waitlist-card">
-      <div id="waitlist-form-container">
-        <h2 class="waitlist-title">Join the Founding List</h2>
-        <p class="waitlist-subtitle">Become a founding member of the Agent Blueprint™ community and lock in big discounts, early previews of new features, and priority access before we open to the public.</p>
         
-        <form id="blueprint-subscribe-form" onsubmit="submitWaitlist(event)">
-          <div class="form-group">
-            <label for="name">Full Name</label>
-            <input type="text" id="name" class="form-input" placeholder="Mike Price" required>
-          </div>
-          <div class="form-group">
-            <label for="email">Email Address</label>
-            <input type="email" id="email" class="form-input" placeholder="mike@lauralai.llc" required>
-          </div>
-          <div class="form-group">
-            <label for="persona">Your Role</label>
-            <select id="persona" class="form-input" required style="appearance: none; -webkit-appearance: none; background-color: rgba(255, 255, 255, 0.05); color: #E2E8F0; padding-right: 35px; background-image: url('data:image/svg+xml;utf8,<svg fill=%22%23D4AF37%22 height=%2224%22 viewBox=%220 0 24 24%22 width=%2224%22 xmlns=%22http://www.w3.org/2000/svg%22><path d=%22M7 10l5 5 5-5z%22/></svg>'); background-repeat: no-repeat; background-position: right 12px center;">
-              <option value="" disabled selected style="background-color: #121212; color: #94A3B8;">Select your primary role...</option>
-              <option value="Active Real Estate Agent / REALTOR®" style="background-color: #121212; color: #E2E8F0;">Active Real Estate Agent / REALTOR®</option>
-              <option value="Broker / Managing Broker" style="background-color: #121212; color: #E2E8F0;">Broker / Managing Broker</option>
-              <option value="Team Leader" style="background-color: #121212; color: #E2E8F0;">Team Leader</option>
-              <option value="PropTech / Association Leader" style="background-color: #121212; color: #E2E8F0;">PropTech / Association Leader</option>
-              <option value="Investor / Other Real Estate Pro" style="background-color: #121212; color: #E2E8F0;">Investor / Other Real Estate Pro</option>
-            </select>
-          </div>
-          <div class="form-group">
-            <label for="phone">Phone Number (Optional)</label>
-            <input type="tel" id="phone" class="form-input" placeholder="(555) 000-0000">
-          </div>
-          
-          <div id="form-error" style="color: var(--error-color); font-size: 0.85rem; margin-bottom: 10px; display: none;"></div>
-          <button type="submit" class="submit-btn" id="submit-btn-el">Become a Founding Member →</button>
-        </form>
-      </div>
-
-      <!-- Success State -->
-      <div class="waitlist-success-state" id="waitlist-success-container">
-        <div class="success-icon-circle">
-          <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+        <!-- Dual CTAs directly in Hero -->
+        <div class="hero-ctas" style="display: flex; justify-content: center; gap: 20px; margin-bottom: 3rem; flex-wrap: wrap;">
+            <a href="#celebration-bundle" style="text-align: center; text-decoration: none; padding: 16px 32px; border-radius: 8px; font-weight: bold; background: #E7C97E; color: #4A1434; font-family: 'Outfit', sans-serif; font-size: 1.1rem; box-shadow: 0 4px 15px rgba(231, 201, 126, 0.3); transition: all 0.3s;">
+                Get the Celebration Bundle ($29)
+            </a>
+            <a href="#white-label-section" style="text-align: center; text-decoration: none; padding: 14px 30px; border-radius: 8px; font-weight: bold; background: transparent; color: #E7C97E; border: 2px solid #E7C97E; font-family: 'Outfit', sans-serif; font-size: 1.1rem; transition: all 0.3s;">
+                White-Label for Business
+            </a>
         </div>
-        <h2 class="waitlist-title">Founding Spot Confirmed!</h2>
-        <p class="waitlist-subtitle" style="margin-bottom: 15px;">Your founding member spot is registered. Stand by for the first blueprints deployment.</p>
-        <p class="waitlist-subtitle" style="font-size: 0.85rem; margin-bottom: 0;">We've sent a confirmation email to <strong id="success-email-display">your email</strong>.</p>
-      </div>
-    </div>
-  </main>
-
-  <!-- Interactive ROI Calculator Section -->
-  <section class="calculator-section-wrapper">
-    <div class="calc-container">
-      
-      <!-- Left controls col -->
-      <div class="calc-controls-col">
-        <h2 class="calc-header-title">Estimate Your <span>Quiet Tech Leakage</span></h2>
-        <p class="slider-desc" style="margin-top: -15px; font-size: 1.05rem;">Slide the dials below to calculate your current annual technical and administrative overhead costs.</p>
-
-        <!-- Slider 1: Annual Closings -->
-        <div class="slider-group">
-          <div class="slider-header">
-            <label for="annualClosings">Annual Closed Transactions</label>
-            <span class="slider-val" id="val-closings">9.5 deals</span>
-          </div>
-          <input type="range" id="annualClosings" min="1" max="100" step="0.5" value="9.5" oninput="runCalculator()">
-          <div class="slider-desc">Based on the typical individual agent industry average (NAR, 2026).</div>
+        
+        <!-- CSS Tilted Bundle Stack -->
+        <div class="hero-bundle-stack">
+            <img src="nc_assets/img/hero_bundle_composite.png" alt="250PROUD Celebration Bundle" class="hero-composite-img">
         </div>
+    </section>
 
-        <!-- Slider 2: Follow-Up Gap -->
-        <div class="slider-group">
-          <div class="slider-header">
-            <label for="followupGap">Referral Follow-Up Gap</label>
-            <span class="slider-val" id="val-followup">88% gap</span>
-          </div>
-          <input type="range" id="followupGap" min="0" max="100" value="88" oninput="runCalculator()">
-          <div class="slider-desc">Percentage of past clients who drift away. Industry average is 88% (NAR Buyers/Sellers Profile).</div>
-        </div>
+    <!-- NEW CTA SECTION — Replace existing sticker CTA block -->
 
-        <!-- Slider 3: Admin Hours -->
-        <div class="slider-group">
-          <div class="slider-header">
-            <label for="adminHours">System Friction (Admin Hours/Week)</label>
-            <span class="slider-val" id="val-admin">13 hours</span>
-          </div>
-          <input type="range" id="adminHours" min="0" max="40" value="13" oninput="runCalculator()">
-          <div class="slider-desc">Hours spent writing descriptions, formatting posts, compiling market data, and updating CRM checklists.</div>
-        </div>
-      </div>
+    <!-- VIDEO EMBED BLOCK -->
+    <section class="video-hero">
+      <!-- Embed the 30-second horizontal video here as autoplay, muted, loop for desktop -->
+      <!-- On mobile, display the 9:16 vertical version -->
+      <!-- Video should autoplay muted with sound-on toggle -->
+      <!-- Poster frame: book cover illustration on warm oak table -->
+    </section>
 
-      <!-- Right results col -->
-      <div class="calc-results-col">
-        <div>
-          <h3 style="font-size: 1.15rem; font-weight: 700; margin-bottom: 20px; border-bottom: 1px solid rgba(255,255,255,0.06); padding-bottom: 10px; color: var(--primary);">Real-time Leakage Summary</h3>
-          
-          <div class="calc-row">
-            <div class="calc-label">
-              <strong>Administrative Drag Loss</strong>
-              <div class="calc-label-desc">Productivity leakage valued at a conservative assistant replacement fee of $50/hour.</div>
+    <!-- GIVEAWAY GLASSSMORPHIC SECTION PIVOTED TO BUNDLE PROMO -->
+    <section class="giveaway-section" id="celebration-bundle">
+        <div class="particles"></div>
+        <div class="preview-wrapper">
+            <div class="left-col" style="flex: 1.2;">
+                <h2 class="giveaway-title">The America 250 <span>Celebration Bundle</span></h2>
+                <p class="lead">Celebrate America's Semiquincentennial all year long. Get our premium, 100% USA-made celebration package today at our special launch price.</p>
+                
+                <div class="visual-stack" style="margin-top: 20px;">
+                    <img src="nc_assets/img/mockups/cozy_office_diy_print_mockup.jpg" alt="America 250 Celebration Bundle" class="bundle-flatlay-img" style="max-width: 100%; border-radius: 16px; box-shadow: 0 15px 40px rgba(0,0,0,0.3); border: 2px solid rgba(255,255,255,0.1);">
+                </div>
             </div>
-            <div class="calc-row-value value-danger" id="result-admin">$33,800</div>
-          </div>
 
-          <div class="calc-row">
-            <div class="calc-label">
-              <strong>Referral Attrition Loss</strong>
-              <div class="calc-label-desc">Dropped commission opportunities (Conservatively estimated at 20% database leak multiplied by your Follow-Up Gap, valued at $15,377/side).</div>
+            <div class="right-col" style="flex: 0.8; display: flex; flex-direction: column; justify-content: center; background: rgba(74, 20, 52, 0.4); backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px); border: 1px solid rgba(255,255,255,0.1); border-radius: 20px; padding: 40px; box-shadow: 0 20px 50px rgba(0,0,0,0.2);">
+                <div class="preview-form-title" style="font-family: 'Outfit', sans-serif; font-size: 1.8rem; color: white; font-weight: bold; margin-bottom: 5px;">Special Launch Offer</div>
+                
+                <!-- Price Container -->
+                <div class="price-container" style="margin-bottom: 25px; font-family: 'Outfit', sans-serif; display: flex; align-items: center; gap: 12px;">
+                    <span style="font-size: 2.5rem; font-weight: 800; color: #E7C97E;">$29.00</span>
+                    <span style="font-size: 1.4rem; text-decoration: line-through; color: rgba(255,255,255,0.4); font-weight: 500;">$49.00</span>
+                    <span style="font-size: 0.85rem; background: #E7C97E; color: #4A1434; padding: 4px 10px; border-radius: 6px; font-weight: bold; text-transform: uppercase; letter-spacing: 0.5px;">Save 40%</span>
+                </div>
+
+                <!-- Value Proposition List -->
+                <ul class="value-list" style="list-style: none; padding: 0; margin: 0 0 30px 0; text-align: left; font-size: 1.05rem; line-height: 1.7; color: rgba(255,255,255,0.9); font-family: 'Inter', sans-serif; display: flex; flex-direction: column; gap: 15px;">
+                    <li style="display: flex; gap: 12px; align-items: flex-start;">
+                        <span style="font-size: 1.3rem; line-height: 1;">🎨</span>
+                        <div>
+                            <strong>"Color America" (Digital PDF Edition):</strong> 24 pages of beautiful hand-drawn illustrations and verified history facts. 
+                            <span style="display: block; font-size: 0.85rem; color: #E7C97E; margin-top: 3px; font-style: italic; line-height: 1.4;">Licensed for home and personal use only. May not be resold or redistributed.</span>
+                        </div>
+                    </li>
+                    <li style="display: flex; gap: 12px; align-items: flex-start;">
+                        <span style="font-size: 1.3rem; line-height: 1;">🦅</span>
+                        <div>
+                            <strong>250Proud Shield Eagle Sticker:</strong> Our premium, weather-proof die-cut sticker (Mailed).
+                        </div>
+                    </li>
+                    <li style="display: flex; gap: 12px; align-items: flex-start;">
+                        <span style="font-size: 1.3rem; line-height: 1;">🇺🇸</span>
+                        <div>
+                            <strong>4 Acrylic Patriotic Magnets:</strong> High-end, 1/8" thick keepsakes manufactured right here in the USA (Mailed).
+                        </div>
+                    </li>
+                </ul>
+
+                <!-- CTAs -->
+                <div style="display: flex; flex-direction: column; gap: 15px;">
+                    <a href="https://lauralai-one.myshopify.com/cart/add?id=46731111727303&quantity=1" class="giveaway-submit-btn" style="text-align: center; text-decoration: none; width: 100%; display: block; font-family: 'Outfit', sans-serif; font-weight: bold; background: #E7C97E; color: #4A1434; padding: 18px; border-radius: 12px; font-size: 1.2rem; transition: all 0.3s; border: none; box-shadow: 0 4px 15px rgba(231, 201, 126, 0.3);">
+                        Order Celebration Bundle
+                    </a>
+                    
+                    <a href="/gifting-configurator.html" style="text-align: center; text-decoration: none; width: 100%; display: block; font-family: 'Outfit', sans-serif; font-weight: bold; background: transparent; color: #E7C97E; padding: 16px; border-radius: 12px; font-size: 1.05rem; transition: all 0.3s; border: 2px dashed rgba(231, 201, 126, 0.4);">
+                        🎁 Send as a Gift to Friends or Teachers
+                    </a>
+                </div>
+
+                <p class="preview-disclaimer" style="margin-top: 20px; font-size: 0.8rem; color: rgba(255,255,255,0.4); text-align: center; line-height: 1.4;">
+                    100% Satisfaction Guarantee. Physical products ship within 2 business days. For support, contact info@250proud.net.
+                </p>
             </div>
-            <div class="calc-row-value value-danger" id="result-referral">$25,710</div>
-          </div>
+        </div>
+    </section>
+
+    <!-- DIGITAL USE CASES & MARQUEE SECTION -->
+    <section class="marquee-container">
+        <div class="marquee-track">
+            <!-- Set 1 -->
+            <img src="coloring_book/illustrations/page_03.png" alt="Page 3" loading="lazy">
+            <img src="coloring_book/illustrations/page_04.png" alt="Page 4" loading="lazy">
+            <img src="coloring_book/illustrations/page_05.png" alt="Page 5" loading="lazy">
+            <img src="coloring_book/illustrations/page_06.png" alt="Page 6" loading="lazy">
+            <img src="coloring_book/illustrations/page_07.png" alt="Page 7" loading="lazy">
+            <img src="coloring_book/illustrations/page_08.png" alt="Page 8" loading="lazy">
+            <img src="coloring_book/illustrations/page_09.png" alt="Page 9" loading="lazy">
+            <img src="coloring_book/illustrations/page_10.png" alt="Page 10" loading="lazy">
+            <img src="coloring_book/illustrations/page_11.png" alt="Page 11" loading="lazy">
+            <img src="coloring_book/illustrations/page_12.png" alt="Page 12" loading="lazy">
+            <!-- Duplicate Set 1 for Infinite Loop (Required for -50% translation) -->
+            <img src="coloring_book/illustrations/page_03.png" alt="Page 3" loading="lazy">
+            <img src="coloring_book/illustrations/page_04.png" alt="Page 4" loading="lazy">
+            <img src="coloring_book/illustrations/page_05.png" alt="Page 5" loading="lazy">
+            <img src="coloring_book/illustrations/page_06.png" alt="Page 6" loading="lazy">
+            <img src="coloring_book/illustrations/page_07.png" alt="Page 7" loading="lazy">
+            <img src="coloring_book/illustrations/page_08.png" alt="Page 8" loading="lazy">
+            <img src="coloring_book/illustrations/page_09.png" alt="Page 9" loading="lazy">
+            <img src="coloring_book/illustrations/page_10.png" alt="Page 10" loading="lazy">
+            <img src="coloring_book/illustrations/page_11.png" alt="Page 11" loading="lazy">
+            <img src="coloring_book/illustrations/page_12.png" alt="Page 12" loading="lazy">
+        </div>
+    </section>
+
+    <section class="look-inside-section">
+        <h2 style="font-size: 2.5rem; color: var(--navy-dark); font-family: 'Oswald', sans-serif; text-transform: uppercase;">Look Inside The Book</h2>
+        <p style="max-width: 800px; margin: 1rem auto; font-size: 1.15rem; color: #555; font-family: 'Inter', sans-serif;">24 pages of meticulously researched and verified history of little known historical facts.</p>
+        
+        <!-- Spread 1 -->
+        <div class="book-spread">
+            <div class="spread-left">
+                <div class="story-era">1776–1800 · The Founding Era</div>
+                <div class="story-headline">The Declaration Almost Wasn't Signed on July 4th</div>
+                <div class="story-fact">Most of the 56 men who signed the Declaration of Independence didn't actually sign it on July 4, 1776. Congress voted for independence on July 2nd, approved the text on the 4th, but most signatures weren't added until August 2, 1776. John Adams thought July 2nd would be the holiday Americans celebrated forever. He was wrong by two days.</div>
+                <div class="story-callout">Little-Known Fact: Two signers — Richard Henry Lee and Thomas McKean — didn't sign until 1776 was nearly over.</div>
+            </div>
+            <div class="spread-right">
+                <img src="coloring_book/illustrations/page_03.png" alt="Declaration of Independence Illustration" loading="lazy">
+            </div>
         </div>
 
-        <div class="calc-total-box">
-          <div class="calc-total-label">Total Annual Technical Leakage</div>
-          <div class="calc-total-value" id="result-total">$59,510<span>/yr</span></div>
+        <!-- Spread 2 -->
+        <div class="book-spread" style="margin-top: 4rem;">
+            <div class="spread-left">
+                <div class="story-era">1776–1800 · The Founding Era</div>
+                <div class="story-headline">George Washington Lost More Battles Than He Won</div>
+                <div class="story-fact">George Washington lost roughly twice as many battles as he won during the Revolutionary War. What he was brilliant at was keeping an army together and alive — retreating when he had to, striking when the odds shifted. His crossing of the Delaware River on Christmas night 1776 to surprise Hessian troops at Trenton is considered one of the boldest military moves in American history.</div>
+                <div class="story-callout">Little-Known Fact: Washington's army was so desperate for boots that winter that soldiers left bloody footprints in the snow at Valley Forge.</div>
+            </div>
+            <div class="spread-right">
+                <img src="coloring_book/illustrations/page_04.png" alt="George Washington Illustration" loading="lazy">
+            </div>
+        </div>
+    </section>
+
+    <section class="usecases-section" id="white-label-section">
+        <h2 style="font-size: 2.5rem; color: var(--navy-dark); font-family: 'Oswald', sans-serif; text-transform: uppercase;">The Ultimate Digital Lead Magnet</h2>
+        <p style="max-width: 800px; margin: 1rem auto; font-size: 1.15rem; color: #555; font-family: 'Inter', sans-serif;">Turn the 250PROUD™ coloring book into a lead generation machine for your business. White-label the digital PDF and distribute it instantly to your audience to drive massive engagement.</p>
+        
+        <div class="usecases-grid">
+            <div class="usecase-card">
+                <h3>📧 Email Marketing Campaigns</h3>
+                <p>Send a custom-branded digital gift to your entire email list. Re-engage cold leads with a high-quality, patriotic asset that your clients will love to print for their kids or grandkids.</p>
+            </div>
+            <div class="usecase-card">
+                <h3>🎯 High-Converting Opt-Ins</h3>
+                <p>Add a pop-up or landing page offering a "Free America 250 Coloring Book". Watch your opt-in rates skyrocket as you capture new leads and generate engagement from current clients.</p>
+            </div>
+            <div class="usecase-card">
+                <h3>🤝 VIP Client Appreciation</h3>
+                <p>Strengthen business relationships by sending a co-branded digital book to your top clients. Every time they print a page, they see your logo, headshot, and custom message on the back cover.</p>
+            </div>
         </div>
 
-        <div class="calc-citations-container" style="margin-top: 20px; text-align: center;">
-          <a href="/citations" class="citations-btn">
-            <svg style="vertical-align: middle; margin-right: 6px;" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
-            Verify Citations & Methodology ↗
-          </a>
+        <a href="configurator.html" class="btn-sample">TEST DRIVE THE BOOK CREATOR</a>
+    </section>
+
+    <section class="mockups-section">
+        <h2>THE OFFICIAL 250PROUD MERCH COLLECTION</h2>
+        <div class="shop-now-container">
+            <a href="https://lauralai-one.myshopify.com" target="_blank" rel="noopener noreferrer" class="btn-shop-now">SHOP NOW</a>
         </div>
-      </div>
+        <p style="max-width: 800px; margin: 0 auto 3rem; font-size: 1.15rem; color: #555; font-family: 'Inter', sans-serif;">Premium quality, official 250PROUD™ merchandise dropping soon.</p>
+        <div class="grid">
+            <!-- Mockup 1 -->
+            <div class="mockup-card">
+                <div class="placeholder-image" style="background: none; border: none; padding: 0;">
+                    <img src="nc_assets/img/eagle_blueprint_tee_live.jpg" alt="Eagle Blueprint T-Shirt" style="width: 100%; height: 100%; object-fit: contain; border-radius: 8px;">
+                </div>
+                <h3 style="font-size: 1.25rem;">Eagle Blueprint T-Shirt</h3>
+                <p>100% US Cotton (Made In US). Premium quality, official 250PROUD™ apparel.</p>
+            </div>
 
-    </div>
-  </section>
+            <!-- Mockup 2 -->
+            <div class="mockup-card">
+                <div class="placeholder-image" style="background: none; border: none; padding: 0;">
+                    <img src="nc_assets/img/mockup_mug.jpg" alt="Heritage Eagle Ceramic Mug" style="width: 100%; height: 100%; object-fit: contain; border-radius: 8px;">
+                </div>
+                <h3 style="font-size: 1.25rem;">Heritage Eagle Ceramic Mug</h3>
+                <p>Heavy-wall ceramic, permanent color-lock print.</p>
+            </div>
 
-  <!-- Footer -->
-  <footer style="margin-top: 50px; border-top: 1px solid var(--card-border); background: rgba(10, 10, 10, 0.9); padding: 50px 20px 40px 20px; text-align: center; color: var(--text-muted); font-size: 0.9rem; position: relative; z-index: 10;">
-    <div style="margin-bottom: 25px;">
-      <a href="/" style="text-decoration: none; display: inline-flex; flex-direction: column; align-items: center; gap: 12px;">
-        <img src="/nc_assets/img/agent_blueprint_white.png" alt="Agent Blueprint Logo" style="height: 120px; width: auto; margin: 0 auto; display: block; filter: drop-shadow(0 0 20px rgba(212, 175, 55, 0.3));" onerror="this.onerror=null; this.src='nc_assets/img/agent_blueprint_white.png';">
-        <div style="font-weight: 800; font-size: 22px; letter-spacing: 2px; text-transform: uppercase; color: #FFFFFF; margin-top: 8px;">
-          ALIGNED <span style="background: linear-gradient(135deg, #FFF2B2 0%, #D4AF37 50%, #996E00 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">AGENTICS</span>™
+            <!-- Mockup 3 -->
+            <div class="mockup-card">
+                <div class="placeholder-image" style="background: none; border: none; padding: 0;">
+                    <img src="nc_assets/img/eagle_claw_cap_live.jpg" alt="Embroidered Eagle Claw Under Armor Cap" style="width: 100%; height: 100%; object-fit: contain; border-radius: 8px;">
+                </div>
+                <h3 style="font-size: 1.25rem;">Embroidered "Eagle Claw" Under Armor Cap</h3>
+                <p>Patriotic Caps</p>
+            </div>
         </div>
-      </a>
-    </div>
-    <p style="font-weight: 600; color: var(--text-main); margin-bottom: 6px;">Aligned Agentics™ is a division of Lauralai LLC. All rights reserved.</p>
-    <p style="font-size: 0.8rem; color: #64748B; margin-bottom: 20px;">Lauralai LLC | 515 Cypress Dr, Long Beach MS, 39560</p>
-    <div class="footer-links" style="display: flex; justify-content: center; gap: 20px; flex-wrap: wrap; font-size: 0.85rem;">
-      <a href="/citations" style="color: var(--text-muted); text-decoration: none;">Research Citations &amp; Methodology Disclosure</a>
-      <a href="/disclaimer" style="color: var(--text-muted); text-decoration: none;">Disclaimer</a>
-      <a href="/terms.html" style="color: var(--text-muted); text-decoration: none;">Terms of Service</a>
-      <a href="/privacy.html" style="color: var(--text-muted); text-decoration: none;">Privacy Policy</a>
-      <a href="/contact.html" style="color: var(--text-muted); text-decoration: none;">Contact Us</a>
-    </div>
-  </footer>
+    </section>
 
-  <script>
-    // 1. Countdown Logic
-    const targetDate = new Date("October 1, 2026 00:00:00").getTime();
+    <footer>
+        <a href="index.html"><img src="nc_assets/img/logo.svg" alt="250PROUD™ White Logo" class="footer-logo"></a>
+        <p>&copy; 2026 Lauralai LLC. All rights reserved. 250PROUD™ is a trademark of Lauralai LLC. Celebrating USA 1776 - 2026.</p>
+        <p style="font-size: 0.8rem; margin-top: 1rem; color: #888;">Lauralai LLC | 515 Cypress Dr, Long Beach MS, 39560</p>
+        <div style="margin-top: 1rem; font-size: 0.9rem;">
+            <a href="terms.html" style="color: var(--white); text-decoration: none; margin: 0 10px;">Terms of
+                Service</a> |
+            <a href="privacy.html" style="color: var(--white); text-decoration: none; margin: 0 10px;">Privacy
+                Policy</a> |
+            <a href="contact.html" style="color: var(--white); text-decoration: none; margin: 0 10px;">Contact Us</a>
+        </div>
+    </footer>
 
-    function updateCountdown() {
-      const now = new Date().getTime();
-      const difference = targetDate - now;
+    <script>
+        // Show/hide phone field based on SMS selection logic if it existed (removed from new form)
+        
+        const previewSignup = document.getElementById('preview-signup');
+        if(previewSignup) {
+            previewSignup.addEventListener('submit', async function(e) {
+                e.preventDefault();
+                
+                const honeypot = document.querySelector('input[name="b_honeypot"]').value;
+                if (honeypot) return;
 
-      if (difference <= 0) {
-        document.getElementById("cd-days").textContent = "00";
-        document.getElementById("cd-hours").textContent = "00";
-        document.getElementById("cd-mins").textContent = "00";
-        document.getElementById("cd-secs").textContent = "00";
-        return;
-      }
+                const btn = document.getElementById('giveaway-submit-btn');
+                btn.innerHTML = 'Securing Your Gifts...';
+                btn.style.opacity = '0.7';
+                btn.disabled = true;
 
-      const days = Math.floor(difference / (1000 * 60 * 60 * 24));
-      const hours = Math.floor((difference % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-      const minutes = Math.floor((difference % (1000 * 60 * 60)) / (1000 * 60));
-      const seconds = Math.floor((difference % (1000 * 60)) / 1000);
+                const formData = new FormData(this);
+                const data = Object.fromEntries(formData);
 
-      document.getElementById("cd-days").textContent = days.toString().padStart(2, '0');
-      document.getElementById("cd-hours").textContent = hours.toString().padStart(2, '0');
-      document.getElementById("cd-mins").textContent = minutes.toString().padStart(2, '0');
-      document.getElementById("cd-secs").textContent = seconds.toString().padStart(2, '0');
-    }
+                try {
+                    const response = await fetch('/api/subscribe', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            first_name: data.FNAME,
+                            last_name: data.LNAME,
+                            email: data.EMAIL,
+                            address: data.ADDRESS,
+                            city: data.CITY,
+                            state: data.STATE,
+                            zip: data.ZIP,
+                            phone: data.PHONE || null,
+                            comm_pref: data.COMM_PREF || 'email',
+                            source: '250proud_coloring_book_lead_magnet'
+                        })
+                    });
 
-    setInterval(updateCountdown, 1000);
-    updateCountdown();
-
-    // 2. Calculator Logic
-    function runCalculator() {
-      // Default Deals/Year: 9.5 median - NAR 2026 Member Profile
-      // Commission Baseline: 2.55% per side (~$15,377) - MLS/Redfin 2026 Analysis
-      // Referral Attrition: 88% Gap (90% intent vs 12% repeat) - NAR Buyers/Sellers Profile
-      // Note: This is a national baseline, candidate for a localized Mississippi/Gulf Coast override down the line.
-      const annualClosings = parseFloat(document.getElementById('annualClosings').value);
-      const followupGap = parseInt(document.getElementById('followupGap').value);
-      const adminHours = parseInt(document.getElementById('adminHours').value);
-
-      // Sync slider tags
-      document.getElementById('val-closings').innerText = `${annualClosings} deal${annualClosings !== 1 ? 's' : ''}`;
-      document.getElementById('val-followup').innerText = `${followupGap}% gap`;
-      document.getElementById('val-admin').innerText = `${adminHours} hour${adminHours !== 1 ? 's' : ''}`;
-
-      // 1. Admin Loss = Weekly Admin Hours * 52 * $50
-      const adminLoss = adminHours * 52 * 50;
-      document.getElementById('result-admin').innerText = `$${adminLoss.toLocaleString()}`;
-
-      // 2. Referral Loss = Annual Closings * 20% (0.20) * (Follow-Up Gap / 100) * $15,377
-      const referralLoss = Math.round(annualClosings * 0.20 * (followupGap / 100) * 15377);
-      document.getElementById('result-referral').innerText = `$${referralLoss.toLocaleString()}`;
-
-      // 3. Combined Loss
-      const combinedTotal = adminLoss + referralLoss;
-      document.getElementById('result-total').innerHTML = `$${combinedTotal.toLocaleString()}<span>/yr</span>`;
-    }
-
-    // Initialize calculator
-    runCalculator();
-
-    // 3. Waitlist Subscription Submission
-    function submitWaitlist(event) {
-      event.preventDefault();
-      
-      const name = document.getElementById('name').value;
-      const email = document.getElementById('email').value;
-      const personaEl = document.getElementById('persona');
-      const persona = personaEl ? personaEl.value : '';
-      const phone = document.getElementById('phone').value;
-      
-      const submitBtn = document.getElementById('submit-btn-el');
-      const errorEl = document.getElementById('form-error');
-      
-      submitBtn.innerText = "Securing Spot...";
-      submitBtn.disabled = true;
-      errorEl.style.display = 'none';
-
-      fetch('/api/blueprint/subscribe', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({ name, email, persona, brokerage: persona, phone })
-      })
-      .then(res => {
-        if (!res.ok) throw new Error('Failed to subscribe');
-        return res.json();
-      })
-      .then(data => {
-        // Toggle view to success state
-        document.getElementById('success-email-display').innerText = email;
-        document.getElementById('waitlist-form-container').style.display = 'none';
-        document.getElementById('waitlist-success-container').style.display = 'block';
-      })
-      .catch(err => {
-        console.error(err);
-        submitBtn.innerText = "Secure Early Spot ↗";
-        submitBtn.disabled = false;
-        errorEl.innerText = "There was an error securing your spot. Please check your email and try again.";
-        errorEl.style.display = 'block';
-      });
-    }
-  </script>
+                    if (response.ok) {
+                        window.location.href = 'thank-you.html';
+                    } else {
+                        const errPayload = await response.text();
+                        throw new Error(errPayload);
+                    }
+                } catch (error) {
+                    console.error('Submission Error:', error);
+                    let displayMsg = error.message;
+                    if (displayMsg.includes('html')) displayMsg = '500 Server Error';
+                    
+                    // Display full error via alert to help debugging Mailchimp issues
+                    if (displayMsg.includes('MAILCHIMP REJECTED')) {
+                        alert("Mailchimp Integration Error:\n\n" + displayMsg + "\n\nTip: You might need to add COMM_PREF or SOURCE as Merge Tags in your Mailchimp Audience Settings.");
+                    }
+                    
+                    btn.innerHTML = 'ERROR SUBMITTING';
+                    btn.style.background = 'var(--red)';
+                    btn.style.opacity = '1';
+                    btn.disabled = false;
+                }
+            });
+        }
+    </script>
+<script src="/nc_assets/js/lauralai-assistant.js?v=4"></script>
 </body>
+
 </html>
